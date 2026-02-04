@@ -76,4 +76,43 @@ describe('SelectOption', () => {
 
     expect(input.attributes('aria-activedescendant')).toBe('select-option-a')
   })
+
+  it('adds data attributes for selected/highlighted/disabled', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+      setup() {
+        const value = ref<string | null>('Banana')
+        return { value, options }
+      },
+      template: `
+        <SelectRoot v-model="value" id="select">
+          <SelectInput />
+          <SelectContent>
+            <SelectOption
+              v-for="opt in options"
+              :key="opt.id"
+              :id="opt.id"
+              :value="opt.value"
+              :label="opt.label"
+              :disabled="opt.id === 'a'"
+            />
+          </SelectContent>
+        </SelectRoot>
+      `,
+    }))
+
+    const input = wrapper.find('input')
+    await input.setValue('')
+    await input.trigger('keydown', { key: 'ArrowDown', preventDefault: () => {} })
+
+    const optionA = wrapper.find('#select-option-a')
+    const optionB = wrapper.find('#select-option-b')
+
+    expect(optionA.attributes('data-disabled')).toBe('true')
+    expect(optionA.attributes('data-selected')).toBe('false')
+    expect(optionA.attributes('data-highlighted')).toBe('false')
+
+    expect(optionB.attributes('data-selected')).toBe('true')
+    expect(optionB.attributes('data-highlighted')).toBe('true')
+  })
 })

@@ -3,6 +3,7 @@ import { useSelectState, type UseSelectStateOptions } from './useSelectState'
 import { mergeProps } from '../utils/mergeProps'
 import { useId } from '../utils/useId'
 import type { CollectionItem } from './useCollection'
+import type { SelectDataAttributes } from '../components/select/selectTypes'
 
 export interface UseSelectOptions<T>
   extends Omit<UseSelectStateOptions<T>, 'baseId'> {
@@ -54,8 +55,13 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     toggle,
   } = state
 
-  const getRootProps = (userProps: Record<string, unknown> = {}) =>
-    mergeProps({ id: baseId }, userProps)
+  const getRootProps = (userProps: Record<string, unknown> = {}) => {
+    const dataAttrs: SelectDataAttributes = {
+      'data-state': isOpen.value ? 'open' : 'closed',
+    }
+
+    return mergeProps({ id: baseId, ...dataAttrs }, userProps)
+  }
 
   const getInputProps = (userProps: Record<string, unknown> = {}) => {
     const onInput = (event: Event) => {
@@ -84,6 +90,12 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     userProps: Record<string, unknown> = {},
   ) => {
     const isSelected = value.value !== null && Object.is(value.value, item.value)
+    const isHighlighted = keyboard.activeId.value === item.id
+    const dataAttrs: SelectDataAttributes = {
+      'data-selected': String(isSelected) as 'true' | 'false',
+      'data-highlighted': String(isHighlighted) as 'true' | 'false',
+      'data-disabled': String(item.disabled) as 'true' | 'false',
+    }
 
     const internal = mergeProps(
       a11y.getOptionAttrs({
@@ -101,6 +113,7 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
           keyboard.setActiveById(item.id)
           close()
         },
+        ...dataAttrs,
       },
     )
 
