@@ -80,6 +80,12 @@ export const SelectOption = defineComponent({
 
     return () => {
       const optionProps = ctx.getOptionProps(getItem(), attrs)
+      const slotProps = {
+        selected: optionProps['aria-selected'] === true,
+        active: ctx.activeId.value === optionId,
+        disabled: props.disabled,
+        option: props.value,
+      }
 
       return h(
         Primitive,
@@ -88,12 +94,10 @@ export const SelectOption = defineComponent({
           ref: primitiveRef,
           ...optionProps,
         },
-        slots.default?.({
-          selected: optionProps['aria-selected'] === true,
-          active: ctx.activeId.value === optionId,
-          disabled: props.disabled,
-          option: props.value,
-        }) ?? props.label ?? String(props.value),
+        {
+          default: () =>
+            slots.default?.(slotProps) ?? props.label ?? String(props.value),
+        },
       )
     }
   },

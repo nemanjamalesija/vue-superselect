@@ -16,6 +16,7 @@ export const SelectEmpty = defineComponent({
 
     return () => {
       if (ctx.filteredItems.value.length > 0) return null
+      const children = { default: () => slots.default?.() ?? 'No results' }
 
       return h(
         Primitive,
@@ -23,7 +24,7 @@ export const SelectEmpty = defineComponent({
           as: props.as,
           ...attrs,
         },
-        slots.default?.() ?? 'No results',
+        children,
       )
     }
   },
