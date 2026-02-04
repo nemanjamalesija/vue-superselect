@@ -12,6 +12,8 @@ export { useKeyboard } from './composables/useKeyboard'
 export type { UseKeyboardOptions } from './composables/useKeyboard'
 export { useA11y } from './composables/useA11y'
 export type { UseA11yOptions } from './composables/useA11y'
+export { useSelect } from './composables/useSelect'
+export type { UseSelectOptions } from './composables/useSelect'
 
 // Components
 export { Primitive } from './components/Primitive'

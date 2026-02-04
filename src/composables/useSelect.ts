@@ -1,0 +1,130 @@
+import type { Ref } from 'vue'
+import { useSelectState, type UseSelectStateOptions } from './useSelectState'
+import { mergeProps } from '../utils/mergeProps'
+import { useId } from '../utils/useId'
+import type { CollectionItem } from './useCollection'
+
+export interface UseSelectOptions<T>
+  extends Omit<UseSelectStateOptions<T>, 'baseId'> {
+  id?: string
+}
+
+interface UseSelectReturn<T> {
+  getRootProps: (userProps?: Record<string, unknown>) => Record<string, unknown>
+  getInputProps: (userProps?: Record<string, unknown>) => Record<string, unknown>
+  getListboxProps: (userProps?: Record<string, unknown>) => Record<string, unknown>
+  getOptionProps: (
+    item: CollectionItem<T>,
+    userProps?: Record<string, unknown>,
+  ) => Record<string, unknown>
+  items: Readonly<Ref<CollectionItem<T>[]>>
+  orderedItems: Ref<CollectionItem<T>[]>
+  filteredItems: Ref<CollectionItem<T>[]>
+  activeId: Ref<string | null>
+  activeIndex: Ref<number>
+  value: Ref<T | null>
+  isOpen: Ref<boolean>
+  query: Ref<string>
+  open: () => void
+  close: () => void
+  toggle: () => void
+  registerItem: (item: CollectionItem<T>) => void
+  unregisterItem: (id: string) => void
+  updateItem: (id: string, patch: Partial<CollectionItem<T>>) => void
+}
+
+export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn<T> {
+  const baseId = options.id ?? useId()
+
+  const state = useSelectState<T>({
+    ...options,
+    baseId,
+  })
+
+  const {
+    value,
+    isOpen,
+    query,
+    collection,
+    filterState,
+    keyboard,
+    a11y,
+    open,
+    close,
+    toggle,
+  } = state
+
+  const getRootProps = (userProps: Record<string, unknown> = {}) =>
+    mergeProps({ id: baseId }, userProps)
+
+  const getInputProps = (userProps: Record<string, unknown> = {}) => {
+    const onInput = (event: Event) => {
+      const target = event.target as HTMLInputElement | null
+      if (!target) return
+      query.value = target.value
+      if (!isOpen.value) open()
+    }
+
+    const internal = mergeProps(a11y.comboboxAttrs.value, {
+      value: query.value,
+      onInput,
+      onKeydown: keyboard.onKeyDown,
+      onCompositionstart: filterState.onCompositionStart,
+      onCompositionend: filterState.onCompositionEnd,
+    })
+
+    return mergeProps(internal, userProps)
+  }
+
+  const getListboxProps = (userProps: Record<string, unknown> = {}) =>
+    mergeProps(a11y.listboxAttrs.value, userProps)
+
+  const getOptionProps = (
+    item: CollectionItem<T>,
+    userProps: Record<string, unknown> = {},
+  ) => {
+    const isSelected = value.value !== null && Object.is(value.value, item.value)
+
+    const internal = mergeProps(
+      a11y.getOptionAttrs({
+        id: item.id,
+        selected: isSelected,
+        disabled: item.disabled,
+      }),
+      {
+        onMousemove: () => {
+          if (!item.disabled) keyboard.setActiveById(item.id)
+        },
+        onClick: () => {
+          if (item.disabled) return
+          value.value = item.value
+          keyboard.setActiveById(item.id)
+          close()
+        },
+      },
+    )
+
+    return mergeProps(internal, userProps)
+  }
+
+  return {
+    getRootProps,
+    getInputProps,
+    getListboxProps,
+    getOptionProps,
+    items: collection.items,
+    orderedItems: collection.orderedItems,
+    filteredItems: filterState.filteredItems,
+    activeId: keyboard.activeId,
+    activeIndex: keyboard.activeIndex,
+    value,
+    isOpen,
+    query,
+    open,
+    close,
+    toggle,
+    registerItem: collection.registerItem,
+    unregisterItem: collection.unregisterItem,
+    updateItem: collection.updateItem,
+  }
+}
