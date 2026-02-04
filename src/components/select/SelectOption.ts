@@ -19,7 +19,7 @@ export const SelectOption = defineComponent({
   inheritAttrs: false,
   props: {
     value: {
-      type: null as PropType<unknown>,
+      type: null as unknown as PropType<unknown>,
       required: true,
     },
     label: {

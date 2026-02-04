@@ -5,15 +5,15 @@ import { provideSelectContext } from './selectContext'
 
 export const SelectRoot = defineComponent({
     name: 'SelectRoot',
-    props: {
-        modelValue: {
-            type: null as PropType<unknown | null>,
-            default: undefined,
-        },
-        defaultValue: {
-            type: null as PropType<unknown | null>,
-            default: null,
-        },
+  props: {
+    modelValue: {
+      type: null as unknown as PropType<unknown | null>,
+      default: undefined,
+    },
+    defaultValue: {
+      type: null as unknown as PropType<unknown | null>,
+      default: null,
+    },
         open: {
             type: Boolean as PropType<boolean | undefined>,
             default: undefined,
