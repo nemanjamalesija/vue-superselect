@@ -1,6 +1,6 @@
 import { defineComponent, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { SelectRoot } from './SelectRoot'
 import { SelectInput } from './SelectInput'
 import { SelectContent } from './SelectContent'
@@ -114,5 +114,31 @@ describe('SelectOption', () => {
 
     expect(optionB.attributes('data-selected')).toBe('true')
     expect(optionB.attributes('data-highlighted')).toBe('true')
+  })
+
+  it('warns in dev mode when label and slot are missing', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+      setup() {
+        const value = ref<string | null>(null)
+        return { value }
+      },
+      template: `
+        <SelectRoot v-model="value" id="select">
+          <SelectInput />
+          <SelectContent>
+            <SelectOption id="a" :value="'Apple'" />
+          </SelectContent>
+        </SelectRoot>
+      `,
+    }))
+
+    const input = wrapper.find('input')
+    await input.setValue('')
+
+    expect(warnSpy).toHaveBeenCalled()
+    warnSpy.mockRestore()
   })
 })
