@@ -86,6 +86,15 @@ export const SelectOption = defineComponent({
         disabled: props.disabled,
         option: props.value,
       }
+      const slotContent = slots.default?.(slotProps)
+      const slotIsEmpty =
+        slotContent == null || (Array.isArray(slotContent) && slotContent.length === 0)
+
+      if (__DEV__ && props.label == null && slotIsEmpty) {
+        console.warn(
+          '[SelectOption] Missing label: provide a `label` prop or slot content.',
+        )
+      }
 
       return h(
         Primitive,
@@ -96,7 +105,7 @@ export const SelectOption = defineComponent({
         },
         {
           default: () =>
-            slots.default?.(slotProps) ?? props.label ?? String(props.value),
+            slotContent ?? props.label ?? String(props.value),
         },
       )
     }
