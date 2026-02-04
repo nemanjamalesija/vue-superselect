@@ -4,6 +4,10 @@ export { useControllable } from './utils/useControllable'
 export type { UseControllableOptions } from './utils/useControllable'
 export { useId } from './utils/useId'
 export { mergeProps } from './utils/mergeProps'
+export { useCollection } from './composables/useCollection'
+export type { CollectionItem } from './composables/useCollection'
+export { useFilter } from './composables/useFilter'
+export type { FilterFn } from './composables/useFilter'
 
 // Components
 export { Primitive } from './components/Primitive'
