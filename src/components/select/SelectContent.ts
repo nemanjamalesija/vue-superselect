@@ -18,11 +18,12 @@ export const SelectContent = defineComponent({
       if (!ctx.isOpen.value) return null
 
       const listboxProps = ctx.getListboxProps(attrs)
+      const children = slots.default ? { default: () => slots.default?.() } : undefined
 
       return h(Primitive, {
         as: props.as,
         ...listboxProps,
-      }, slots.default?.())
+      }, children)
     }
   },
 })

@@ -26,13 +26,15 @@ export const SelectTrigger = defineComponent({
         attrs,
       )
 
+      const children = slots.default ? { default: () => slots.default?.() } : undefined
+
       return h(
         Primitive,
         {
           as: props.as,
           ...triggerProps,
         },
-        slots.default?.(),
+        children,
       )
     }
   },

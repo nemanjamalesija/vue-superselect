@@ -16,6 +16,7 @@ export const SelectControl = defineComponent({
 
     return () => {
       const controlProps = ctx.getRootProps(attrs)
+      const children = slots.default ? { default: () => slots.default?.() } : undefined
 
       return h(
         Primitive,
@@ -23,7 +24,7 @@ export const SelectControl = defineComponent({
           as: props.as,
           ...controlProps,
         },
-        slots.default?.(),
+        children,
       )
     }
   },

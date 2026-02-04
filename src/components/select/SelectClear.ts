@@ -27,13 +27,15 @@ export const SelectClear = defineComponent({
         attrs,
       )
 
+      const children = slots.default ? { default: () => slots.default?.() } : undefined
+
       return h(
         Primitive,
         {
           as: props.as,
           ...clearProps,
         },
-        slots.default?.(),
+        children,
       )
     }
   },
