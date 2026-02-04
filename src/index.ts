@@ -18,3 +18,7 @@ export type { UseSelectOptions } from './composables/useSelect'
 // Components
 export { Primitive } from './components/Primitive'
 export type { PrimitiveProps } from './components/Primitive'
+export { SelectRoot } from './components/select/SelectRoot'
+export { SelectInput } from './components/select/SelectInput'
+export { SelectContent } from './components/select/SelectContent'
+export { SelectOption } from './components/select/SelectOption'
