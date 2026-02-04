@@ -2,6 +2,7 @@ node_modules/
 dist/
 *.local
 .DS_Store
+*.tsbuildinfo
 
 # Personal project context
 CLAUDE.md

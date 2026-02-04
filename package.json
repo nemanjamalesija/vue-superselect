@@ -1,0 +1,56 @@
+{
+  "name": "vue-superselect",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Headless Vue 3 select/combobox component library",
+  "license": "MIT",
+  "main": "./dist/vue-superselect.cjs",
+  "module": "./dist/vue-superselect.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/vue-superselect.js",
+      "require": "./dist/vue-superselect.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "peerDependenciesMeta": {
+    "@floating-ui/vue": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint src/",
+    "format": "prettier --write src/",
+    "type-check": "vue-tsc --build"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.4",
+    "@vue/eslint-config-typescript": "^14.6.0",
+    "@vue/language-core": "^3.0.10",
+    "@vue/test-utils": "^2.4.6",
+    "@vue/tsconfig": "^0.8.1",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.7.0",
+    "happy-dom": "^20.5.0",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0",
+    "unplugin-dts": "^1.0.0-beta.6",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18",
+    "vue": "^3.5.27",
+    "vue-tsc": "^3.2.4"
+  }
+}
