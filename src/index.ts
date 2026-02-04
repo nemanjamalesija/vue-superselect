@@ -8,6 +8,10 @@ export { useCollection } from './composables/useCollection'
 export type { CollectionItem } from './composables/useCollection'
 export { useFilter } from './composables/useFilter'
 export type { FilterFn } from './composables/useFilter'
+export { useKeyboard } from './composables/useKeyboard'
+export type { UseKeyboardOptions } from './composables/useKeyboard'
+export { useA11y } from './composables/useA11y'
+export type { UseA11yOptions } from './composables/useA11y'
 
 // Components
 export { Primitive } from './components/Primitive'
