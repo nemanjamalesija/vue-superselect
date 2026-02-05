@@ -112,6 +112,18 @@ describe('useKeyboard', () => {
     expect(activeEvent.preventDefault).toHaveBeenCalledOnce()
   })
 
+  it('calls onEscape on Escape key', () => {
+    const items = createItems()
+    const onEscape = vi.fn()
+    const { onKeyDown } = useKeyboard({ items, onEscape })
+
+    const event = { key: 'Escape', preventDefault: vi.fn() }
+    onKeyDown(event)
+
+    expect(onEscape).toHaveBeenCalledOnce()
+    expect(event.preventDefault).toHaveBeenCalledOnce()
+  })
+
   it('does not wrap when loop is false', () => {
     const items = createItems()
     const { activeId, onKeyDown } = useKeyboard({ items, loop: false })

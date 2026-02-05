@@ -6,6 +6,7 @@ export interface UseKeyboardOptions<T> {
     loop?: boolean
     activeId?: Ref<string | null>
     onSelect?: (item: CollectionItem<T>) => void
+    onEscape?: () => void
 }
 
 interface UseKeyboardReturn {
@@ -22,7 +23,7 @@ interface UseKeyboardReturn {
 const isEnabled = <T>(item: CollectionItem<T>) => !item.disabled
 
 export function useKeyboard<T>(options: UseKeyboardOptions<T>): UseKeyboardReturn {
-    const { items, loop = true, onSelect } = options
+    const { items, loop = true, onSelect, onEscape } = options
     const internalActiveId = ref<string | null>(null)
     const activeId = options.activeId ?? internalActiveId
 
@@ -107,6 +108,10 @@ export function useKeyboard<T>(options: UseKeyboardOptions<T>): UseKeyboardRetur
             case 'End':
                 event.preventDefault()
                 moveLast()
+                break
+            case 'Escape':
+                event.preventDefault()
+                onEscape?.()
                 break
             case 'Enter': {
                 const index = activeIndex.value

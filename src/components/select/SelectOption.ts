@@ -1,4 +1,5 @@
 import {
+  computed,
   defineComponent,
   h,
   onBeforeUnmount,
@@ -78,7 +79,13 @@ export const SelectOption = defineComponent({
       ctx.unregisterItem(optionId)
     })
 
+    const isVisible = computed(() =>
+      ctx.filteredItems.value.some((item) => item.id === optionId)
+    )
+
     return () => {
+      if (!isVisible.value) return null
+
       const optionProps = ctx.getOptionProps(getItem(), attrs)
       const slotProps = {
         selected: optionProps['aria-selected'] === true,

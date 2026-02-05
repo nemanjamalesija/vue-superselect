@@ -1,4 +1,4 @@
-import { ref, type Ref } from 'vue'
+import { ref, watch, type Ref } from 'vue'
 import { useCollection, type CollectionItem } from './useCollection'
 import { useFilter, type FilterFn } from './useFilter'
 import { useKeyboard } from './useKeyboard'
@@ -64,6 +64,13 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>) {
     items: filterState.filteredItems,
     loop,
     onSelect: selectItem,
+    onEscape: () => {
+      isOpen.value = false
+    },
+  })
+
+  watch(filterState.filteredItems, () => {
+    if (isOpen.value) keyboard.moveFirst()
   })
 
   const a11y = useA11y({
