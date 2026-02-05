@@ -1,5 +1,5 @@
 import { ref, type Ref } from 'vue'
-import { useCollection } from './useCollection'
+import { useCollection, type CollectionItem } from './useCollection'
 import { useFilter, type FilterFn } from './useFilter'
 import { useKeyboard } from './useKeyboard'
 import { useA11y } from './useA11y'
@@ -54,7 +54,17 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>) {
     filter,
   })
 
-  const keyboard = useKeyboard({ items: filterState.filteredItems, loop })
+  const selectItem = (item: CollectionItem<T>) => {
+    value.value = item.value
+    query.value = item.label
+    isOpen.value = false
+  }
+
+  const keyboard = useKeyboard({
+    items: filterState.filteredItems,
+    loop,
+    onSelect: selectItem,
+  })
 
   const a11y = useA11y({
     baseId,
@@ -82,6 +92,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>) {
     filterState,
     keyboard,
     a11y,
+    selectItem,
     open,
     close,
     toggle,

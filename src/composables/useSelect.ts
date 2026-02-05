@@ -50,6 +50,7 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     filterState,
     keyboard,
     a11y,
+    selectItem,
     open,
     close,
     toggle,
@@ -71,9 +72,14 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
       if (!isOpen.value) open()
     }
 
+    const onFocus = () => {
+      if (!isOpen.value) open()
+    }
+
     const internal = mergeProps(a11y.comboboxAttrs.value, {
       value: query.value,
       onInput,
+      onFocus,
       onKeydown: keyboard.onKeyDown,
       onCompositionstart: filterState.onCompositionStart,
       onCompositionend: filterState.onCompositionEnd,
@@ -109,9 +115,8 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
         },
         onClick: () => {
           if (item.disabled) return
-          value.value = item.value
+          selectItem(item)
           keyboard.setActiveById(item.id)
-          close()
         },
         ...dataAttrs,
       },
