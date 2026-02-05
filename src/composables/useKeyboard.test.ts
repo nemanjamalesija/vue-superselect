@@ -53,6 +53,65 @@ describe('useKeyboard', () => {
     expect(activeId.value).toBe('a')
   })
 
+  it('calls onSelect with the active item on Enter', () => {
+    const items = createItems()
+    const onSelect = vi.fn()
+    const { onKeyDown } = useKeyboard({ items, onSelect })
+
+    const event = (key: string) => ({ key, preventDefault: vi.fn() })
+
+    // Navigate to first item, then press Enter
+    onKeyDown(event('ArrowDown'))
+    onKeyDown(event('Enter'))
+
+    expect(onSelect).toHaveBeenCalledOnce()
+    expect(onSelect).toHaveBeenCalledWith(items.value[0])
+  })
+
+  it('does not call onSelect on Enter when no item is active', () => {
+    const items = createItems()
+    const onSelect = vi.fn()
+    const { onKeyDown } = useKeyboard({ items, onSelect })
+
+    const event = (key: string) => ({ key, preventDefault: vi.fn() })
+
+    onKeyDown(event('Enter'))
+
+    expect(onSelect).not.toHaveBeenCalled()
+  })
+
+  it('does not call onSelect on Enter for a disabled item', () => {
+    const items = ref<CollectionItem<string>[]>([
+      { id: 'a', value: 'Apple', label: 'Apple', disabled: true },
+    ])
+    const onSelect = vi.fn()
+    const activeId = ref<string | null>('a')
+    const { onKeyDown } = useKeyboard({ items, onSelect, activeId })
+
+    const event = (key: string) => ({ key, preventDefault: vi.fn() })
+
+    onKeyDown(event('Enter'))
+
+    expect(onSelect).not.toHaveBeenCalled()
+  })
+
+  it('prevents default on Enter only when an active item exists', () => {
+    const items = createItems()
+    const onSelect = vi.fn()
+    const { onKeyDown } = useKeyboard({ items, onSelect })
+
+    const noActiveEvent = { key: 'Enter', preventDefault: vi.fn() }
+    onKeyDown(noActiveEvent)
+    expect(noActiveEvent.preventDefault).not.toHaveBeenCalled()
+
+    const event = (key: string) => ({ key, preventDefault: vi.fn() })
+    onKeyDown(event('ArrowDown'))
+
+    const activeEvent = { key: 'Enter', preventDefault: vi.fn() }
+    onKeyDown(activeEvent)
+    expect(activeEvent.preventDefault).toHaveBeenCalledOnce()
+  })
+
   it('does not wrap when loop is false', () => {
     const items = createItems()
     const { activeId, onKeyDown } = useKeyboard({ items, loop: false })
