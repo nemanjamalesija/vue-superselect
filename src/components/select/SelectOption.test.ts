@@ -47,7 +47,7 @@ describe('SelectOption', () => {
     expect(wrapper.find('[data-value]').text()).toBe('Apple')
   })
 
-  it('updates aria-activedescendant on ArrowDown', async () => {
+  it('auto-highlights first option and advances on ArrowDown', async () => {
     const wrapper = mount(defineComponent({
       components: { SelectRoot, SelectInput, SelectContent, SelectOption },
       setup() {
@@ -72,9 +72,12 @@ describe('SelectOption', () => {
 
     const input = wrapper.find('input')
     await input.setValue('')
-    await input.trigger('keydown', { key: 'ArrowDown', preventDefault: () => {} })
 
     expect(input.attributes('aria-activedescendant')).toBe('select-option-a')
+
+    await input.trigger('keydown', { key: 'ArrowDown', preventDefault: () => {} })
+
+    expect(input.attributes('aria-activedescendant')).toBe('select-option-b')
   })
 
   it('adds data attributes for selected/highlighted/disabled', async () => {
@@ -114,6 +117,41 @@ describe('SelectOption', () => {
 
     expect(optionB.attributes('data-selected')).toBe('true')
     expect(optionB.attributes('data-highlighted')).toBe('true')
+  })
+
+  it('closes the list on Escape with controlled open state', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+      setup() {
+        const value = ref<string | null>(null)
+        const open = ref(false)
+        return { value, open, options }
+      },
+      template: `
+        <SelectRoot v-model="value" v-model:open="open" id="select">
+          <SelectInput />
+          <SelectContent>
+            <SelectOption
+              v-for="opt in options"
+              :key="opt.id"
+              :id="opt.id"
+              :value="opt.value"
+              :label="opt.label"
+            />
+          </SelectContent>
+          <div data-open>{{ open }}</div>
+        </SelectRoot>
+      `,
+    }))
+
+    const input = wrapper.find('input')
+    // Type to open the list
+    await input.setValue('a')
+    expect(wrapper.find('[data-open]').text()).toBe('true')
+
+    // Press Escape
+    await input.trigger('keydown', { key: 'Escape' })
+    expect(wrapper.find('[data-open]').text()).toBe('false')
   })
 
   it('warns in dev mode when label and slot are missing', async () => {

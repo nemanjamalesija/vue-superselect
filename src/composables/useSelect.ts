@@ -72,14 +72,14 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
       if (!isOpen.value) open()
     }
 
-    const onFocus = () => {
+    const onMousedown = () => {
       if (!isOpen.value) open()
     }
 
     const internal = mergeProps(a11y.comboboxAttrs.value, {
       value: query.value,
       onInput,
-      onFocus,
+      onMousedown,
       onKeydown: keyboard.onKeyDown,
       onCompositionstart: filterState.onCompositionStart,
       onCompositionend: filterState.onCompositionEnd,
