@@ -2,12 +2,6 @@
 
 Headless Vue 3 select/combobox component library.
 
-## Install
-
-```bash
-npm install vue-superselect
-```
-
 ## Quick Start (Single Select)
 
 ```vue
