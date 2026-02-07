@@ -13,18 +13,14 @@
 
 const futureExamples = [
   {
-    title: 'SelectTag component (planned 04-02)',
+    title: 'Backspace tag removal (planned 04-03)',
     description:
-      'Multi-select state is live now; dedicated tag rendering/removal component lands next.',
-    code: `<SelectControl>
-  <SelectTag
-    v-for="item in selectedItems"
-    :key="item.id"
-    :value="item.id"
-    :label="item.label"
-  />
-  <SelectInput placeholder="Add teammates" />
-</SelectControl>`,
+      'Remove the last selected tag when search is empty and Backspace is pressed.',
+    code: `onKeydown(event) {
+  if (event.key === 'Backspace' && query === '' && selected.length > 0) {
+    removeLastSelected()
+  }
+}`,
   },
   {
     title: 'Option groups (planned)',

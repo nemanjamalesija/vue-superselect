@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import { playgroundRouter } from './router'
 import './styles.css'
 
-createApp(App).mount('#app')
+createApp(App).use(playgroundRouter).mount('#app')
