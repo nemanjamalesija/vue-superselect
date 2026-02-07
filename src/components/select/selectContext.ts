@@ -1,7 +1,7 @@
 import { createContext } from '../../utils/createContext'
-import type { useSelect } from '../../composables/useSelect'
+import type { UseSelectReturn } from '../../composables/useSelect'
 
-export type SelectContextValue<T> = ReturnType<typeof useSelect<T>>
+export type SelectContextValue<T> = UseSelectReturn<T>
 
 const [injectSelectContext, provideSelectContextInternal] = createContext<SelectContextValue<unknown>>(
   'SelectRoot',
