@@ -1,7 +1,9 @@
 import { defineComponent, h, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { SelectRoot } from './SelectRoot'
+import { SelectContent } from './SelectContent'
+import { SelectOption } from './SelectOption'
 import { useSelectContext } from './selectContext'
 
 const ContextProbe = defineComponent({
@@ -57,5 +59,77 @@ describe('SelectRoot', () => {
     instance.close()
     await wrapper.vm.$nextTick()
     expect(wrapper.find('[data-open]').attributes('data-open')).toBe('0')
+  })
+
+  it('emits array values with v-model in multi-select mode', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectContent, SelectOption },
+      setup() {
+        const value = ref<string[]>([])
+        const options = [
+          { id: 'a', value: 'Apple', label: 'Apple' },
+          { id: 'b', value: 'Banana', label: 'Banana' },
+        ]
+        return { value, options }
+      },
+      template: `
+        <SelectRoot v-model="value" multiple :defaultOpen="true" id="multi-select">
+          <SelectContent>
+            <SelectOption
+              v-for="opt in options"
+              :key="opt.id"
+              :id="opt.id"
+              :value="opt.value"
+              :label="opt.label"
+            />
+          </SelectContent>
+        </SelectRoot>
+      `,
+    }))
+
+    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick()
+
+    const options = wrapper.findAll('[role="option"]')
+    expect(options).toHaveLength(2)
+
+    await options[0].trigger('click')
+    expect(wrapper.vm.value).toEqual(['Apple'])
+
+    await options[1].trigger('click')
+    expect(wrapper.vm.value).toEqual(['Apple', 'Banana'])
+  })
+
+  it('sets aria-multiselectable on listbox when multiple is true', () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectContent, SelectOption },
+      template: `
+        <SelectRoot multiple :defaultOpen="true" id="multi-select">
+          <SelectContent>
+            <SelectOption id="a" value="Apple" label="Apple" />
+          </SelectContent>
+        </SelectRoot>
+      `,
+    }))
+
+    const listbox = wrapper.find('[role="listbox"]')
+    expect(listbox.attributes('aria-multiselectable')).toBe('true')
+  })
+
+  it('warns in dev when multiple is true and modelValue is not an array', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    mount(SelectRoot, {
+      props: {
+        multiple: true,
+        modelValue: 'not-an-array',
+      },
+    })
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('v-model must be an array'),
+    )
+
+    warnSpy.mockRestore()
   })
 })

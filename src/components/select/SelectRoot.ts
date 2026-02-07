@@ -10,12 +10,16 @@ export const SelectRoot = defineComponent({
     // This preserves uncontrolled behavior and correct v-model typing in templates.
     // eslint-disable-next-line vue/require-default-prop
     modelValue: {
-      type: null as unknown as PropType<unknown | null>,
+      type: null as unknown as PropType<unknown | unknown[] | null>,
       required: false,
     },
     defaultValue: {
-      type: null as unknown as PropType<unknown | null>,
+      type: null as unknown as PropType<unknown | unknown[] | null>,
       default: null,
+    },
+    multiple: {
+      type: Boolean,
+      default: false,
     },
     open: {
       type: Boolean as PropType<boolean | undefined>,
@@ -43,7 +47,7 @@ export const SelectRoot = defineComponent({
     },
   },
   emits: {
-    'update:modelValue': (value: unknown | null) => {
+    'update:modelValue': (value: unknown | unknown[] | null) => {
       void value
       return true
     },
@@ -53,11 +57,22 @@ export const SelectRoot = defineComponent({
     },
   },
   setup(props, { emit, slots, expose }) {
+    if (
+      __DEV__ &&
+      props.multiple &&
+      props.modelValue !== undefined &&
+      props.modelValue !== null &&
+      !Array.isArray(props.modelValue)
+    ) {
+      console.warn('[SelectRoot] When `multiple` is true, v-model must be an array')
+    }
+
     const api = useSelect({
       id: props.id,
       value: toRef(props, 'modelValue'),
       defaultValue: props.defaultValue,
       onValueChange: (value) => emit('update:modelValue', value),
+      multiple: props.multiple,
       open: toRef(props, 'open'),
       defaultOpen: props.defaultOpen,
       onOpenChange: (open) => emit('update:open', open),

@@ -88,6 +88,24 @@ describe('useSelect', () => {
     expect(api.value.value).toBe('Banana')
   })
 
+  it('prevents default on option mousedown to preserve input focus', () => {
+    const wrapper = createWrapper<string>()
+    const api = wrapper.vm.api
+
+    const item: CollectionItem<string> = {
+      id: 'm',
+      value: 'Mango',
+      label: 'Mango',
+      disabled: false,
+    }
+
+    const props = api.getOptionProps(item)
+    const preventDefault = vi.fn()
+    invoke(props.onMousedown, { preventDefault })
+
+    expect(preventDefault).toHaveBeenCalledTimes(1)
+  })
+
   it('calls onValueChange for controlled value without mutating prop', () => {
     const value = ref<string | null>('Apple')
     const onValueChange = vi.fn()
@@ -122,5 +140,89 @@ describe('useSelect', () => {
 
     api.close()
     expect(api.isOpen.value).toBe(false)
+  })
+
+  describe('multi-select mode', () => {
+    it('initializes with an empty array when multiple is true', () => {
+      const wrapper = createWrapper<string>({ multiple: true })
+      const api = wrapper.vm.api
+
+      expect(api.multiple).toBe(true)
+      expect(api.value.value).toEqual([])
+    })
+
+    it('toggles items in the selected array', () => {
+      const wrapper = createWrapper<string>({ multiple: true })
+      const api = wrapper.vm.api
+      const item: CollectionItem<string> = {
+        id: 'a',
+        value: 'Apple',
+        label: 'Apple',
+        disabled: false,
+      }
+
+      const firstClickProps = api.getOptionProps(item)
+      invoke(firstClickProps.onClick, {})
+      expect(api.value.value).toEqual(['Apple'])
+
+      const secondClickProps = api.getOptionProps(item)
+      invoke(secondClickProps.onClick, {})
+      expect(api.value.value).toEqual([])
+    })
+
+    it('keeps dropdown open after selection', () => {
+      const wrapper = createWrapper<string>({ multiple: true })
+      const api = wrapper.vm.api
+      const item: CollectionItem<string> = {
+        id: 'b',
+        value: 'Banana',
+        label: 'Banana',
+        disabled: false,
+      }
+
+      api.open()
+      const props = api.getOptionProps(item)
+      invoke(props.onClick, {})
+
+      expect(api.isOpen.value).toBe(true)
+    })
+
+    it('clears the query after each selection', () => {
+      const wrapper = createWrapper<string>({ multiple: true })
+      const api = wrapper.vm.api
+      const item: CollectionItem<string> = {
+        id: 'c',
+        value: 'Cherry',
+        label: 'Cherry',
+        disabled: false,
+      }
+
+      api.query.value = 'ch'
+      const props = api.getOptionProps(item)
+      invoke(props.onClick, {})
+
+      expect(api.query.value).toBe('')
+    })
+
+    it('keeps single-select behavior unchanged', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+      const item: CollectionItem<string> = {
+        id: 'd',
+        value: 'Date',
+        label: 'Date',
+        disabled: false,
+      }
+
+      api.open()
+      api.query.value = 'da'
+
+      const props = api.getOptionProps(item)
+      invoke(props.onClick, {})
+
+      expect(api.value.value).toBe('Date')
+      expect(api.query.value).toBe('Date')
+      expect(api.isOpen.value).toBe(false)
+    })
   })
 })

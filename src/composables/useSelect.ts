@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { useSelectState, type UseSelectStateOptions } from './useSelectState'
+import { useSelectState, type SelectValue, type UseSelectStateOptions } from './useSelectState'
 import { mergeProps } from '../utils/mergeProps'
 import { useId } from '../utils/useId'
 import type { CollectionItem } from './useCollection'
@@ -22,9 +22,11 @@ export interface UseSelectReturn<T> {
   filteredItems: Ref<CollectionItem<T>[]>
   activeId: Ref<string | null>
   activeIndex: Ref<number>
-  value: Ref<T | null>
+  value: Ref<SelectValue<T>>
   isOpen: Ref<boolean>
   query: Ref<string>
+  multiple: boolean
+  isSelected: (item: CollectionItem<T>) => boolean
   open: () => void
   close: () => void
   toggle: () => void
@@ -49,6 +51,8 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     filterState,
     keyboard,
     a11y,
+    multiple,
+    isSelected,
     selectItem,
     open,
     close,
@@ -91,10 +95,10 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     mergeProps(a11y.listboxAttrs.value, userProps)
 
   const getOptionProps = (item: CollectionItem<T>, userProps: Record<string, unknown> = {}) => {
-    const isSelected = value.value !== null && Object.is(value.value, item.value)
+    const isSelectedValue = isSelected(item)
     const isHighlighted = keyboard.activeId.value === item.id
     const dataAttrs: SelectDataAttributes = {
-      'data-selected': String(isSelected) as 'true' | 'false',
+      'data-selected': String(isSelectedValue) as 'true' | 'false',
       'data-highlighted': String(isHighlighted) as 'true' | 'false',
       'data-disabled': String(item.disabled) as 'true' | 'false',
     }
@@ -102,10 +106,14 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     const internal = mergeProps(
       a11y.getOptionAttrs({
         id: item.id,
-        selected: isSelected,
+        selected: isSelectedValue,
         disabled: item.disabled,
       }),
       {
+        onMousedown: (event: Event) => {
+          const mouseEvent = event as { preventDefault?: () => void }
+          mouseEvent.preventDefault?.()
+        },
         onMousemove: () => {
           if (!item.disabled) keyboard.setActiveById(item.id)
         },
@@ -134,6 +142,8 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     value,
     isOpen,
     query,
+    multiple,
+    isSelected,
     open,
     close,
     toggle,

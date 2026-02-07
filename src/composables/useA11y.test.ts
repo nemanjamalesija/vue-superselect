@@ -37,6 +37,7 @@ describe('useA11y', () => {
 
     expect(listboxAttrs.value.id).toBe('select-listbox')
     expect(listboxAttrs.value.role).toBe('listbox')
+    expect(listboxAttrs.value['aria-multiselectable']).toBeUndefined()
 
     const attrs = getOptionAttrs({ id: 'a', selected: true, disabled: false })
     expect(attrs.id).toBe('select-option-a')
@@ -53,5 +54,19 @@ describe('useA11y', () => {
     const attrs = getOptionAttrs({ id: 'b', selected: false, disabled: true })
 
     expect(attrs['aria-disabled']).toBe(true)
+  })
+
+  it('adds aria-multiselectable when multiple is true', () => {
+    const isOpen = ref(false)
+    const activeId = ref<string | null>(null)
+
+    const { listboxAttrs } = useA11y({
+      baseId: 'select',
+      isOpen,
+      activeId,
+      multiple: true,
+    })
+
+    expect(listboxAttrs.value['aria-multiselectable']).toBe(true)
   })
 })

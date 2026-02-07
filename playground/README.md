@@ -28,6 +28,11 @@ Examples live in `playground/src/examples/`:
   - Shows the full single-select stack: root, control, input, trigger, clear,
     content, option, empty, live region.
   - Demonstrates filtering, keyboard navigation, selection, and open state.
+- `MultiSelectFoundation.vue`
+  - Shows the current Phase 04-01 behavior: `multiple` array v-model, selection
+    toggling, and listbox `aria-multiselectable`.
+  - Uses a manual selected-items preview until the dedicated `SelectTag`
+    component lands in 04-02.
 - `ProgrammaticControl.vue`
   - Uses the `SelectRoot` exposed API (`open`, `close`, `toggle`) to drive the
     UI from external buttons.
@@ -35,8 +40,8 @@ Examples live in `playground/src/examples/`:
   - Styles options using `data-state`, `data-selected`, `data-highlighted`, and
     `data-disabled` instead of hand-rolled state flags.
 - `FutureFeatures.vue`
-  - Sketches planned APIs (multi-select, grouping, floating positioning, async
-    filtering) in read-only form to communicate intent.
+  - Sketches still-pending APIs (SelectTag, grouping, floating positioning,
+    async filtering) in read-only form to communicate intent.
 
 If you add a new feature, add a matching example here with a short written
 explanation and a code snippet, even if the example is just a placeholder.

@@ -4,6 +4,7 @@ export interface UseA11yOptions {
   baseId: string
   isOpen: Ref<boolean>
   activeId: Ref<string | null>
+  multiple?: boolean
 }
 
 export interface OptionA11yInput {
@@ -21,7 +22,7 @@ export interface UseA11yReturn {
 }
 
 export function useA11y(options: UseA11yOptions): UseA11yReturn {
-  const { baseId, isOpen, activeId } = options
+  const { baseId, isOpen, activeId, multiple = false } = options
   const listboxId = `${baseId}-listbox`
 
   const getOptionId = (itemId: string) => `${baseId}-option-${itemId}`
@@ -41,6 +42,7 @@ export function useA11y(options: UseA11yOptions): UseA11yReturn {
   const listboxAttrs = computed(() => ({
     id: listboxId,
     role: 'listbox',
+    'aria-multiselectable': multiple || undefined,
   }))
 
   const getOptionAttrs = (input: OptionA11yInput) => ({

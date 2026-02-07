@@ -13,20 +13,18 @@
 
 const futureExamples = [
   {
-    title: 'Multi-select (planned)',
+    title: 'SelectTag component (planned 04-02)',
     description:
-      'Select multiple items and render tags. API shape is subject to change.',
-    code: `const values = ref<string[]>([])
-
-<SelectRoot v-model="values" multiple>
-  <SelectControl>
-    <SelectInput placeholder="Add fruits" />
-    <SelectTrigger>3 selected</SelectTrigger>
-  </SelectControl>
-  <SelectContent>
-    <SelectOption value="apple" label="Apple" />
-  </SelectContent>
-</SelectRoot>`,
+      'Multi-select state is live now; dedicated tag rendering/removal component lands next.',
+    code: `<SelectControl>
+  <SelectTag
+    v-for="item in selectedItems"
+    :key="item.id"
+    :value="item.id"
+    :label="item.label"
+  />
+  <SelectInput placeholder="Add teammates" />
+</SelectControl>`,
   },
   {
     title: 'Option groups (planned)',
