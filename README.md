@@ -54,6 +54,23 @@ const options = [
 </template>
 ```
 
+## Playground (Local)
+
+Run the local playground to explore the current API and planned features:
+
+```bash
+npm run playground
+```
+
+Or from inside the playground folder:
+
+```bash
+cd playground
+npm run dev
+```
+
+The playground lives in `playground/` and is intentionally **not** part of the published package.
+
 ## Core Components
 
 - `SelectRoot` — state provider (v-model, open/close, filtering)
