@@ -20,7 +20,11 @@ export const SelectClear = defineComponent({
         {
           type: 'button',
           onClick: () => {
-            ctx.value.value = null
+            if (ctx.multiple) {
+              ctx.value.value = []
+            } else {
+              ctx.value.value = null
+            }
             ctx.query.value = ''
           },
         },
