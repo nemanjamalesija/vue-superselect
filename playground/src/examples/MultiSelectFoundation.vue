@@ -6,6 +6,7 @@ import {
   SelectContent,
   SelectOption,
   SelectControl,
+  SelectTag,
   SelectTrigger,
   SelectEmpty,
   SelectLiveRegion,
@@ -19,9 +20,6 @@ import {
  * - Demonstrates toggle behavior (click again to deselect).
  * - Confirms listbox stays open and query clears between picks.
  *
- * Note:
- * - Tag components land in Phase 04-02. This example uses a manual selected
- *   preview so array behavior is still visible today.
  */
 
 type TeammateOption = {
@@ -44,16 +42,8 @@ const selectedLabel = computed(() =>
   values.value.length === 0 ? 'Pick teammates' : `${values.value.length} selected`,
 )
 
-const selectedTeammates = computed(() =>
-  options.filter((option) => values.value.some((id) => Object.is(id, option.id))),
-)
-
 const clearAll = () => {
   values.value = []
-}
-
-const removeSelected = (id: string) => {
-  values.value = values.value.filter((value) => !Object.is(value, id))
 }
 </script>
 
@@ -73,8 +63,17 @@ const removeSelected = (id: string) => {
       v-model:open="open"
       multiple
     >
-      <SelectControl class="control">
-        <SelectInput class="input" placeholder="Search teammates" />
+      <SelectControl v-slot="{ selectedItems, removeItem }" class="control control-with-tags">
+        <SelectTag
+          v-for="item in selectedItems"
+          :key="String(item.value)"
+          :value="item.value"
+          :label="item.label"
+          class="inline-tag"
+          @remove="removeItem"
+        />
+
+        <SelectInput class="input input-inline" placeholder="Search teammates" />
         <SelectTrigger class="trigger">{{ selectedLabel }}</SelectTrigger>
         <button
           v-if="values.length > 0"
@@ -109,19 +108,7 @@ const removeSelected = (id: string) => {
       <SelectLiveRegion />
     </SelectRoot>
 
-    <div v-if="selectedTeammates.length > 0" class="chip-row">
-      <button
-        v-for="member in selectedTeammates"
-        :key="member.id"
-        type="button"
-        class="chip-remove"
-        @click="removeSelected(member.id)"
-      >
-        {{ member.label }} ×
-      </button>
-    </div>
-
-    <p v-else class="note">No teammates selected yet.</p>
+    <p class="note">Tags are rendered in-control using SelectControl scoped slot data.</p>
 
     <div class="meta">
       <div>Values: {{ JSON.stringify(values) }}</div>

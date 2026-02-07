@@ -1,14 +1,6 @@
 <script setup lang="ts">
-/**
- * Playground shell:
- * - Keeps example composition in one place.
- * - Lets you scan multiple scenarios quickly.
- */
-import BasicSingleSelect from './examples/BasicSingleSelect.vue'
-import MultiSelectFoundation from './examples/MultiSelectFoundation.vue'
-import ProgrammaticControl from './examples/ProgrammaticControl.vue'
-import DataAttributesDemo from './examples/DataAttributesDemo.vue'
-import FutureFeatures from './examples/FutureFeatures.vue'
+import { RouterLink, RouterView } from 'vue-router'
+import { playgroundNavSections } from './router'
 </script>
 
 <template>
@@ -17,19 +9,34 @@ import FutureFeatures from './examples/FutureFeatures.vue'
       <p class="eyebrow">Playground</p>
       <h1>Vue Superselect in motion</h1>
       <p>
-        This local playground lets you explore the current headless select
-        components and see how upcoming features might be shaped. Everything here
-        runs against the source in this repo, so it stays in sync as we build.
+        This local playground is organized as routed, docs-style sections. Each
+        route demonstrates a focused capability that maps directly to planned docs.
       </p>
     </section>
 
-    <section class="grid">
-      <BasicSingleSelect />
-      <MultiSelectFoundation />
-      <ProgrammaticControl />
-      <DataAttributesDemo />
-    </section>
+    <section class="docs-shell">
+      <aside class="docs-nav">
+        <section
+          v-for="section in playgroundNavSections"
+          :key="section.title"
+          class="nav-section"
+        >
+          <h2 class="nav-title">{{ section.title }}</h2>
+          <RouterLink
+            v-for="item in section.items"
+            :key="item.to"
+            :to="item.to"
+            class="nav-link"
+          >
+            <strong>{{ item.label }}</strong>
+            <span>{{ item.summary }}</span>
+          </RouterLink>
+        </section>
+      </aside>
 
-    <FutureFeatures />
+      <section class="docs-content">
+        <RouterView />
+      </section>
+    </section>
   </main>
 </template>
