@@ -28,11 +28,16 @@
   },
   "scripts": {
     "build": "vite build",
+    "playground": "vite --config playground/vite.config.ts",
     "test": "vitest",
     "test:run": "vitest run",
     "lint": "eslint src/",
+    "lint:all": "eslint .",
     "format": "prettier --write src/",
-    "type-check": "vue-tsc --build"
+    "type-check": "vue-tsc --build",
+    "pack:dry-run": "npm_config_cache=.npm-cache npm pack --dry-run",
+    "release:check": "npm run lint:all && npm run type-check && npm run test:run && npm run build && npm run pack:dry-run",
+    "prepublishOnly": "npm run release:check"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.4",

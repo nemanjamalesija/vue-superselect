@@ -1,8 +1,8 @@
-import { ref, watch, type Ref } from 'vue'
-import { useCollection, type CollectionItem } from './useCollection'
-import { useFilter, type FilterFn } from './useFilter'
-import { useKeyboard } from './useKeyboard'
-import { useA11y } from './useA11y'
+import { ref, shallowRef, watch, type Ref } from 'vue'
+import { useCollection, type CollectionItem, type UseCollectionReturn } from './useCollection'
+import { useFilter, type FilterFn, type UseFilterReturn } from './useFilter'
+import { useKeyboard, type UseKeyboardReturn } from './useKeyboard'
+import { useA11y, type UseA11yReturn } from './useA11y'
 import { useControllable } from '../utils/useControllable'
 
 export interface UseSelectStateOptions<T> {
@@ -18,7 +18,21 @@ export interface UseSelectStateOptions<T> {
   baseId: string
 }
 
-export function useSelectState<T>(options: UseSelectStateOptions<T>) {
+export interface UseSelectStateReturn<T> {
+  value: Ref<T | null>
+  isOpen: Ref<boolean>
+  query: Ref<string>
+  collection: UseCollectionReturn<T>
+  filterState: UseFilterReturn<T>
+  keyboard: UseKeyboardReturn
+  a11y: UseA11yReturn
+  selectItem: (item: CollectionItem<T>) => void
+  open: () => void
+  close: () => void
+  toggle: () => void
+}
+
+export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectStateReturn<T> {
   const {
     value: valueProp,
     defaultValue = null,
@@ -33,7 +47,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>) {
   } = options
 
   const value = useControllable<T | null>({
-    prop: valueProp ?? ref<T | null | undefined>(undefined),
+    prop: valueProp ?? shallowRef<T | null | undefined>(undefined),
     defaultValue,
     onChange: onValueChange,
   })
