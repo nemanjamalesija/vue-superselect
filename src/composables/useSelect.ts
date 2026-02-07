@@ -5,8 +5,7 @@ import { useId } from '../utils/useId'
 import type { CollectionItem } from './useCollection'
 import type { SelectDataAttributes } from '../components/select/selectTypes'
 
-export interface UseSelectOptions<T>
-  extends Omit<UseSelectStateOptions<T>, 'baseId'> {
+export interface UseSelectOptions<T> extends Omit<UseSelectStateOptions<T>, 'baseId'> {
   id?: string
 }
 
@@ -91,10 +90,7 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
   const getListboxProps = (userProps: Record<string, unknown> = {}) =>
     mergeProps(a11y.listboxAttrs.value, userProps)
 
-  const getOptionProps = (
-    item: CollectionItem<T>,
-    userProps: Record<string, unknown> = {},
-  ) => {
+  const getOptionProps = (item: CollectionItem<T>, userProps: Record<string, unknown> = {}) => {
     const isSelected = value.value !== null && Object.is(value.value, item.value)
     const isHighlighted = keyboard.activeId.value === item.id
     const dataAttrs: SelectDataAttributes = {
