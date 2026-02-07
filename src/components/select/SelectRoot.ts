@@ -6,9 +6,12 @@ import { provideSelectContext } from './selectContext'
 export const SelectRoot = defineComponent({
   name: 'SelectRoot',
   props: {
+    // `modelValue` must remain optional with no default so omitted prop stays `undefined`.
+    // This preserves uncontrolled behavior and correct v-model typing in templates.
+    // eslint-disable-next-line vue/require-default-prop
     modelValue: {
       type: null as unknown as PropType<unknown | null>,
-      default: undefined,
+      required: false,
     },
     defaultValue: {
       type: null as unknown as PropType<unknown | null>,
@@ -39,7 +42,16 @@ export const SelectRoot = defineComponent({
       default: undefined,
     },
   },
-  emits: ['update:modelValue', 'update:open'],
+  emits: {
+    'update:modelValue': (value: unknown | null) => {
+      void value
+      return true
+    },
+    'update:open': (open: boolean) => {
+      void open
+      return true
+    },
+  },
   setup(props, { emit, slots, expose }) {
     const api = useSelect({
       id: props.id,
