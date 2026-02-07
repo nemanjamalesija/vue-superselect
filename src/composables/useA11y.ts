@@ -12,7 +12,7 @@ export interface OptionA11yInput {
   disabled: boolean
 }
 
-interface UseA11yReturn {
+export interface UseA11yReturn {
   listboxId: string
   getOptionId: (itemId: string) => string
   comboboxAttrs: Ref<Record<string, unknown>>

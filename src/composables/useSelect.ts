@@ -17,7 +17,7 @@ export interface UseSelectReturn<T> {
     item: CollectionItem<T>,
     userProps?: Record<string, unknown>,
   ) => Record<string, unknown>
-  items: Readonly<Ref<CollectionItem<T>[]>>
+  items: Readonly<Ref<readonly CollectionItem<T>[]>>
   orderedItems: Ref<CollectionItem<T>[]>
   filteredItems: Ref<CollectionItem<T>[]>
   activeId: Ref<string | null>

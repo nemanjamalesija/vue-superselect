@@ -1,4 +1,4 @@
-import { computed, readonly, ref, type Ref } from 'vue'
+import { computed, shallowRef, type Ref } from 'vue'
 
 export interface CollectionItem<T = unknown> {
   id: string
@@ -8,9 +8,9 @@ export interface CollectionItem<T = unknown> {
   element?: HTMLElement | null
 }
 
-interface UseCollectionReturn<T> {
-  items: Readonly<Ref<CollectionItem<T>[]>>
-  orderedItems: Ref<CollectionItem<T>[]>
+export interface UseCollectionReturn<T> {
+  items: Readonly<Ref<readonly CollectionItem<T>[]>>
+  orderedItems: Readonly<Ref<CollectionItem<T>[]>>
   registerItem: (item: CollectionItem<T>) => void
   unregisterItem: (id: string) => void
   updateItem: (id: string, patch: Partial<CollectionItem<T>>) => void
@@ -20,9 +20,9 @@ interface UseCollectionReturn<T> {
 const hasElement = <T>(item: CollectionItem<T>) => item.element != null
 
 export function useCollection<T = unknown>(): UseCollectionReturn<T> {
-  const items = ref<CollectionItem<T>[]>([])
+  const items = shallowRef<CollectionItem<T>[]>([])
 
-  const orderedItems = computed(() => {
+  const orderedItems = computed<CollectionItem<T>[]>(() => {
     const list = items.value
     if (list.length === 0) return []
     if (!list.every(hasElement)) return list
@@ -57,7 +57,10 @@ export function useCollection<T = unknown>(): UseCollectionReturn<T> {
     if (index === -1) return
 
     const next = [...items.value]
-    next[index] = { ...next[index], ...patch }
+    const current = next[index]
+    if (!current) return
+
+    next[index] = { ...current, ...patch }
     items.value = next
   }
 
@@ -66,7 +69,7 @@ export function useCollection<T = unknown>(): UseCollectionReturn<T> {
   }
 
   return {
-    items: readonly(items),
+    items: items as Readonly<Ref<readonly CollectionItem<T>[]>>,
     orderedItems,
     registerItem,
     unregisterItem,

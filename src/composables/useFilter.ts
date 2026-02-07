@@ -4,14 +4,14 @@ import type { CollectionItem } from './useCollection'
 export type FilterFn<T> = (item: CollectionItem<T>, query: string) => boolean
 
 export interface UseFilterOptions<T> {
-  items: Ref<CollectionItem<T>[]>
+  items: Readonly<Ref<CollectionItem<T>[]>>
   query: Ref<string>
   debounce?: number
   filter?: FilterFn<T>
 }
 
-interface UseFilterReturn<T> {
-  filteredItems: Ref<CollectionItem<T>[]>
+export interface UseFilterReturn<T> {
+  filteredItems: Readonly<Ref<CollectionItem<T>[]>>
   isComposing: Ref<boolean>
   onCompositionStart: () => void
   onCompositionEnd: () => void
