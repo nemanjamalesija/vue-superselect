@@ -36,4 +36,26 @@ describe('SelectClear', () => {
     expect(wrapper.find('[data-value]').text()).toBe('')
     expect((input.element as HTMLInputElement).value).toBe('')
   })
+
+  it('clears all selections to empty array in multi-select mode', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectClear },
+      setup() {
+        const value = ref<string[]>(['Apple', 'Banana'])
+        return { value }
+      },
+      template: `
+        <SelectRoot v-model="value" multiple id="select">
+          <SelectInput />
+          <SelectClear>Clear</SelectClear>
+          <div data-value>{{ JSON.stringify(value) }}</div>
+        </SelectRoot>
+      `,
+    }))
+
+    const clear = wrapper.find('button')
+    await clear.trigger('click')
+
+    expect(wrapper.find('[data-value]').text()).toBe('[]')
+  })
 })

@@ -37,6 +37,14 @@ export const SelectRoot = defineComponent({
       type: Number,
       default: undefined,
     },
+    /**
+     * Optional label resolver used when selected values are known but options
+     * are not currently mounted (e.g. closed content with preselected IDs).
+     */
+    resolveLabel: {
+      type: Function as PropType<(value: unknown) => string | undefined>,
+      default: undefined,
+    },
     loop: {
       type: Boolean,
       default: true,
@@ -78,6 +86,7 @@ export const SelectRoot = defineComponent({
       onOpenChange: (open) => emit('update:open', open),
       filter: props.filter,
       debounce: props.debounce,
+      resolveLabel: props.resolveLabel,
       loop: props.loop,
     })
 

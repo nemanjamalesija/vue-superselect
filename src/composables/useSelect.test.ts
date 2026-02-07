@@ -142,6 +142,16 @@ describe('useSelect', () => {
     expect(api.isOpen.value).toBe(false)
   })
 
+  it('exposes a resolveLabel helper from options', () => {
+    const wrapper = createWrapper<string>({
+      resolveLabel: (value) => (value === 'a' ? 'Apple' : undefined),
+    })
+    const api = wrapper.vm.api
+
+    expect(api.resolveLabel('a')).toBe('Apple')
+    expect(api.resolveLabel('b')).toBeUndefined()
+  })
+
   describe('multi-select mode', () => {
     it('initializes with an empty array when multiple is true', () => {
       const wrapper = createWrapper<string>({ multiple: true })

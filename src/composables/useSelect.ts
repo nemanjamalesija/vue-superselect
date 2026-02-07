@@ -5,8 +5,15 @@ import { useId } from '../utils/useId'
 import type { CollectionItem } from './useCollection'
 import type { SelectDataAttributes } from '../components/select/selectTypes'
 
+/**
+ * Resolves a user-facing label for a selected value when option metadata
+ * is not currently mounted (for example when list content is closed).
+ */
+export type SelectLabelResolver<T> = (value: T) => string | undefined
+
 export interface UseSelectOptions<T> extends Omit<UseSelectStateOptions<T>, 'baseId'> {
   id?: string
+  resolveLabel?: SelectLabelResolver<T>
 }
 
 export interface UseSelectReturn<T> {
@@ -33,13 +40,15 @@ export interface UseSelectReturn<T> {
   registerItem: (item: CollectionItem<T>) => void
   unregisterItem: (id: string) => void
   updateItem: (id: string, patch: Partial<CollectionItem<T>>) => void
+  resolveLabel: (value: unknown) => string | undefined
 }
 
 export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn<T> {
-  const baseId = options.id ?? useId()
+  const { id, resolveLabel: resolveLabelProp, ...stateOptions } = options
+  const baseId = id ?? useId()
 
   const state = useSelectState<T>({
-    ...options,
+    ...stateOptions,
     baseId,
   })
 
@@ -93,6 +102,8 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
 
   const getListboxProps = (userProps: Record<string, unknown> = {}) =>
     mergeProps(a11y.listboxAttrs.value, userProps)
+
+  const resolveLabel = (value: unknown) => resolveLabelProp?.(value as T)
 
   const getOptionProps = (item: CollectionItem<T>, userProps: Record<string, unknown> = {}) => {
     const isSelectedValue = isSelected(item)
@@ -150,5 +161,6 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     registerItem: collection.registerItem,
     unregisterItem: collection.unregisterItem,
     updateItem: collection.updateItem,
+    resolveLabel,
   }
 }
