@@ -1,5 +1,7 @@
 node_modules/
 dist/
+playground/dist/
+playground/.vite/
 *.local
 .DS_Store
 *.tsbuildinfo
