@@ -5,27 +5,32 @@ import { useKeyboard, type UseKeyboardReturn } from './useKeyboard'
 import { useA11y, type UseA11yReturn } from './useA11y'
 import { useControllable } from '../utils/useControllable'
 
+export type SelectValue<T> = T | T[] | null
+
 export interface UseSelectStateOptions<T> {
-  value?: Ref<T | null | undefined>
-  defaultValue?: T | null
-  onValueChange?: (value: T | null) => void
+  value?: Ref<SelectValue<T> | undefined>
+  defaultValue?: SelectValue<T>
+  onValueChange?: (value: SelectValue<T>) => void
   open?: Ref<boolean | undefined>
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   filter?: FilterFn<T>
   debounce?: number
   loop?: boolean
+  multiple?: boolean
   baseId: string
 }
 
 export interface UseSelectStateReturn<T> {
-  value: Ref<T | null>
+  value: Ref<SelectValue<T>>
   isOpen: Ref<boolean>
   query: Ref<string>
   collection: UseCollectionReturn<T>
   filterState: UseFilterReturn<T>
   keyboard: UseKeyboardReturn
   a11y: UseA11yReturn
+  multiple: boolean
+  isSelected: (item: CollectionItem<T>) => boolean
   selectItem: (item: CollectionItem<T>) => void
   open: () => void
   close: () => void
@@ -43,12 +48,21 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     filter,
     debounce,
     loop,
+    multiple = false,
     baseId,
   } = options
 
-  const value = useControllable<T | null>({
-    prop: valueProp ?? shallowRef<T | null | undefined>(undefined),
-    defaultValue,
+  if (__DEV__ && multiple && defaultValue !== null && defaultValue !== undefined && !Array.isArray(defaultValue)) {
+    console.warn('[useSelectState] When multiple is true, defaultValue should be an array')
+  }
+
+  const resolvedDefaultValue: SelectValue<T> = multiple
+    ? Array.isArray(defaultValue) ? defaultValue : []
+    : Array.isArray(defaultValue) ? null : defaultValue
+
+  const value = useControllable<SelectValue<T>>({
+    prop: valueProp ?? shallowRef<SelectValue<T> | undefined>(undefined),
+    defaultValue: resolvedDefaultValue,
     onChange: onValueChange,
   })
 
@@ -69,9 +83,31 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
   })
 
   const selectItem = (item: CollectionItem<T>) => {
+    if (multiple) {
+      const selectedValues = Array.isArray(value.value) ? value.value : []
+      const selectedIndex = selectedValues.findIndex((entry) => Object.is(entry, item.value))
+
+      value.value =
+        selectedIndex === -1
+          ? [...selectedValues, item.value]
+          : selectedValues.filter((_, index) => index !== selectedIndex)
+
+      query.value = ''
+      return
+    }
+
     value.value = item.value
     query.value = item.label
     isOpen.value = false
+  }
+
+  const isSelected = (item: CollectionItem<T>) => {
+    if (multiple) {
+      const selectedValues = Array.isArray(value.value) ? value.value : []
+      return selectedValues.some((entry) => Object.is(entry, item.value))
+    }
+
+    return value.value !== null && !Array.isArray(value.value) && Object.is(value.value, item.value)
   }
 
   const keyboard = useKeyboard({
@@ -91,6 +127,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     baseId,
     isOpen,
     activeId: keyboard.activeId,
+    multiple,
   })
 
   const open = () => {
@@ -113,6 +150,8 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     filterState,
     keyboard,
     a11y,
+    multiple,
+    isSelected,
     selectItem,
     open,
     close,

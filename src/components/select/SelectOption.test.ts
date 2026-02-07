@@ -154,6 +154,52 @@ describe('SelectOption', () => {
     expect(wrapper.find('[data-open]').text()).toBe('false')
   })
 
+  it('keeps input focus after mouse selection in multi-select mode', async () => {
+    const wrapper = mount(
+      defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string[]>([])
+          const open = ref(false)
+          return { value, open, options }
+        },
+        template: `
+          <SelectRoot v-model="value" v-model:open="open" multiple id="select">
+            <SelectInput />
+            <SelectContent>
+              <SelectOption
+                v-for="opt in options"
+                :key="opt.id"
+                :id="opt.id"
+                :value="opt.value"
+                :label="opt.label"
+                as="button"
+              />
+            </SelectContent>
+            <div data-open>{{ open }}</div>
+          </SelectRoot>
+        `,
+      }),
+      { attachTo: document.body },
+    )
+
+    const input = wrapper.find('input')
+    await input.setValue('')
+    ;(input.element as HTMLInputElement).focus()
+    expect(document.activeElement).toBe(input.element)
+
+    const option = wrapper.find('button[role="option"]')
+    await option.trigger('mousedown')
+    await option.trigger('click')
+
+    expect(document.activeElement).toBe(input.element)
+
+    await input.trigger('keydown', { key: 'Escape' })
+    expect(wrapper.find('[data-open]').text()).toBe('false')
+
+    wrapper.unmount()
+  })
+
   it('warns in dev mode when label and slot are missing', async () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 

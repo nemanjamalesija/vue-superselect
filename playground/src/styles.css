@@ -229,6 +229,27 @@ h3 {
   gap: 18px;
 }
 
+.chip-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip-remove {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.chip-remove:hover {
+  border-color: var(--accent);
+}
+
 @media (max-width: 720px) {
   .control {
     grid-template-columns: 1fr;

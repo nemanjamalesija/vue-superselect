@@ -5,6 +5,7 @@
  * - Lets you scan multiple scenarios quickly.
  */
 import BasicSingleSelect from './examples/BasicSingleSelect.vue'
+import MultiSelectFoundation from './examples/MultiSelectFoundation.vue'
 import ProgrammaticControl from './examples/ProgrammaticControl.vue'
 import DataAttributesDemo from './examples/DataAttributesDemo.vue'
 import FutureFeatures from './examples/FutureFeatures.vue'
@@ -24,6 +25,7 @@ import FutureFeatures from './examples/FutureFeatures.vue'
 
     <section class="grid">
       <BasicSingleSelect />
+      <MultiSelectFoundation />
       <ProgrammaticControl />
       <DataAttributesDemo />
     </section>
