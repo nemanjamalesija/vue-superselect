@@ -10,7 +10,7 @@ export interface UseSelectOptions<T>
   id?: string
 }
 
-interface UseSelectReturn<T> {
+export interface UseSelectReturn<T> {
   getRootProps: (userProps?: Record<string, unknown>) => Record<string, unknown>
   getInputProps: (userProps?: Record<string, unknown>) => Record<string, unknown>
   getListboxProps: (userProps?: Record<string, unknown>) => Record<string, unknown>
