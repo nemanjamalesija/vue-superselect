@@ -1,4 +1,4 @@
-import { ref, shallowRef, watch, type Ref } from 'vue'
+import { computed, isRef, ref, shallowRef, watch, type Ref } from 'vue'
 import { useCollection, type CollectionItem, type UseCollectionReturn } from './useCollection'
 import { useFilter, type FilterFn, type UseFilterReturn } from './useFilter'
 import { useKeyboard, type UseKeyboardReturn } from './useKeyboard'
@@ -18,6 +18,8 @@ export interface UseSelectStateOptions<T> {
   debounce?: number
   loop?: boolean
   multiple?: boolean
+  max?: number | Ref<number | undefined>
+  hideSelected?: boolean | Ref<boolean>
   baseId: string
 }
 
@@ -27,9 +29,11 @@ export interface UseSelectStateReturn<T> {
   query: Ref<string>
   collection: UseCollectionReturn<T>
   filterState: UseFilterReturn<T>
+  visibleItems: Ref<CollectionItem<T>[]>
   keyboard: UseKeyboardReturn
   a11y: UseA11yReturn
   multiple: boolean
+  isAtMax: Ref<boolean>
   isSelected: (item: CollectionItem<T>) => boolean
   selectItem: (item: CollectionItem<T>) => void
   removeLast: () => void
@@ -50,8 +54,13 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     debounce,
     loop,
     multiple = false,
+    max,
+    hideSelected = false,
     baseId,
   } = options
+
+  const getMax = () => (isRef(max) ? max.value : max)
+  const getHideSelected = () => (isRef(hideSelected) ? hideSelected.value : hideSelected)
 
   if (__DEV__ && multiple && defaultValue !== null && defaultValue !== undefined && !Array.isArray(defaultValue)) {
     console.warn('[useSelectState] When multiple is true, defaultValue should be an array')
@@ -83,10 +92,29 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     filter,
   })
 
+  const isAtMax = computed(() => {
+    const maxValue = getMax()
+    if (!multiple || maxValue === undefined || !Array.isArray(value.value)) return false
+    return value.value.length >= maxValue
+  })
+
+  const visibleItems = computed(() => {
+    if (!multiple || !getHideSelected()) {
+      return filterState.filteredItems.value
+    }
+
+    const selectedValues = Array.isArray(value.value) ? value.value : []
+    return filterState.filteredItems.value.filter((item) =>
+      !selectedValues.some((selected) => Object.is(selected, item.value)),
+    )
+  })
+
   const selectItem = (item: CollectionItem<T>) => {
     if (multiple) {
       const selectedValues = Array.isArray(value.value) ? value.value : []
       const selectedIndex = selectedValues.findIndex((entry) => Object.is(entry, item.value))
+
+      if (selectedIndex === -1 && isAtMax.value) return
 
       value.value =
         selectedIndex === -1
@@ -118,7 +146,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
   }
 
   const keyboard = useKeyboard({
-    items: filterState.filteredItems,
+    items: visibleItems,
     loop,
     onSelect: selectItem,
     onEscape: () => {
@@ -127,7 +155,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     onRemoveLast: multiple ? removeLast : undefined,
   })
 
-  watch(filterState.filteredItems, () => {
+  watch(visibleItems, () => {
     if (isOpen.value) keyboard.moveFirst()
   })
 
@@ -156,9 +184,11 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     query,
     collection,
     filterState,
+    visibleItems,
     keyboard,
     a11y,
     multiple,
+    isAtMax,
     isSelected,
     selectItem,
     removeLast,

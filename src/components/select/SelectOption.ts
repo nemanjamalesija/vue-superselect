@@ -79,9 +79,7 @@ export const SelectOption = defineComponent({
       ctx.unregisterItem(optionId)
     })
 
-    const isVisible = computed(() =>
-      ctx.filteredItems.value.some((item) => item.id === optionId)
-    )
+    const isVisible = computed(() => ctx.visibleItems.value.some((item) => item.id === optionId))
 
     return () => {
       if (!isVisible.value) return null

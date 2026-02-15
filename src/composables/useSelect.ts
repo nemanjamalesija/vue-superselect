@@ -27,12 +27,14 @@ export interface UseSelectReturn<T> {
   items: Readonly<Ref<readonly CollectionItem<T>[]>>
   orderedItems: Ref<CollectionItem<T>[]>
   filteredItems: Ref<CollectionItem<T>[]>
+  visibleItems: Ref<CollectionItem<T>[]>
   activeId: Ref<string | null>
   activeIndex: Ref<number>
   value: Ref<SelectValue<T>>
   isOpen: Ref<boolean>
   query: Ref<string>
   multiple: boolean
+  isAtMax: Ref<boolean>
   isSelected: (item: CollectionItem<T>) => boolean
   open: () => void
   close: () => void
@@ -58,9 +60,11 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     query,
     collection,
     filterState,
+    visibleItems,
     keyboard,
     a11y,
     multiple,
+    isAtMax,
     isSelected,
     selectItem,
     open,
@@ -107,18 +111,20 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
 
   const getOptionProps = (item: CollectionItem<T>, userProps: Record<string, unknown> = {}) => {
     const isSelectedValue = isSelected(item)
+    const disabledByMax = isAtMax.value && !isSelectedValue
+    const disabled = item.disabled || disabledByMax
     const isHighlighted = keyboard.activeId.value === item.id
     const dataAttrs: SelectDataAttributes = {
       'data-selected': String(isSelectedValue) as 'true' | 'false',
       'data-highlighted': String(isHighlighted) as 'true' | 'false',
-      'data-disabled': String(item.disabled) as 'true' | 'false',
+      'data-disabled': String(disabled) as 'true' | 'false',
     }
 
     const internal = mergeProps(
       a11y.getOptionAttrs({
         id: item.id,
         selected: isSelectedValue,
-        disabled: item.disabled,
+        disabled,
       }),
       {
         onMousedown: (event: Event) => {
@@ -126,10 +132,10 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
           mouseEvent.preventDefault?.()
         },
         onMousemove: () => {
-          if (!item.disabled) keyboard.setActiveById(item.id)
+          if (!disabled) keyboard.setActiveById(item.id)
         },
         onClick: () => {
-          if (item.disabled) return
+          if (disabled) return
           selectItem(item)
           keyboard.setActiveById(item.id)
         },
@@ -148,12 +154,14 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     items: collection.items,
     orderedItems: collection.orderedItems,
     filteredItems: filterState.filteredItems,
+    visibleItems,
     activeId: keyboard.activeId,
     activeIndex: keyboard.activeIndex,
     value,
     isOpen,
     query,
     multiple,
+    isAtMax,
     isSelected,
     open,
     close,
