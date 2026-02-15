@@ -5,6 +5,7 @@ import CustomFilterDebouncePage from './pages/CustomFilterDebouncePage.vue'
 import LoopBehaviorPage from './pages/LoopBehaviorPage.vue'
 import ProgrammaticControlPage from './pages/ProgrammaticControlPage.vue'
 import MultiFoundationPage from './pages/MultiFoundationPage.vue'
+import MultiAllFeaturesPage from './pages/MultiAllFeaturesPage.vue'
 import ClearSemanticsPage from './pages/ClearSemanticsPage.vue'
 import TagSlotOverridePage from './pages/TagSlotOverridePage.vue'
 import ResolveLabelPage from './pages/ResolveLabelPage.vue'
@@ -58,6 +59,11 @@ export const playgroundNavSections: PlaygroundNavSection[] = [
   {
     title: 'Multi Select',
     items: [
+      {
+        to: '/multi-all-features',
+        label: 'All Features',
+        summary: 'Tags, Backspace remove, clear-all, max, and hideSelected.',
+      },
       {
         to: '/multi-foundation',
         label: 'Tag Foundation',
@@ -119,6 +125,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/uncontrolled-defaults', component: UncontrolledDefaultsPage },
   { path: '/custom-filter-debounce', component: CustomFilterDebouncePage },
   { path: '/loop-disabled', component: LoopBehaviorPage },
+  { path: '/multi-all-features', component: MultiAllFeaturesPage },
   { path: '/multi-foundation', component: MultiFoundationPage },
   { path: '/caret-only-input', component: CaretOnlyPage },
   { path: '/clear-semantics', component: ClearSemanticsPage },

@@ -13,14 +13,14 @@
 
 const futureExamples = [
   {
-    title: 'Max selections + hideSelected (planned 04-04)',
+    title: 'Outside click dismiss (planned 06-02)',
     description:
-      'Limit multi-select count and optionally hide already-selected options.',
-    code: `<SelectRoot multiple :max="3" :hideSelected="true">
-  <SelectInput placeholder="Pick up to 3" />
-  <SelectContent>
-    <SelectOption value="alpha" label="Alpha" />
-  </SelectContent>
+      'Close dropdown when pointer/focus leaves while preserving current selection.',
+    code: `<SelectRoot v-model="value" dismissOnOutsideInteraction>
+  <SelectControl>
+    <SelectInput />
+  </SelectControl>
+  <SelectContent />
 </SelectRoot>`,
   },
   {
