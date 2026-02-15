@@ -32,6 +32,7 @@ export interface UseSelectStateReturn<T> {
   multiple: boolean
   isSelected: (item: CollectionItem<T>) => boolean
   selectItem: (item: CollectionItem<T>) => void
+  removeLast: () => void
   open: () => void
   close: () => void
   toggle: () => void
@@ -110,6 +111,12 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     return value.value !== null && !Array.isArray(value.value) && Object.is(value.value, item.value)
   }
 
+  const removeLast = () => {
+    if (!multiple || query.value !== '') return
+    if (!Array.isArray(value.value) || value.value.length === 0) return
+    value.value = value.value.slice(0, -1)
+  }
+
   const keyboard = useKeyboard({
     items: filterState.filteredItems,
     loop,
@@ -117,6 +124,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     onEscape: () => {
       isOpen.value = false
     },
+    onRemoveLast: multiple ? removeLast : undefined,
   })
 
   watch(filterState.filteredItems, () => {
@@ -153,6 +161,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     multiple,
     isSelected,
     selectItem,
+    removeLast,
     open,
     close,
     toggle,

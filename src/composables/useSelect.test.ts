@@ -234,5 +234,48 @@ describe('useSelect', () => {
       expect(api.query.value).toBe('Date')
       expect(api.isOpen.value).toBe(false)
     })
+
+    describe('Backspace removal', () => {
+      it('removes last selected item when Backspace is pressed with empty query', () => {
+        const wrapper = createWrapper<string>({
+          multiple: true,
+          defaultValue: ['Apple', 'Banana'],
+        })
+        const api = wrapper.vm.api
+
+        api.query.value = ''
+        const inputProps = api.getInputProps()
+        const event = { key: 'Backspace', preventDefault: vi.fn() }
+        invoke(inputProps.onKeydown, event)
+
+        expect(api.value.value).toEqual(['Apple'])
+        expect(event.preventDefault).not.toHaveBeenCalled()
+      })
+
+      it('does not remove selected items when query has text', () => {
+        const wrapper = createWrapper<string>({
+          multiple: true,
+          defaultValue: ['Apple', 'Banana'],
+        })
+        const api = wrapper.vm.api
+
+        api.query.value = 'ap'
+        const inputProps = api.getInputProps()
+        invoke(inputProps.onKeydown, { key: 'Backspace', preventDefault: vi.fn() })
+
+        expect(api.value.value).toEqual(['Apple', 'Banana'])
+      })
+
+      it('has no Backspace side effect in single-select mode', () => {
+        const wrapper = createWrapper<string>({ defaultValue: 'Apple' })
+        const api = wrapper.vm.api
+
+        api.query.value = ''
+        const inputProps = api.getInputProps()
+        invoke(inputProps.onKeydown, { key: 'Backspace', preventDefault: vi.fn() })
+
+        expect(api.value.value).toBe('Apple')
+      })
+    })
   })
 })

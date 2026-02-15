@@ -124,6 +124,42 @@ describe('useKeyboard', () => {
     expect(event.preventDefault).toHaveBeenCalledOnce()
   })
 
+  describe('Backspace handling', () => {
+    it('calls onRemoveLast when Backspace is pressed', () => {
+      const onRemoveLast = vi.fn()
+      const { onKeyDown } = useKeyboard({
+        items: ref([]),
+        onRemoveLast,
+      })
+
+      onKeyDown({ key: 'Backspace', preventDefault: vi.fn() })
+
+      expect(onRemoveLast).toHaveBeenCalledOnce()
+    })
+
+    it('does not throw when Backspace is pressed without callback', () => {
+      const { onKeyDown } = useKeyboard({
+        items: ref([]),
+      })
+
+      expect(() => {
+        onKeyDown({ key: 'Backspace', preventDefault: vi.fn() })
+      }).not.toThrow()
+    })
+
+    it('does not prevent default for Backspace', () => {
+      const preventDefault = vi.fn()
+      const { onKeyDown } = useKeyboard({
+        items: ref([]),
+        onRemoveLast: vi.fn(),
+      })
+
+      onKeyDown({ key: 'Backspace', preventDefault })
+
+      expect(preventDefault).not.toHaveBeenCalled()
+    })
+  })
+
   it('does not wrap when loop is false', () => {
     const items = createItems()
     const { activeId, onKeyDown } = useKeyboard({ items, loop: false })
