@@ -21,6 +21,14 @@ export const SelectRoot = defineComponent({
       type: Boolean,
       default: false,
     },
+    max: {
+      type: Number as PropType<number | undefined>,
+      default: undefined,
+    },
+    hideSelected: {
+      type: Boolean,
+      default: false,
+    },
     open: {
       type: Boolean as PropType<boolean | undefined>,
       default: undefined,
@@ -75,12 +83,22 @@ export const SelectRoot = defineComponent({
       console.warn('[SelectRoot] When `multiple` is true, v-model must be an array')
     }
 
+    if (__DEV__ && !props.multiple && props.max !== undefined) {
+      console.warn('[SelectRoot] `max` has no effect when `multiple` is false')
+    }
+
+    if (__DEV__ && !props.multiple && props.hideSelected) {
+      console.warn('[SelectRoot] `hideSelected` has no effect when `multiple` is false')
+    }
+
     const api = useSelect({
       id: props.id,
       value: toRef(props, 'modelValue'),
       defaultValue: props.defaultValue,
       onValueChange: (value) => emit('update:modelValue', value),
       multiple: props.multiple,
+      max: toRef(props, 'max'),
+      hideSelected: toRef(props, 'hideSelected'),
       open: toRef(props, 'open'),
       defaultOpen: props.defaultOpen,
       onOpenChange: (open) => emit('update:open', open),

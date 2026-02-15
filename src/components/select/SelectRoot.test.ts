@@ -134,6 +134,34 @@ describe('SelectRoot', () => {
     warnSpy.mockRestore()
   })
 
+  it('warns in dev when max is used in single-select mode', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    mount(SelectRoot, {
+      props: {
+        max: 2,
+      },
+    })
+
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('`max`'))
+
+    warnSpy.mockRestore()
+  })
+
+  it('warns in dev when hideSelected is used in single-select mode', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    mount(SelectRoot, {
+      props: {
+        hideSelected: true,
+      },
+    })
+
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('`hideSelected`'))
+
+    warnSpy.mockRestore()
+  })
+
   describe('Backspace removal', () => {
     it('removes the last selected value on Backspace when query is empty', async () => {
       const wrapper = mount(defineComponent({
@@ -174,6 +202,126 @@ describe('SelectRoot', () => {
       await input.trigger('keydown', { key: 'Backspace' })
 
       expect(wrapper.vm.value).toEqual(['Apple', 'Banana'])
+    })
+  })
+
+  describe('max and hideSelected', () => {
+    it('keeps options visible but disables unselected ones at max', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref(['Apple', 'Banana'])
+          const options = [
+            { id: 'a', value: 'Apple', label: 'Apple' },
+            { id: 'b', value: 'Banana', label: 'Banana' },
+            { id: 'c', value: 'Cherry', label: 'Cherry' },
+          ]
+          return { value, options }
+        },
+        template: `
+          <SelectRoot v-model="value" multiple :max="2" :defaultOpen="true" id="multi-select">
+            <SelectInput />
+            <SelectContent>
+              <SelectOption
+                v-for="opt in options"
+                :key="opt.id"
+                :id="opt.id"
+                :value="opt.value"
+                :label="opt.label"
+              />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+
+      const options = wrapper.findAll('[role="option"]')
+      expect(options).toHaveLength(3)
+
+      const optionCherry = wrapper.find('#multi-select-option-c')
+      expect(optionCherry.attributes('aria-disabled')).toBe('true')
+      expect(optionCherry.attributes('data-disabled')).toBe('true')
+
+      await optionCherry.trigger('click')
+      expect(wrapper.vm.value).toEqual(['Apple', 'Banana'])
+    })
+
+    it('hides selected options when hideSelected is true', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref(['Apple'])
+          const options = [
+            { id: 'a', value: 'Apple', label: 'Apple' },
+            { id: 'b', value: 'Banana', label: 'Banana' },
+          ]
+          return { value, options }
+        },
+        template: `
+          <SelectRoot v-model="value" multiple hideSelected :defaultOpen="true" id="multi-select">
+            <SelectInput />
+            <SelectContent>
+              <SelectOption
+                v-for="opt in options"
+                :key="opt.id"
+                :id="opt.id"
+                :value="opt.value"
+                :label="opt.label"
+              />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('#multi-select-option-a').exists()).toBe(false)
+      expect(wrapper.find('#multi-select-option-b').exists()).toBe(true)
+    })
+
+    it('reacts to hideSelected prop updates at runtime', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref(['Apple'])
+          const hideSelected = ref(false)
+          const options = [
+            { id: 'a', value: 'Apple', label: 'Apple' },
+            { id: 'b', value: 'Banana', label: 'Banana' },
+          ]
+          return { value, hideSelected, options }
+        },
+        template: `
+          <SelectRoot
+            v-model="value"
+            multiple
+            :hideSelected="hideSelected"
+            :defaultOpen="true"
+            id="multi-select"
+          >
+            <SelectInput />
+            <SelectContent>
+              <SelectOption
+                v-for="opt in options"
+                :key="opt.id"
+                :id="opt.id"
+                :value="opt.value"
+                :label="opt.label"
+              />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('#multi-select-option-a').exists()).toBe(true)
+
+      wrapper.vm.hideSelected = true
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('#multi-select-option-a').exists()).toBe(false)
+      expect(wrapper.find('#multi-select-option-b').exists()).toBe(true)
     })
   })
 })

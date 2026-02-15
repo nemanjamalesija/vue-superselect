@@ -27,6 +27,25 @@ const createWrapper = <T,>(options?: Parameters<typeof useSelect<T>>[0]) =>
   )
 
 describe('useSelect', () => {
+  const itemApple: CollectionItem<string> = {
+    id: 'a',
+    value: 'Apple',
+    label: 'Apple',
+    disabled: false,
+  }
+  const itemBanana: CollectionItem<string> = {
+    id: 'b',
+    value: 'Banana',
+    label: 'Banana',
+    disabled: false,
+  }
+  const itemCherry: CollectionItem<string> = {
+    id: 'c',
+    value: 'Cherry',
+    label: 'Cherry',
+    disabled: false,
+  }
+
   it('merges input handlers and updates query', () => {
     const wrapper = createWrapper<string>()
     const api = wrapper.vm.api
@@ -275,6 +294,84 @@ describe('useSelect', () => {
         invoke(inputProps.onKeydown, { key: 'Backspace', preventDefault: vi.fn() })
 
         expect(api.value.value).toBe('Apple')
+      })
+    })
+
+    describe('max selections', () => {
+      it('prevents selecting beyond max limit', () => {
+        const wrapper = createWrapper<string>({ multiple: true, max: 2 })
+        const api = wrapper.vm.api
+
+        invoke(api.getOptionProps(itemApple).onClick, {})
+        invoke(api.getOptionProps(itemBanana).onClick, {})
+        invoke(api.getOptionProps(itemCherry).onClick, {})
+
+        expect(api.value.value).toEqual(['Apple', 'Banana'])
+      })
+
+      it('allows deselecting selected items at max', () => {
+        const wrapper = createWrapper<string>({ multiple: true, max: 2 })
+        const api = wrapper.vm.api
+
+        invoke(api.getOptionProps(itemApple).onClick, {})
+        invoke(api.getOptionProps(itemBanana).onClick, {})
+        invoke(api.getOptionProps(itemApple).onClick, {})
+
+        expect(api.value.value).toEqual(['Banana'])
+        expect(api.isAtMax.value).toBe(false)
+      })
+
+      it('disables unselected options at max while keeping selected enabled', () => {
+        const wrapper = createWrapper<string>({ multiple: true, max: 2 })
+        const api = wrapper.vm.api
+
+        invoke(api.getOptionProps(itemApple).onClick, {})
+        invoke(api.getOptionProps(itemBanana).onClick, {})
+
+        const selectedProps = api.getOptionProps(itemApple)
+        const blockedProps = api.getOptionProps(itemCherry)
+
+        expect(api.isAtMax.value).toBe(true)
+        expect(selectedProps['aria-disabled']).toBeUndefined()
+        expect(selectedProps['data-disabled']).toBe('false')
+        expect(blockedProps['aria-disabled']).toBe(true)
+        expect(blockedProps['data-disabled']).toBe('true')
+      })
+    })
+
+    describe('hideSelected', () => {
+      it('filters selected options out of visibleItems when enabled', () => {
+        const wrapper = createWrapper<string>({ multiple: true, hideSelected: true })
+        const api = wrapper.vm.api
+
+        api.registerItem(itemApple)
+        api.registerItem(itemBanana)
+        api.registerItem(itemCherry)
+
+        api.value.value = ['Apple']
+
+        expect(api.visibleItems.value.map((item) => item.value)).toEqual(['Banana', 'Cherry'])
+      })
+
+      it('keeps selected options in visibleItems when disabled', () => {
+        const wrapper = createWrapper<string>({ multiple: true, hideSelected: false })
+        const api = wrapper.vm.api
+
+        api.registerItem(itemApple)
+        api.registerItem(itemBanana)
+        api.value.value = ['Apple']
+
+        expect(api.visibleItems.value.map((item) => item.value)).toEqual(['Apple', 'Banana'])
+      })
+
+      it('has no effect in single-select mode', () => {
+        const wrapper = createWrapper<string>({ hideSelected: true, defaultValue: 'Apple' })
+        const api = wrapper.vm.api
+
+        api.registerItem(itemApple)
+        api.registerItem(itemBanana)
+
+        expect(api.visibleItems.value.map((item) => item.value)).toEqual(['Apple', 'Banana'])
       })
     })
   })
