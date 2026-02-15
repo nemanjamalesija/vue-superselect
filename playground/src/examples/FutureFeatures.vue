@@ -13,14 +13,15 @@
 
 const futureExamples = [
   {
-    title: 'Backspace tag removal (planned 04-03)',
+    title: 'Max selections + hideSelected (planned 04-04)',
     description:
-      'Remove the last selected tag when search is empty and Backspace is pressed.',
-    code: `onKeydown(event) {
-  if (event.key === 'Backspace' && query === '' && selected.length > 0) {
-    removeLastSelected()
-  }
-}`,
+      'Limit multi-select count and optionally hide already-selected options.',
+    code: `<SelectRoot multiple :max="3" :hideSelected="true">
+  <SelectInput placeholder="Pick up to 3" />
+  <SelectContent>
+    <SelectOption value="alpha" label="Alpha" />
+  </SelectContent>
+</SelectRoot>`,
   },
   {
     title: 'Option groups (planned)',

@@ -13,12 +13,13 @@ import {
 } from 'vue-superselect'
 
 /**
- * Example: Multi-select state foundation (Phase 04-01).
+ * Example: Multi-select foundation with tag removal (Phase 04-03).
  *
  * Why this exists:
  * - Shows that `multiple` switches v-model to an array.
  * - Demonstrates toggle behavior (click again to deselect).
  * - Confirms listbox stays open and query clears between picks.
+ * - Confirms Backspace removes the last tag when search is empty.
  *
  */
 
@@ -53,7 +54,8 @@ const clearAll = () => {
       <h2>Multi-select foundation</h2>
       <p>
         `multiple` uses array v-model, keeps the list open after selection, and
-        lets users toggle options in place.
+        lets users toggle options in place. With an empty query, Backspace removes
+        the last selected tag.
       </p>
     </header>
 
@@ -108,7 +110,10 @@ const clearAll = () => {
       <SelectLiveRegion />
     </SelectRoot>
 
-    <p class="note">Tags are rendered in-control using SelectControl scoped slot data.</p>
+    <p class="note">
+      Tags are rendered in-control using SelectControl scoped slot data. Press
+      Backspace in an empty input to remove the last tag.
+    </p>
 
     <div class="meta">
       <div>Values: {{ JSON.stringify(values) }}</div>
