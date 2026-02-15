@@ -61,7 +61,7 @@ export const playgroundNavSections: PlaygroundNavSection[] = [
       {
         to: '/multi-foundation',
         label: 'Tag Foundation',
-        summary: 'Inline tags with SelectTag + scoped-slot selected items.',
+        summary: 'Inline tags with SelectTag, scoped-slot data, and Backspace remove.',
       },
       {
         to: '/caret-only-input',
