@@ -106,6 +106,7 @@ const values = ref<string[]>(['owner', 'editor'])
 }
 
 .custom-tag-label {
+  color: green;
   font-size: 0.82rem;
 }
 
@@ -118,6 +119,7 @@ const values = ref<string[]>(['owner', 'editor'])
   line-height: 1;
   padding: 2px 6px;
   cursor: pointer;
+  color: red;
 }
 
 .custom-tag-remove:hover {
