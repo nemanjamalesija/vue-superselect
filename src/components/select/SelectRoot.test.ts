@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { SelectRoot } from './SelectRoot'
 import { SelectContent } from './SelectContent'
 import { SelectOption } from './SelectOption'
+import { SelectInput } from './SelectInput'
 import { useSelectContext } from './selectContext'
 
 const ContextProbe = defineComponent({
@@ -131,5 +132,48 @@ describe('SelectRoot', () => {
     )
 
     warnSpy.mockRestore()
+  })
+
+  describe('Backspace removal', () => {
+    it('removes the last selected value on Backspace when query is empty', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput },
+        setup() {
+          const value = ref(['Apple', 'Banana', 'Cherry'])
+          return { value }
+        },
+        template: `
+          <SelectRoot v-model="value" multiple id="multi-select">
+            <SelectInput />
+          </SelectRoot>
+        `,
+      }))
+
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'Backspace' })
+
+      expect(wrapper.vm.value).toEqual(['Apple', 'Banana'])
+    })
+
+    it('does not remove selected values on Backspace when query has text', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput },
+        setup() {
+          const value = ref(['Apple', 'Banana'])
+          return { value }
+        },
+        template: `
+          <SelectRoot v-model="value" multiple id="multi-select">
+            <SelectInput />
+          </SelectRoot>
+        `,
+      }))
+
+      const input = wrapper.find('input')
+      await input.setValue('ba')
+      await input.trigger('keydown', { key: 'Backspace' })
+
+      expect(wrapper.vm.value).toEqual(['Apple', 'Banana'])
+    })
   })
 })
