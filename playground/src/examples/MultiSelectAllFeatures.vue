@@ -35,6 +35,8 @@ const options: Option[] = [
   { id: 'zr', label: 'Zoe Reid' },
   { id: 'md', label: 'Mila Diaz' },
 ]
+const labelById = new Map(options.map((option) => [option.id, option.label]))
+const resolveLabel = (value: unknown) => labelById.get(String(value))
 
 const values = ref<string[]>(['nm', 'tk'])
 const open = ref(false)
@@ -109,6 +111,7 @@ const resetDemo = () => {
         multiple
         :max="resolvedMax"
         :hideSelected="hideSelected"
+        :resolveLabel="resolveLabel"
       >
         <SelectDebug />
         <SelectControl v-slot="{ selectedItems, removeItem }" class="control control-with-tags">
