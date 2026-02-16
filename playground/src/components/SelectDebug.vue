@@ -353,6 +353,46 @@ watch(visibleCount, (val, oldVal) => {
   }
 })
 
+// isAtMax changes (multi-select)
+watch(
+  () => ctx.isAtMax.value,
+  (val, oldVal) => {
+    if (val === oldVal || !ctx.multiple) return
+    if (val) {
+      addLog('useSelectState', 'max reached', 'isAtMax = true')
+    } else {
+      addLog('useSelectState', 'below max', 'isAtMax = false')
+    }
+  },
+)
+
+// Item property updates (label, disabled, value changes on mounted options)
+const itemSnapshotMap = new Map<string, { label: string; disabled: boolean }>()
+
+watch(
+  () => ctx.orderedItems.value,
+  (items) => {
+    for (const item of items) {
+      const prev = itemSnapshotMap.get(item.id)
+      if (prev) {
+        if (prev.label !== item.label) {
+          addLog('SelectOption', 'updateItem', `${prev.label} → label changed to "${item.label}"`)
+        }
+        if (prev.disabled !== item.disabled) {
+          addLog('SelectOption', 'updateItem', `${item.label} → disabled = ${item.disabled}`)
+        }
+      }
+      itemSnapshotMap.set(item.id, { label: item.label, disabled: item.disabled })
+    }
+
+    // Clean up removed items
+    for (const id of itemSnapshotMap.keys()) {
+      if (!items.some((i) => i.id === id)) itemSnapshotMap.delete(id)
+    }
+  },
+  { deep: true },
+)
+
 // --- Pipeline ---
 
 const pipeline = computed(() => {
