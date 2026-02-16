@@ -24,7 +24,7 @@ body {
 }
 
 .page {
-  max-width: 1150px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 48px 24px 80px;
   display: grid;
@@ -69,7 +69,7 @@ h3 {
 
 .docs-shell {
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr);
+  grid-template-columns: 320px minmax(0, 1fr);
   gap: 32px;
   align-items: start;
 }
