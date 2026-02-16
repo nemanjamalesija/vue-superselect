@@ -29,3 +29,7 @@ export { SelectTrigger } from './components/select/SelectTrigger'
 export { SelectClear } from './components/select/SelectClear'
 export { SelectEmpty } from './components/select/SelectEmpty'
 export { SelectLiveRegion } from './components/select/SelectLiveRegion'
+
+// Context (for debug tooling)
+export { useSelectContext } from './components/select/selectContext'
+export type { SelectContextValue } from './components/select/selectContext'
