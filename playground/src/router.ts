@@ -1,18 +1,18 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
-import BasicSinglePage from './pages/BasicSinglePage.vue'
-import UncontrolledDefaultsPage from './pages/UncontrolledDefaultsPage.vue'
-import CustomFilterDebouncePage from './pages/CustomFilterDebouncePage.vue'
-import LoopBehaviorPage from './pages/LoopBehaviorPage.vue'
-import ProgrammaticControlPage from './pages/ProgrammaticControlPage.vue'
-import MultiFoundationPage from './pages/MultiFoundationPage.vue'
-import MultiAllFeaturesPage from './pages/MultiAllFeaturesPage.vue'
-import ClearSemanticsPage from './pages/ClearSemanticsPage.vue'
-import TagSlotOverridePage from './pages/TagSlotOverridePage.vue'
-import ResolveLabelPage from './pages/ResolveLabelPage.vue'
-import CaretOnlyPage from './pages/CaretOnlyPage.vue'
-import DataAttributesPage from './pages/DataAttributesPage.vue'
-import ScrollableContentPage from './pages/ScrollableContentPage.vue'
-import FutureFeaturesPage from './pages/FutureFeaturesPage.vue'
+import BasicSingleSelect from './examples/BasicSingleSelect.vue'
+import UncontrolledDefaultsDemo from './examples/UncontrolledDefaultsDemo.vue'
+import CustomFilterDebounceDemo from './examples/CustomFilterDebounceDemo.vue'
+import LoopBehaviorDemo from './examples/LoopBehaviorDemo.vue'
+import ProgrammaticControl from './examples/ProgrammaticControl.vue'
+import MultiSelectFoundation from './examples/MultiSelectFoundation.vue'
+import MultiSelectAllFeatures from './examples/MultiSelectAllFeatures.vue'
+import ClearSemanticsDemo from './examples/ClearSemanticsDemo.vue'
+import TagSlotOverrideDemo from './examples/TagSlotOverrideDemo.vue'
+import ResolveLabelPreselectedDemo from './examples/ResolveLabelPreselectedDemo.vue'
+import CaretOnlyInputTags from './examples/CaretOnlyInputTags.vue'
+import DataAttributesDemo from './examples/DataAttributesDemo.vue'
+import ScrollableContentDemo from './examples/ScrollableContentDemo.vue'
+import FutureFeatures from './examples/FutureFeatures.vue'
 
 export interface PlaygroundNavItem {
   to: string
@@ -120,20 +120,20 @@ export const playgroundNavSections: PlaygroundNavSection[] = [
 
 const routes: RouteRecordRaw[] = [
   { path: '/', redirect: '/basic-single' },
-  { path: '/basic-single', component: BasicSinglePage },
-  { path: '/programmatic-control', component: ProgrammaticControlPage },
-  { path: '/uncontrolled-defaults', component: UncontrolledDefaultsPage },
-  { path: '/custom-filter-debounce', component: CustomFilterDebouncePage },
-  { path: '/loop-disabled', component: LoopBehaviorPage },
-  { path: '/multi-all-features', component: MultiAllFeaturesPage },
-  { path: '/multi-foundation', component: MultiFoundationPage },
-  { path: '/caret-only-input', component: CaretOnlyPage },
-  { path: '/clear-semantics', component: ClearSemanticsPage },
-  { path: '/tag-slot-override', component: TagSlotOverridePage },
-  { path: '/resolve-label', component: ResolveLabelPage },
-  { path: '/data-attributes', component: DataAttributesPage },
-  { path: '/scrollable-content', component: ScrollableContentPage },
-  { path: '/future-features', component: FutureFeaturesPage },
+  { path: '/basic-single', component: BasicSingleSelect },
+  { path: '/programmatic-control', component: ProgrammaticControl },
+  { path: '/uncontrolled-defaults', component: UncontrolledDefaultsDemo },
+  { path: '/custom-filter-debounce', component: CustomFilterDebounceDemo },
+  { path: '/loop-disabled', component: LoopBehaviorDemo },
+  { path: '/multi-all-features', component: MultiSelectAllFeatures },
+  { path: '/multi-foundation', component: MultiSelectFoundation },
+  { path: '/caret-only-input', component: CaretOnlyInputTags },
+  { path: '/clear-semantics', component: ClearSemanticsDemo },
+  { path: '/tag-slot-override', component: TagSlotOverrideDemo },
+  { path: '/resolve-label', component: ResolveLabelPreselectedDemo },
+  { path: '/data-attributes', component: DataAttributesDemo },
+  { path: '/scrollable-content', component: ScrollableContentDemo },
+  { path: '/future-features', component: FutureFeatures },
   { path: '/:pathMatch(.*)*', redirect: '/basic-single' },
 ]
 
