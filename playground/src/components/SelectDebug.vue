@@ -251,9 +251,11 @@ watch(
   (val, oldVal) => {
     if (val && !oldVal) {
       addLog('SelectInput', 'open()', 'isOpen = true')
+      trackCause('isOpen', 'SelectContent rendered (isOpen → true)')
     } else if (!val && oldVal) {
       const cause = tickValueChanged ? 'selectItem closed dropdown' : 'Escape or blur'
       addLog('useKeyboard', 'close()', `isOpen = false  (${cause})`)
+      trackCause('isOpen', 'SelectContent unmounted children (isOpen → false)')
     }
 
     tickValueChanged = false
@@ -300,11 +302,15 @@ watch(
   (val, oldVal) => {
     if (val > oldVal) {
       const diff = val - oldVal
-      addLog('SelectOption', `registerItem ×${diff}`, `collection: ${oldVal} → ${val} items`)
+      const why = findCause('isOpen')
+      const annotation = why ? `  ← ${why}` : ''
+      addLog('SelectOption', `registerItem ×${diff}`, `collection: ${oldVal} → ${val} items${annotation}`)
       trackCause('collection', 'collection resized')
     } else if (val < oldVal) {
       const diff = oldVal - val
-      addLog('SelectOption', `unregisterItem ×${diff}`, `collection: ${oldVal} → ${val} items`)
+      const why = findCause('isOpen')
+      const annotation = why ? `  ← ${why}` : ''
+      addLog('SelectOption', `unregisterItem ×${diff}`, `collection: ${oldVal} → ${val} items${annotation}`)
       trackCause('collection', 'collection resized')
     }
   },
@@ -592,7 +598,6 @@ watch(visibleCount, () => flash('visible'))
               'log-consequence': entry.depth > 0,
             }"
           >
-            <span class="log-time">{{ entry.time }}</span>
             <span v-if="entry.depth > 0" class="log-arrow">↳</span>
             <span class="log-source">{{ entry.source }}</span>
             <span class="log-action">{{ entry.action }}</span>
