@@ -168,7 +168,9 @@ function addLog(source: string, action: string, detail: string) {
       source,
       action,
       detail,
-      trigger: (timestamp - lastInteractionTime < DIRECT_TRIGGER_WINDOW) ? lastInteraction : '',
+      trigger: (timestamp - lastInteractionTime < DIRECT_TRIGGER_WINDOW)
+        ? ((lastInteractionTime = 0), lastInteraction)
+        : '',
       depth,
       groupId: currentGroupId,
     },
@@ -650,6 +652,7 @@ watch(visibleCount, () => flash('visible'))
 <style scoped>
 .select-debug {
   margin-top: 12px;
+  margin-bottom: 16px;
   border: 1px solid #e0e7ff;
   border-radius: 8px;
   background: #f8f9ff;
@@ -790,10 +793,11 @@ watch(visibleCount, () => flash('visible'))
 
 /* Event log */
 .event-log {
-  max-height: 280px;
+  height: 260px;
   overflow-y: auto;
   display: grid;
   gap: 0;
+  align-content: start;
   border: 1px solid #e0e7ff;
   border-radius: 6px;
   background: #fff;
