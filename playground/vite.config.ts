@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueDevTools from 'vite-plugin-vue-devtools'
 import path from 'node:path'
 
 const repoRoot = path.resolve(__dirname, '..')
@@ -10,7 +11,7 @@ const rootVuePath = path.resolve(
 
 export default defineConfig({
   root: __dirname,
-  plugins: [vue()],
+  plugins: [vue(), vueDevTools()],
   resolve: {
     dedupe: ['vue'],
     alias: {

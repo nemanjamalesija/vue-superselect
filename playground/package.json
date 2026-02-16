@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "vite-plugin-vue-devtools": "^8.0.6",
     "vue-router": "^4.6.4"
   }
 }
