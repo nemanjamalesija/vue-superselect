@@ -11,6 +11,7 @@ import {
   SelectEmpty,
   SelectLiveRegion,
 } from 'vue-superselect'
+import SelectDebug from '../components/SelectDebug.vue'
 
 /**
  * Example: Basic single select with search.
@@ -66,6 +67,7 @@ const selectedLabel = computed(() => {
     </header>
 
     <SelectRoot id="playground-basic" v-model="value" v-model:open="open">
+      <SelectDebug />
       <SelectControl class="control">
         <SelectInput class="input" placeholder="Search fruits" />
         <SelectTrigger class="trigger">{{ selectedLabel }}</SelectTrigger>

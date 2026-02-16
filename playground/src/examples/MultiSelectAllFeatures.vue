@@ -12,6 +12,7 @@ import {
   SelectEmpty,
   SelectLiveRegion,
 } from 'vue-superselect'
+import SelectDebug from '../components/SelectDebug.vue'
 
 /**
  * Example: All currently supported multi-select capabilities.
@@ -109,6 +110,7 @@ const resetDemo = () => {
         :max="resolvedMax"
         :hideSelected="hideSelected"
       >
+        <SelectDebug />
         <SelectControl v-slot="{ selectedItems, removeItem }" class="control control-with-tags">
           <SelectTag
             v-for="item in selectedItems"

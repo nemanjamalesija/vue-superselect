@@ -48,7 +48,7 @@ const toAcronym = (label: string) =>
     .join('')
     .toLowerCase()
 
-const customFilter: FilterFn<string> = (item, query) => {
+const customFilter: FilterFn<unknown> = (item, query) => {
   const normalizedQuery = query.trim().toLowerCase()
   if (normalizedQuery === '') return true
 
