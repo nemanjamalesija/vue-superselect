@@ -37,10 +37,13 @@ const futureExamples = [
 </SelectContent>`,
   },
   {
-    title: 'Floating positioning (planned)',
+    title: 'Floating middleware customization (future)',
     description:
-      'Anchor the listbox to the trigger with auto-flip and collision handling.',
-    code: `<SelectContent position="floating" placement="bottom-start">
+      'Expose offset/flip/shift tuning once default Phase 5 behavior settles.',
+    code: `<SelectContent
+  placement="bottom-start"
+  :floating="{ offset: 8, shiftPadding: 12 }"
+>
   <SelectOption value="small" label="Small" />
 </SelectContent>`,
   },
