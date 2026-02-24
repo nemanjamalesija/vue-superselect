@@ -20,6 +20,9 @@ export interface UseSelectStateOptions<T> {
   multiple?: boolean
   max?: number | Ref<number | undefined>
   hideSelected?: boolean | Ref<boolean>
+  disabled?: Ref<boolean>
+  selectOnTab?: boolean
+  placeholder?: Ref<string | undefined>
   baseId: string
   items?: Ref<T[] | undefined> | T[]
   labelKey?: keyof T
@@ -37,6 +40,8 @@ export interface UseSelectStateReturn<T> {
   a11y: UseA11yReturn
   multiple: boolean
   isAtMax: Ref<boolean>
+  disabled: Ref<boolean>
+  placeholder: Ref<string | undefined>
   isSelected: (item: CollectionItem<T>) => boolean
   selectItem: (item: CollectionItem<T>) => void
   removeLast: () => void
@@ -62,10 +67,16 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     multiple = false,
     max,
     hideSelected = false,
+    disabled: disabledProp,
+    selectOnTab = false,
+    placeholder: placeholderProp,
     baseId,
     labelKey,
     valueKey,
   } = options
+
+  const disabled = disabledProp ?? ref(false)
+  const placeholder = placeholderProp ?? ref<string | undefined>(undefined)
 
   const getMax = () => (isRef(max) ? max.value : max)
   const getHideSelected = () => (isRef(hideSelected) ? hideSelected.value : hideSelected)
@@ -132,6 +143,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
   })
 
   const selectItem = (item: CollectionItem<T>) => {
+    if (disabled.value) return
     const extracted = getItemValue(item.value) as T
 
     if (multiple) {
@@ -174,9 +186,23 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
   const keyboard = useKeyboard({
     items: visibleItems,
     loop,
+    isOpen,
     onSelect: selectItem,
     onEscape: () => {
       isOpen.value = false
+    },
+    onEscapeSecond: () => {
+      query.value = ''
+    },
+    onTab: () => {
+      if (selectOnTab && isOpen.value) {
+        const activeIdx = keyboard.activeIndex.value
+        if (activeIdx !== -1) {
+          const item = visibleItems.value[activeIdx]
+          if (item) selectItem(item)
+        }
+      }
+      if (isOpen.value) close()
     },
     onRemoveLast: multiple ? removeLast : undefined,
   })
@@ -190,6 +216,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     isOpen,
     activeId: keyboard.activeId,
     multiple,
+    disabled,
   })
 
   const dismiss = () => {
@@ -212,6 +239,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
   }
 
   const open = () => {
+    if (disabled.value) return
     isOpen.value = true
   }
 
@@ -234,6 +262,8 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     a11y,
     multiple,
     isAtMax,
+    disabled,
+    placeholder,
     isSelected,
     selectItem,
     removeLast,

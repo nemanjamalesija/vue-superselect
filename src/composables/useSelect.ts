@@ -35,11 +35,16 @@ export interface UseSelectReturn<T> {
   query: Ref<string>
   multiple: boolean
   isAtMax: Ref<boolean>
+  disabled: Ref<boolean>
+  placeholder: Ref<string | undefined>
   isSelected: (item: CollectionItem<T>) => boolean
   dismiss: () => void
   open: () => void
   close: () => void
   toggle: () => void
+  clear: () => void
+  focus: () => void
+  removeLast: () => void
   registerItem: (item: CollectionItem<T>) => void
   unregisterItem: (id: string) => void
   updateItem: (id: string, patch: Partial<CollectionItem<T>>) => void
@@ -47,6 +52,7 @@ export interface UseSelectReturn<T> {
   getItemLabel: (item: T) => string
   getItemValue: (item: T) => unknown
   controlRef: Ref<HTMLElement | null>
+  inputRef: Ref<HTMLElement | null>
 }
 
 export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn<T> {
@@ -69,18 +75,23 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     a11y,
     multiple,
     isAtMax,
+    disabled,
+    placeholder,
     isSelected,
     selectItem,
+    removeLast,
     dismiss,
     open,
     close,
     toggle,
   } = state
   const controlRef = ref<HTMLElement | null>(null)
+  const inputRef = ref<HTMLElement | null>(null)
 
   const getRootProps = (userProps: Record<string, unknown> = {}) => {
     const dataAttrs: SelectDataAttributes = {
       'data-state': isOpen.value ? 'open' : 'closed',
+      'data-disabled': disabled.value ? 'true' : undefined,
     }
 
     return mergeProps({ id: baseId, ...dataAttrs }, userProps)
@@ -95,6 +106,7 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     }
 
     const onMousedown = () => {
+      if (disabled.value) return
       if (!isOpen.value) open()
     }
 
@@ -117,6 +129,8 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
 
     const internal = mergeProps(a11y.comboboxAttrs.value, {
       value: query.value,
+      disabled: disabled.value || undefined,
+      placeholder: placeholder.value,
       onInput,
       onMousedown,
       onFocusout,
@@ -182,6 +196,19 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     return mergeProps(internal, userProps)
   }
 
+  const clear = () => {
+    if (multiple) {
+      value.value = [] as unknown as SelectValue<T>
+    } else {
+      value.value = null
+    }
+    query.value = ''
+  }
+
+  const focus = () => {
+    inputRef.value?.focus()
+  }
+
   return {
     getRootProps,
     getInputProps,
@@ -198,11 +225,16 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     query,
     multiple,
     isAtMax,
+    disabled,
+    placeholder,
     isSelected,
     dismiss,
     open,
     close,
     toggle,
+    clear,
+    focus,
+    removeLast,
     registerItem: collection.registerItem,
     unregisterItem: collection.unregisterItem,
     updateItem: collection.updateItem,
@@ -210,5 +242,6 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     getItemLabel: state.getItemLabel,
     getItemValue: state.getItemValue,
     controlRef,
+    inputRef,
   }
 }

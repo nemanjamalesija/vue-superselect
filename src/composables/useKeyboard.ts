@@ -5,8 +5,11 @@ export interface UseKeyboardOptions<T> {
   items: Readonly<Ref<CollectionItem<T>[]>>
   loop?: boolean
   activeId?: Ref<string | null>
+  isOpen?: Ref<boolean>
   onSelect?: (item: CollectionItem<T>) => void
   onEscape?: () => void
+  onEscapeSecond?: () => void
+  onTab?: () => void
   onRemoveLast?: () => void
 }
 
@@ -24,7 +27,7 @@ export interface UseKeyboardReturn {
 const isEnabled = <T>(item: CollectionItem<T>) => !item.disabled
 
 export function useKeyboard<T>(options: UseKeyboardOptions<T>): UseKeyboardReturn {
-  const { items, loop = true, onSelect, onEscape, onRemoveLast } = options
+  const { items, loop = true, isOpen, onSelect, onEscape, onEscapeSecond, onTab, onRemoveLast } = options
   const internalActiveId = ref<string | null>(null)
   const activeId = options.activeId ?? internalActiveId
 
@@ -109,8 +112,15 @@ export function useKeyboard<T>(options: UseKeyboardOptions<T>): UseKeyboardRetur
         moveLast()
         break
       case 'Escape':
-        event.preventDefault()
-        onEscape?.()
+        if (!isOpen || isOpen.value) {
+          event.preventDefault()
+          onEscape?.()
+        } else {
+          onEscapeSecond?.()
+        }
+        break
+      case 'Tab':
+        onTab?.()
         break
       case 'Backspace':
         onRemoveLast?.()
