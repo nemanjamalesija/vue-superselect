@@ -12,6 +12,8 @@ import ResolveLabelPreselectedDemo from './examples/ResolveLabelPreselectedDemo.
 import CaretOnlyInputTags from './examples/CaretOnlyInputTags.vue'
 import DataAttributesDemo from './examples/DataAttributesDemo.vue'
 import ScrollableContentDemo from './examples/ScrollableContentDemo.vue'
+import PositioningPlacementDemo from './examples/PositioningPlacementDemo.vue'
+import TeleportOverflowDemo from './examples/TeleportOverflowDemo.vue'
 import FutureFeatures from './examples/FutureFeatures.vue'
 
 export interface PlaygroundNavItem {
@@ -92,6 +94,21 @@ export const playgroundNavSections: PlaygroundNavSection[] = [
     ],
   },
   {
+    title: 'Positioning',
+    items: [
+      {
+        to: '/positioning-placement',
+        label: 'Placement + forceAbsolute',
+        summary: 'Switch placement and fallback mode for SelectContent.',
+      },
+      {
+        to: '/teleport-overflow',
+        label: 'Teleport + Overflow',
+        summary: 'Compare inline clipping vs body/custom teleport targets.',
+      },
+    ],
+  },
+  {
     title: 'Styling',
     items: [
       {
@@ -131,6 +148,8 @@ const routes: RouteRecordRaw[] = [
   { path: '/clear-semantics', component: ClearSemanticsDemo },
   { path: '/tag-slot-override', component: TagSlotOverrideDemo },
   { path: '/resolve-label', component: ResolveLabelPreselectedDemo },
+  { path: '/positioning-placement', component: PositioningPlacementDemo },
+  { path: '/teleport-overflow', component: TeleportOverflowDemo },
   { path: '/data-attributes', component: DataAttributesDemo },
   { path: '/scrollable-content', component: ScrollableContentDemo },
   { path: '/future-features', component: FutureFeatures },

@@ -22,6 +22,7 @@ The playground now uses `vue-router` and is organized in docs-like sections:
 
 - Core
 - Multi Select
+- Positioning
 - Styling
 - Roadmap
 
@@ -74,12 +75,21 @@ Examples live in `playground/src/examples/`:
 - `DataAttributesDemo.vue`
   - Styles options using `data-state`, `data-selected`, `data-highlighted`, and
     `data-disabled` instead of hand-rolled state flags.
+- `PositioningPlacementDemo.vue`
+  - Demonstrates `SelectContent.placement`, `SelectContent.collisionStrategy`,
+    and `SelectContent.forceAbsolute`.
+  - Shows `data-side` / `data-align` as styling hooks from positioned content.
+- `TeleportOverflowDemo.vue`
+  - Demonstrates `SelectContent.teleport` in all supported modes:
+    `false`, `true` (`body`), and custom selector target.
+  - Demonstrates placement + collision tuning (`flip` vs `none`) while teleported.
+  - Uses an `overflow: hidden` frame to make clipping behavior obvious.
 - `ScrollableContentDemo.vue`
   - Demonstrates long-list overflow behavior with `max-height` + `overflow-y`.
   - Keeps scroll CSS local in `<style scoped>` so it can be copied as-is.
 - `FutureFeatures.vue`
-  - Sketches still-pending APIs (Backspace tag removal, grouping, floating
-    positioning, async filtering) in read-only form to communicate intent.
+  - Sketches still-pending APIs (outside-click dismissal, grouping, async
+    filtering) in read-only form to communicate intent.
 
 If you add a new feature, add a matching example here with a short written
 explanation and a code snippet, even if the example is just a placeholder.
