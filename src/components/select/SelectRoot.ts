@@ -61,6 +61,21 @@ export const SelectRoot = defineComponent({
       type: String,
       default: undefined,
     },
+    /** Root-level data source for option items */
+    items: {
+      type: Array as PropType<unknown[]>,
+      default: undefined,
+    },
+    /** Which field on each item to use as the display label */
+    labelKey: {
+      type: String,
+      default: undefined,
+    },
+    /** Which field on each item to use as the v-model value */
+    valueKey: {
+      type: String,
+      default: undefined,
+    },
   },
   emits: {
     'update:modelValue': (value: unknown | unknown[] | null) => {
@@ -91,6 +106,28 @@ export const SelectRoot = defineComponent({
       console.warn('[SelectRoot] `hideSelected` has no effect when `multiple` is false')
     }
 
+    if (__DEV__ && props.valueKey && props.items && props.items.length > 0) {
+      const firstItem = props.items[0]
+      if (typeof firstItem === 'object' && firstItem !== null && !(props.valueKey in firstItem)) {
+        console.warn(
+          `[SelectRoot] \`value-key="${props.valueKey}"\` does not exist on the provided items. ` +
+          `Available keys: ${Object.keys(firstItem).join(', ')}. ` +
+          `Check that value-key matches a field on your option objects.`,
+        )
+      }
+    }
+
+    if (__DEV__ && props.labelKey && props.items && props.items.length > 0) {
+      const firstItem = props.items[0]
+      if (typeof firstItem === 'object' && firstItem !== null && !(props.labelKey in firstItem)) {
+        console.warn(
+          `[SelectRoot] \`label-key="${props.labelKey}"\` does not exist on the provided items. ` +
+          `Available keys: ${Object.keys(firstItem).join(', ')}. ` +
+          `Check that label-key matches a field on your option objects.`,
+        )
+      }
+    }
+
     const api = useSelect({
       id: props.id,
       value: toRef(props, 'modelValue'),
@@ -106,6 +143,9 @@ export const SelectRoot = defineComponent({
       debounce: props.debounce,
       resolveLabel: props.resolveLabel,
       loop: props.loop,
+      items: toRef(props, 'items'),
+      labelKey: props.labelKey as keyof unknown | undefined,
+      valueKey: props.valueKey as keyof unknown | undefined,
     })
 
     provideSelectContext(api)

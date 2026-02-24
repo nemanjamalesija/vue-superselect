@@ -21,7 +21,7 @@ export interface UseSelectStateOptions<T> {
   max?: number | Ref<number | undefined>
   hideSelected?: boolean | Ref<boolean>
   baseId: string
-  items?: Ref<T[]> | T[]
+  items?: Ref<T[] | undefined> | T[]
   labelKey?: keyof T
   valueKey?: keyof T
 }

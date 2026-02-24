@@ -6,6 +6,7 @@ import { SelectContent } from './SelectContent'
 import { SelectOption } from './SelectOption'
 import { SelectInput } from './SelectInput'
 import { SelectControl } from './SelectControl'
+import { SelectTag } from './SelectTag'
 import { useSelectContext } from './selectContext'
 
 const ContextProbe = defineComponent({
@@ -539,6 +540,232 @@ describe('SelectRoot', () => {
 
       expect(wrapper.find('#multi-select-option-a').exists()).toBe(false)
       expect(wrapper.find('#multi-select-option-b').exists()).toBe(true)
+    })
+  })
+
+  describe('items/key pipeline', () => {
+    it('items prop renders options via v-for with correct labels', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<number | null>(null)
+          const items = [
+            { id: 1, name: 'Apple' },
+            { id: 2, name: 'Banana' },
+          ]
+          return { value, items }
+        },
+        template: `
+          <SelectRoot
+            v-model="value"
+            :items="items"
+            label-key="name"
+            value-key="id"
+            :defaultOpen="true"
+            id="items-test"
+          >
+            <SelectInput />
+            <SelectContent>
+              <SelectOption
+                v-for="item in items"
+                :key="item.id"
+                :value="item"
+                :label="item.name"
+              />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      await wrapper.vm.$nextTick()
+
+      const options = wrapper.findAll('[role="option"]')
+      expect(options).toHaveLength(2)
+      expect(options[0].text()).toContain('Apple')
+      expect(options[1].text()).toContain('Banana')
+    })
+
+    it('label-key and value-key emit extracted field value on selection', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<number | null>(null)
+          const items = [
+            { id: 1, name: 'Apple' },
+            { id: 2, name: 'Banana' },
+          ]
+          return { value, items }
+        },
+        template: `
+          <SelectRoot
+            v-model="value"
+            :items="items"
+            label-key="name"
+            value-key="id"
+            :defaultOpen="true"
+            id="key-test"
+          >
+            <SelectInput />
+            <SelectContent>
+              <SelectOption
+                v-for="item in items"
+                :key="item.id"
+                :value="item"
+                :label="item.name"
+              />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      await wrapper.vm.$nextTick()
+
+      const options = wrapper.findAll('[role="option"]')
+      await options[0].trigger('click')
+
+      expect(wrapper.vm.value).toBe(1)
+    })
+
+    it('DX-05 warns when value-key does not exist on items', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      mount(SelectRoot, {
+        props: {
+          items: [{ id: 1, name: 'Apple' }],
+          valueKey: 'nonexistent',
+        },
+      })
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('does not exist'),
+      )
+
+      warnSpy.mockRestore()
+    })
+
+    it('no DX-05 warning when value-key is valid', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      mount(SelectRoot, {
+        props: {
+          items: [{ id: 1, name: 'Apple' }],
+          valueKey: 'id',
+        },
+      })
+
+      const valueKeyWarnings = warnSpy.mock.calls.filter(
+        (call) => typeof call[0] === 'string' && call[0].includes('value-key'),
+      )
+      expect(valueKeyWarnings).toHaveLength(0)
+
+      warnSpy.mockRestore()
+    })
+
+    it('DX-05 warns when label-key does not exist on items', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      mount(SelectRoot, {
+        props: {
+          items: [{ id: 1, name: 'Apple' }],
+          labelKey: 'nonexistent',
+        },
+      })
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('label-key'),
+      )
+
+      warnSpy.mockRestore()
+    })
+
+    it('primitive items work without key props', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string | null>(null)
+          const items = ['a', 'b', 'c']
+          return { value, items }
+        },
+        template: `
+          <SelectRoot
+            v-model="value"
+            :items="items"
+            :defaultOpen="true"
+            id="primitive-test"
+          >
+            <SelectInput />
+            <SelectContent>
+              <SelectOption
+                v-for="item in items"
+                :key="item"
+                :value="item"
+                :label="item"
+              />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      await wrapper.vm.$nextTick()
+
+      const options = wrapper.findAll('[role="option"]')
+      await options[0].trigger('click')
+
+      expect(wrapper.vm.value).toBe('a')
+    })
+
+    it('tags resolve labels from root items when content is closed', async () => {
+      const ResolveProbe = defineComponent({
+        name: 'ResolveProbe',
+        setup() {
+          const ctx = useSelectContext<unknown>()
+          return () => {
+            const values = Array.isArray(ctx.value.value) ? ctx.value.value : []
+            return h('div', { 'data-part': 'tags' }, values.map((v: unknown) =>
+              h(SelectTag, {
+                key: String(v),
+                value: v,
+                label: ctx.resolveLabel(v) ?? String(v),
+              }),
+            ))
+          }
+        },
+      })
+
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, ResolveProbe },
+        setup() {
+          const value = ref([1, 2])
+          const items = [
+            { id: 1, name: 'Apple' },
+            { id: 2, name: 'Banana' },
+            { id: 3, name: 'Cherry' },
+          ]
+          return { value, items }
+        },
+        template: `
+          <SelectRoot
+            v-model="value"
+            multiple
+            :items="items"
+            label-key="name"
+            value-key="id"
+            id="tag-resolve"
+          >
+            <ResolveProbe />
+          </SelectRoot>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+
+      const tags = wrapper.findAll('[data-part="tag"]')
+      expect(tags).toHaveLength(2)
+      expect(tags[0].text()).toContain('Apple')
+      expect(tags[1].text()).toContain('Banana')
     })
   })
 })
