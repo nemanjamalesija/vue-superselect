@@ -1,6 +1,6 @@
 import { defineComponent, h, ref } from 'vue'
-import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { mount, flushPromises } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { SelectRoot } from './SelectRoot'
 import { SelectInput } from './SelectInput'
 import { SelectContent } from './SelectContent'
@@ -58,5 +58,70 @@ describe('SelectInput', () => {
     expect(probe.attributes('data-query')).toBe('ap')
     expect(probe.attributes('data-open')).toBe('1')
     expect(wrapper.find('ul').exists()).toBe(true)
+  })
+
+  describe('missing aria-label warning', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('warns when no aria-label or label is provided', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      mount(defineComponent({
+        components: { SelectRoot, SelectInput },
+        template: `
+          <SelectRoot id="no-label-test">
+            <SelectInput />
+          </SelectRoot>
+        `,
+      }))
+
+      await flushPromises()
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Missing accessible label'),
+      )
+    })
+
+    it('does not warn when aria-label is provided', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      mount(defineComponent({
+        components: { SelectRoot, SelectInput },
+        template: `
+          <SelectRoot id="with-label-test">
+            <SelectInput aria-label="Select a fruit" />
+          </SelectRoot>
+        `,
+      }))
+
+      await flushPromises()
+
+      const labelWarnings = warnSpy.mock.calls.filter(
+        (call) => typeof call[0] === 'string' && call[0].includes('Missing accessible label'),
+      )
+      expect(labelWarnings).toHaveLength(0)
+    })
+
+    it('does not warn when aria-labelledby is provided', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      mount(defineComponent({
+        components: { SelectRoot, SelectInput },
+        template: `
+          <SelectRoot id="with-labelledby-test">
+            <SelectInput aria-labelledby="my-label" />
+          </SelectRoot>
+        `,
+      }))
+
+      await flushPromises()
+
+      const labelWarnings = warnSpy.mock.calls.filter(
+        (call) => typeof call[0] === 'string' && call[0].includes('Missing accessible label'),
+      )
+      expect(labelWarnings).toHaveLength(0)
+    })
   })
 })

@@ -1,4 +1,4 @@
-import { defineComponent, h, type Component, type PropType } from 'vue'
+import { defineComponent, h, nextTick, onMounted, ref, type Component, type PropType } from 'vue'
 import { Primitive } from '../Primitive'
 import { useSelectContext } from './selectContext'
 
@@ -25,6 +25,25 @@ export const SelectInput = defineComponent({
   },
   setup(props, { attrs }) {
     const ctx = useSelectContext<unknown>()
+    const inputEl = ref<HTMLElement | null>(null)
+
+    onMounted(() => {
+      if (!__DEV__) return
+      nextTick(() => {
+        const el = inputEl.value
+        if (!el) return
+        const hasAriaLabel = el.hasAttribute('aria-label')
+        const hasAriaLabelledBy = el.hasAttribute('aria-labelledby')
+        const hasAssociatedLabel = el.id && document.querySelector(`label[for="${el.id}"]`)
+        if (!hasAriaLabel && !hasAriaLabelledBy && !hasAssociatedLabel) {
+          console.warn(
+            '[SelectRoot] Missing accessible label. Provide an `aria-label` prop on SelectInput, ' +
+            'use `aria-labelledby` to reference a visible label, or render a <SelectLabel> component. ' +
+            'Screen readers require a label to identify this combobox.',
+          )
+        }
+      })
+    })
 
     return () => {
       const inputProps = ctx.getInputProps({ type: 'text', ...attrs })
@@ -33,7 +52,9 @@ export const SelectInput = defineComponent({
         as: props.as,
         ...inputProps,
         ref: (target: unknown) => {
-          ctx.inputRef.value = resolveElementRef(target)
+          const resolved = resolveElementRef(target)
+          inputEl.value = resolved
+          ctx.inputRef.value = resolved
         },
       })
     }
