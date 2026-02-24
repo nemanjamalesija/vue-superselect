@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { useCollection, type CollectionItem } from './useCollection'
 
 afterEach(() => {
@@ -58,5 +58,45 @@ describe('useCollection', () => {
     registerItem({ id: 'b', value: 'Banana', label: 'Banana', disabled: false })
 
     expect(orderedItems.value.map((item) => item.id)).toEqual(['c', 'a', 'b'])
+  })
+
+  describe('duplicate value warnings', () => {
+    it('warns on duplicate option values in dev mode', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const { registerItem } = useCollection<string>()
+
+      registerItem({ id: 'a', value: 'Apple', label: 'Apple', disabled: false })
+      registerItem({ id: 'b', value: 'Apple', label: 'Apple Copy', disabled: false })
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Duplicate option value'),
+      )
+
+      warnSpy.mockRestore()
+    })
+
+    it('does not warn when same item id re-registers', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const { registerItem } = useCollection<string>()
+
+      registerItem({ id: 'a', value: 'Apple', label: 'Apple', disabled: false })
+      registerItem({ id: 'a', value: 'Apple', label: 'Apple Updated', disabled: false })
+
+      expect(warnSpy).not.toHaveBeenCalled()
+
+      warnSpy.mockRestore()
+    })
+
+    it('does not warn for items with different values', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const { registerItem } = useCollection<string>()
+
+      registerItem({ id: 'a', value: 'Apple', label: 'Apple', disabled: false })
+      registerItem({ id: 'b', value: 'Banana', label: 'Banana', disabled: false })
+
+      expect(warnSpy).not.toHaveBeenCalled()
+
+      warnSpy.mockRestore()
+    })
   })
 })

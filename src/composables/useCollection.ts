@@ -39,6 +39,18 @@ export function useCollection<T = unknown>(): UseCollectionReturn<T> {
   function registerItem(item: CollectionItem<T>) {
     const index = items.value.findIndex((existing) => existing.id === item.id)
     if (index === -1) {
+      if (__DEV__) {
+        const duplicate = items.value.find(
+          (existing) => Object.is(existing.value, item.value) && existing.id !== item.id,
+        )
+        if (duplicate) {
+          console.warn(
+            `[useCollection] Duplicate option value detected: "${String(item.value)}". ` +
+            `Each option must have a unique value for correct selection behavior. ` +
+            `If using objects, ensure each option has a distinct identity.`,
+          )
+        }
+      }
       items.value = [...items.value, item]
       return
     }
