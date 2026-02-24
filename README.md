@@ -2,6 +2,12 @@
 
 Headless Vue 3 select/combobox component library.
 
+## Install
+
+```bash
+npm install vue-superselect
+```
+
 ## What Works Today
 
 - Single-select with filtering, keyboard navigation, clear, and live region updates.

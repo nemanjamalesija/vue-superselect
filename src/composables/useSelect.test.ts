@@ -226,6 +226,52 @@ describe('useSelect', () => {
       expect(api.value.value).toBe('Apple')
     })
 
+    it('dismiss() restores selected label when valueKey is set', () => {
+      interface Fruit { id: string; name: string }
+      const fruits: Fruit[] = [
+        { id: 'a', name: 'Apple' },
+        { id: 'b', name: 'Banana' },
+      ]
+      const wrapper = createWrapper<Fruit>({
+        items: fruits,
+        labelKey: 'name',
+        valueKey: 'id',
+      })
+      const api = wrapper.vm.api
+
+      const itemA: CollectionItem<Fruit> = {
+        id: 'opt-a',
+        value: fruits[0],
+        label: 'Apple',
+        disabled: false,
+      }
+      const itemB: CollectionItem<Fruit> = {
+        id: 'opt-b',
+        value: fruits[1],
+        label: 'Banana',
+        disabled: false,
+      }
+
+      api.registerItem(itemA)
+      api.registerItem(itemB)
+
+      // Select Apple (value becomes 'a' due to valueKey)
+      invoke(api.getOptionProps(itemA).onClick, {})
+      expect(api.value.value).toBe('a')
+      expect(api.query.value).toBe('Apple')
+
+      // Open and type a partial search
+      api.open()
+      api.query.value = 'ban'
+
+      // Dismiss should restore label to 'Apple'
+      api.dismiss()
+
+      expect(api.isOpen.value).toBe(false)
+      expect(api.query.value).toBe('Apple')
+      expect(api.value.value).toBe('a')
+    })
+
     it('dismiss() clears query when nothing selected in single-select', () => {
       const wrapper = createWrapper<string>()
       const api = wrapper.vm.api
