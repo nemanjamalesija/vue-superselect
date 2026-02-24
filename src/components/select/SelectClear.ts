@@ -16,10 +16,12 @@ export const SelectClear = defineComponent({
     const ctx = useSelectContext<unknown>()
 
     return () => {
+      const isDisabled = ctx.disabled.value
       const clearProps = mergeProps(
         {
           type: 'button',
-          onClick: () => {
+          disabled: isDisabled || undefined,
+          onClick: isDisabled ? undefined : () => {
             if (ctx.multiple) {
               ctx.value.value = []
             } else {

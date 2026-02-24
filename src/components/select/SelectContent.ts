@@ -68,7 +68,7 @@ export const SelectContent = defineComponent({
     }
 
     return () => {
-      if (!ctx.isOpen.value) return null
+      if (!ctx.isOpen.value || ctx.disabled.value) return null
 
       const listboxProps = ctx.getListboxProps(attrs)
       const children = slots.default ? { default: () => slots.default?.() } : undefined

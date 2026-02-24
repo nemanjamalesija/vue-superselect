@@ -16,12 +16,15 @@ export const SelectTrigger = defineComponent({
     const ctx = useSelectContext<unknown>()
 
     return () => {
+      const isDisabled = ctx.disabled.value
       const triggerProps = mergeProps(
         {
           type: 'button',
           'aria-expanded': ctx.isOpen.value,
           'aria-controls': ctx.getListboxProps().id,
-          onClick: () => ctx.toggle(),
+          disabled: isDisabled || undefined,
+          'aria-disabled': isDisabled || undefined,
+          onClick: isDisabled ? undefined : () => ctx.toggle(),
         },
         attrs,
       )

@@ -768,4 +768,144 @@ describe('SelectRoot', () => {
       expect(tags[1].text()).toContain('Banana')
     })
   })
+
+  describe('disabled state', () => {
+    it('disabled prop disables input element', () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput },
+        template: `
+          <SelectRoot disabled id="disabled-test">
+            <SelectInput />
+          </SelectRoot>
+        `,
+      }))
+
+      const input = wrapper.find('input')
+      expect(input.attributes('disabled')).toBeDefined()
+      expect(input.attributes('aria-disabled')).toBe('true')
+    })
+
+    it('disabled prop prevents dropdown from opening on click', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        template: `
+          <SelectRoot disabled id="disabled-open-test">
+            <SelectInput />
+            <SelectContent>
+              <SelectOption id="a" value="Apple" label="Apple" />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      const input = wrapper.find('input')
+      await input.trigger('mousedown')
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
+    })
+  })
+
+  describe('placeholder prop', () => {
+    it('placeholder prop renders on input', () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput },
+        template: `
+          <SelectRoot placeholder="Search..." id="ph-test">
+            <SelectInput />
+          </SelectRoot>
+        `,
+      }))
+
+      const input = wrapper.find('input')
+      expect(input.attributes('placeholder')).toBe('Search...')
+    })
+  })
+
+  describe('expose', () => {
+    it('expose includes clear and focus methods', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot },
+        setup() {
+          const selectRef = ref<Record<string, unknown> | null>(null)
+          return { selectRef }
+        },
+        template: '<SelectRoot ref="selectRef" id="expose-test" />',
+      }))
+
+      const instance = wrapper.vm.selectRef as Record<string, unknown>
+      expect(typeof instance.open).toBe('function')
+      expect(typeof instance.close).toBe('function')
+      expect(typeof instance.toggle).toBe('function')
+      expect(typeof instance.clear).toBe('function')
+      expect(typeof instance.focus).toBe('function')
+    })
+  })
+
+  describe('selectOnTab', () => {
+    it('selectOnTab selects highlighted option on Tab', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string | null>(null)
+          return { value }
+        },
+        template: `
+          <SelectRoot v-model="value" selectOnTab :defaultOpen="true" id="tab-test">
+            <SelectInput />
+            <SelectContent>
+              <SelectOption id="a" value="Apple" label="Apple" />
+              <SelectOption id="b" value="Banana" label="Banana" />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      await wrapper.vm.$nextTick()
+
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'Tab' })
+
+      expect(wrapper.vm.value).toBe('Apple')
+    })
+  })
+
+  describe('second Escape clears query', () => {
+    it('second Escape clears query after dropdown closes', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string | null>(null)
+          return { value }
+        },
+        template: `
+          <SelectRoot v-model="value" id="esc2-test">
+            <SelectInput />
+            <SelectContent>
+              <SelectOption id="a" value="Apple" label="Apple" />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      const input = wrapper.find('input')
+
+      await input.setValue('app')
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(true)
+
+      await input.trigger('keydown', { key: 'Escape' })
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
+      expect(input.element.value).toBe('app')
+
+      await input.trigger('keydown', { key: 'Escape' })
+      await wrapper.vm.$nextTick()
+
+      expect(input.element.value).toBe('')
+    })
+  })
 })
