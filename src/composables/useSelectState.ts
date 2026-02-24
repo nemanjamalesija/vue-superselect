@@ -132,33 +132,37 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
   })
 
   const selectItem = (item: CollectionItem<T>) => {
+    const extracted = getItemValue(item.value) as T
+
     if (multiple) {
       const selectedValues = Array.isArray(value.value) ? value.value : []
-      const selectedIndex = selectedValues.findIndex((entry) => Object.is(entry, item.value))
+      const selectedIndex = selectedValues.findIndex((entry) => Object.is(entry, extracted))
 
       if (selectedIndex === -1 && isAtMax.value) return
 
       value.value =
         selectedIndex === -1
-          ? [...selectedValues, item.value]
+          ? [...selectedValues, extracted]
           : selectedValues.filter((_, index) => index !== selectedIndex)
 
       query.value = ''
       return
     }
 
-    value.value = item.value
+    value.value = extracted
     query.value = item.label
     isOpen.value = false
   }
 
   const isSelected = (item: CollectionItem<T>) => {
+    const extracted = getItemValue(item.value)
+
     if (multiple) {
       const selectedValues = Array.isArray(value.value) ? value.value : []
-      return selectedValues.some((entry) => Object.is(entry, item.value))
+      return selectedValues.some((entry) => Object.is(entry, extracted))
     }
 
-    return value.value !== null && !Array.isArray(value.value) && Object.is(value.value, item.value)
+    return value.value !== null && !Array.isArray(value.value) && Object.is(value.value, extracted)
   }
 
   const removeLast = () => {
@@ -237,5 +241,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     open,
     close,
     toggle,
+    getItemLabel,
+    getItemValue,
   }
 }
