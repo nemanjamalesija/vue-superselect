@@ -87,7 +87,7 @@ const clearAll = () => {
         </button>
       </SelectControl>
 
-      <SelectContent force-absolute class="content">
+      <SelectContent force-absolute class="content content-inline-flow">
         <SelectOption
           v-for="option in options"
           :id="`team-${option.id}`"

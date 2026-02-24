@@ -67,7 +67,7 @@ const clearSummary = computed(() => ({
             <SelectClear v-if="singleValue !== null" class="clear">Clear</SelectClear>
           </SelectControl>
 
-          <SelectContent force-absolute class="content">
+          <SelectContent force-absolute class="content content-inline-flow">
             <SelectOption
               v-for="option in options"
               :id="`single-${option.id}`"
@@ -102,7 +102,7 @@ const clearSummary = computed(() => ({
             <SelectClear v-if="multiValues.length > 0" class="clear">Clear all</SelectClear>
           </SelectControl>
 
-          <SelectContent force-absolute class="content">
+          <SelectContent force-absolute class="content content-inline-flow">
             <SelectOption
               v-for="option in options"
               :id="`multi-${option.id}`"

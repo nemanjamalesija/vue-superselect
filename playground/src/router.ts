@@ -14,7 +14,6 @@ import DataAttributesDemo from './examples/DataAttributesDemo.vue'
 import ScrollableContentDemo from './examples/ScrollableContentDemo.vue'
 import PositioningPlacementDemo from './examples/PositioningPlacementDemo.vue'
 import TeleportOverflowDemo from './examples/TeleportOverflowDemo.vue'
-import FutureFeatures from './examples/FutureFeatures.vue'
 
 export interface PlaygroundNavItem {
   to: string
@@ -29,7 +28,7 @@ export interface PlaygroundNavSection {
 
 export const playgroundNavSections: PlaygroundNavSection[] = [
   {
-    title: 'Core',
+    title: 'Essentials',
     items: [
       {
         to: '/basic-single',
@@ -37,15 +36,20 @@ export const playgroundNavSections: PlaygroundNavSection[] = [
         summary: 'Search, keyboard nav, selection, and clear button.',
       },
       {
-        to: '/programmatic-control',
-        label: 'Programmatic Control',
-        summary: 'Drive open/close/toggle via SelectRoot exposed methods.',
-      },
-      {
         to: '/uncontrolled-defaults',
         label: 'Uncontrolled Defaults',
         summary: 'Use defaultValue/defaultOpen without v-model control.',
       },
+      {
+        to: '/programmatic-control',
+        label: 'Programmatic Control',
+        summary: 'Drive open/close/toggle via SelectRoot exposed methods.',
+      },
+    ],
+  },
+  {
+    title: 'Behavior',
+    items: [
       {
         to: '/custom-filter-debounce',
         label: 'Custom Filter + Debounce',
@@ -55,6 +59,21 @@ export const playgroundNavSections: PlaygroundNavSection[] = [
         to: '/loop-disabled',
         label: 'Loop Disabled',
         summary: 'Stop keyboard navigation at first/last option.',
+      },
+      {
+        to: '/clear-semantics',
+        label: 'SelectClear Semantics',
+        summary: 'Compare SelectClear behavior in single vs multi modes.',
+      },
+    ],
+  },
+  {
+    title: 'Phase 6: Items API',
+    items: [
+      {
+        to: '/resolve-label',
+        label: 'Root Items + Key Mapping',
+        summary: 'Resolve selected IDs to labels on mount via items/labelKey/valueKey.',
       },
     ],
   },
@@ -77,24 +96,14 @@ export const playgroundNavSections: PlaygroundNavSection[] = [
         summary: 'Keep keyboard/filter behavior while rendering only caret.',
       },
       {
-        to: '/clear-semantics',
-        label: 'Clear Semantics',
-        summary: 'Compare SelectClear behavior in single vs multi modes.',
-      },
-      {
         to: '/tag-slot-override',
         label: 'Tag Slot Override',
         summary: 'Render fully custom tag markup with SelectTag slot API.',
       },
-      {
-        to: '/resolve-label',
-        label: 'Resolve Label',
-        summary: 'Map preselected IDs to labels before first open.',
-      },
     ],
   },
   {
-    title: 'Positioning',
+    title: 'Positioning (Phase 5)',
     items: [
       {
         to: '/positioning-placement',
@@ -109,7 +118,7 @@ export const playgroundNavSections: PlaygroundNavSection[] = [
     ],
   },
   {
-    title: 'Styling',
+    title: 'Styling Hooks',
     items: [
       {
         to: '/data-attributes',
@@ -120,16 +129,6 @@ export const playgroundNavSections: PlaygroundNavSection[] = [
         to: '/scrollable-content',
         label: 'Scrollable Content',
         summary: 'Long list with internal overflow scroll via scoped CSS.',
-      },
-    ],
-  },
-  {
-    title: 'Roadmap',
-    items: [
-      {
-        to: '/future-features',
-        label: 'Future Features',
-        summary: 'Planned API sketches for upcoming phases.',
       },
     ],
   },
@@ -152,7 +151,6 @@ const routes: RouteRecordRaw[] = [
   { path: '/teleport-overflow', component: TeleportOverflowDemo },
   { path: '/data-attributes', component: DataAttributesDemo },
   { path: '/scrollable-content', component: ScrollableContentDemo },
-  { path: '/future-features', component: FutureFeatures },
   { path: '/:pathMatch(.*)*', redirect: '/basic-single' },
 ]
 

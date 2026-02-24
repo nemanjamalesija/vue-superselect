@@ -70,7 +70,7 @@ const values = ref<string[]>(['owner', 'editor'])
         <SelectInput class="input input-inline" placeholder="Search roles" />
       </SelectControl>
 
-      <SelectContent force-absolute class="content">
+      <SelectContent force-absolute class="content content-inline-flow">
         <SelectOption
           v-for="option in options"
           :id="`slot-${option.id}`"

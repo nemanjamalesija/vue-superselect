@@ -159,6 +159,7 @@ h3 {
 }
 
 .control {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 8px;
@@ -221,6 +222,20 @@ h3 {
   gap: 4px;
 }
 
+/* Non-positioning demos: keep list in normal document flow for readability. */
+.content-inline-flow {
+  position: static !important;
+  inset: auto !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  z-index: auto !important;
+}
+
 .option {
   display: flex;
   justify-content: space-between;
@@ -263,6 +278,7 @@ h3 {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  margin-top: 8px;
 }
 
 .toolbar {
@@ -289,22 +305,6 @@ h3 {
   margin: 0;
   font-size: 0.9rem;
   color: var(--muted);
-}
-
-.code-block {
-  background: var(--surface);
-  color: var(--ink);
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  border: 1px solid var(--border);
-  font-family: 'JetBrains Mono', monospace;
-  overflow-x: auto;
-}
-
-.future-grid {
-  display: grid;
-  gap: 18px;
 }
 
 .control-with-tags {

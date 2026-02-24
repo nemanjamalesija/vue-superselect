@@ -9,8 +9,8 @@ import { playgroundNavSections } from './router'
       <p class="eyebrow">Playground</p>
       <h1>Vue Superselect in motion</h1>
       <p>
-        This local playground is organized as routed, docs-style sections. Each
-        route demonstrates a focused capability that maps directly to planned docs.
+        This local playground is grouped by shipped capabilities. Each route is a
+        focused example you can use to validate behavior before docs-site work.
       </p>
     </section>
 

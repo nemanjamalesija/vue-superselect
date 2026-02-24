@@ -13,11 +13,11 @@ import {
 } from 'vue-superselect'
 
 /**
- * Example: Preselected IDs with resolveLabel.
+ * Example: Preselected IDs resolved from root items.
  *
  * Why this exists:
  * - Shows stable labels before first open when selected values are raw IDs.
- * - Demonstrates intended usage of `SelectRoot.resolveLabel`.
+ * - Demonstrates Phase 6 root-items auto label resolution.
  */
 
 type Option = {
@@ -33,17 +33,16 @@ const options: Option[] = [
 ]
 
 const values = ref<string[]>(['dem1', 'zgr'])
-const labelById = new Map(options.map((option) => [option.id, option.label]))
-const resolveLabel = (value: unknown) => labelById.get(String(value))
 </script>
 
 <template>
   <section class="card">
     <header>
-      <h2>Preselected IDs via resolveLabel</h2>
+      <h2>Preselected IDs via root items</h2>
       <p>
-        Tags stay readable while closed because `resolveLabel` maps selected IDs
-        to display labels before options mount.
+        Tags stay readable while closed because <code>items</code> +
+        <code>label-key</code>/<code>value-key</code> resolve IDs to labels on
+        mount, without a custom resolver.
       </p>
     </header>
 
@@ -51,7 +50,9 @@ const resolveLabel = (value: unknown) => labelById.get(String(value))
       id="playground-resolve-label"
       v-model="values"
       multiple
-      :resolve-label="resolveLabel"
+      :items="options"
+      label-key="label"
+      value-key="id"
     >
       <SelectControl v-slot="{ selectedItems, removeItem }" class="control control-with-tags">
         <SelectTag
@@ -66,7 +67,7 @@ const resolveLabel = (value: unknown) => labelById.get(String(value))
         <SelectClear v-if="values.length > 0" class="clear">Clear</SelectClear>
       </SelectControl>
 
-      <SelectContent force-absolute class="content">
+      <SelectContent force-absolute class="content content-inline-flow">
         <SelectOption
           v-for="option in options"
           :id="`resolve-${option.id}`"

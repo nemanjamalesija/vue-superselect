@@ -99,7 +99,7 @@ const selectedLabel = computed(() => {
         <SelectTrigger class="trigger">{{ selectedLabel }}</SelectTrigger>
       </SelectControl>
 
-      <SelectContent force-absolute class="content">
+      <SelectContent force-absolute class="content content-inline-flow">
         <SelectOption
           v-for="option in options"
           :id="`filter-${option.id}`"

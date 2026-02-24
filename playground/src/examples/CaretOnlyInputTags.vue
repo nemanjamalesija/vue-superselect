@@ -33,10 +33,6 @@ const options: Option[] = [
 
 const values = ref<string[]>(['dm', 'zg'])
 
-const optionLabelById = new Map(options.map((option) => [option.id, option.label]))
-
-const resolveLabel = (value: unknown) => optionLabelById.get(String(value))
-
 const selectedCount = computed(() => values.value.length)
 </script>
 
@@ -54,7 +50,9 @@ const selectedCount = computed(() => values.value.length)
       id="playground-caret-only"
       v-model="values"
       multiple
-      :resolve-label="resolveLabel"
+      :items="options"
+      label-key="label"
+      value-key="id"
     >
       <SelectControl v-slot="{ selectedItems, removeItem }" class="control control-with-tags">
         <SelectTag
@@ -72,7 +70,7 @@ const selectedCount = computed(() => values.value.length)
         />
       </SelectControl>
 
-      <SelectContent force-absolute class="content">
+      <SelectContent force-absolute class="content content-inline-flow">
         <SelectOption
           v-for="option in options"
           :id="`caret-${option.id}`"
