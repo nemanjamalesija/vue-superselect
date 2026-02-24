@@ -18,7 +18,7 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: ['vue'],
+      external: ['vue', '@floating-ui/vue'],
       output: {
         globals: {
           vue: 'Vue',

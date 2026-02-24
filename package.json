@@ -19,6 +19,7 @@
   ],
   "sideEffects": false,
   "peerDependencies": {
+    "@floating-ui/vue": ">=1.0.0",
     "vue": "^3.5.0"
   },
   "peerDependenciesMeta": {
@@ -40,6 +41,7 @@
     "prepublishOnly": "npm run release:check"
   },
   "devDependencies": {
+    "@floating-ui/vue": "^1.1.10",
     "@vitejs/plugin-vue": "^6.0.4",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/language-core": "^3.0.10",

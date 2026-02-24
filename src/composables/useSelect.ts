@@ -1,4 +1,4 @@
-import type { Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { useSelectState, type SelectValue, type UseSelectStateOptions } from './useSelectState'
 import { mergeProps } from '../utils/mergeProps'
 import { useId } from '../utils/useId'
@@ -43,6 +43,7 @@ export interface UseSelectReturn<T> {
   unregisterItem: (id: string) => void
   updateItem: (id: string, patch: Partial<CollectionItem<T>>) => void
   resolveLabel: (value: unknown) => string | undefined
+  controlRef: Ref<HTMLElement | null>
 }
 
 export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn<T> {
@@ -71,6 +72,7 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     close,
     toggle,
   } = state
+  const controlRef = ref<HTMLElement | null>(null)
 
   const getRootProps = (userProps: Record<string, unknown> = {}) => {
     const dataAttrs: SelectDataAttributes = {
@@ -170,5 +172,6 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     unregisterItem: collection.unregisterItem,
     updateItem: collection.updateItem,
     resolveLabel,
+    controlRef,
   }
 }

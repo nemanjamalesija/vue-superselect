@@ -15,6 +15,12 @@ export type { UseA11yOptions } from './composables/useA11y'
 export { useSelect } from './composables/useSelect'
 export type { UseSelectOptions } from './composables/useSelect'
 export type { SelectLabelResolver } from './composables/useSelect'
+export { useFloating } from './composables/useFloating'
+export type {
+  FloatingCollisionStrategy,
+  UseFloatingOptions,
+  UseFloatingReturn,
+} from './composables/useFloating'
 
 // Components
 export { Primitive } from './components/Primitive'
