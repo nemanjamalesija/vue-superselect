@@ -38,7 +38,7 @@ export const SelectInput = defineComponent({
         if (!hasAriaLabel && !hasAriaLabelledBy && !hasAssociatedLabel) {
           console.warn(
             '[SelectRoot] Missing accessible label. Provide an `aria-label` prop on SelectInput, ' +
-            'use `aria-labelledby` to reference a visible label, or render a <SelectLabel> component. ' +
+            'use `aria-labelledby` to reference a visible label, or add a `<label>` element with a matching `for` attribute. ' +
             'Screen readers require a label to identify this combobox.',
           )
         }
