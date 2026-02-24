@@ -21,6 +21,9 @@ export interface UseSelectStateOptions<T> {
   max?: number | Ref<number | undefined>
   hideSelected?: boolean | Ref<boolean>
   baseId: string
+  items?: Ref<T[]> | T[]
+  labelKey?: keyof T
+  valueKey?: keyof T
 }
 
 export interface UseSelectStateReturn<T> {
@@ -37,9 +40,12 @@ export interface UseSelectStateReturn<T> {
   isSelected: (item: CollectionItem<T>) => boolean
   selectItem: (item: CollectionItem<T>) => void
   removeLast: () => void
+  dismiss: () => void
   open: () => void
   close: () => void
   toggle: () => void
+  getItemLabel: (item: T) => string
+  getItemValue: (item: T) => unknown
 }
 
 export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectStateReturn<T> {
@@ -57,10 +63,26 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     max,
     hideSelected = false,
     baseId,
+    labelKey,
+    valueKey,
   } = options
 
   const getMax = () => (isRef(max) ? max.value : max)
   const getHideSelected = () => (isRef(hideSelected) ? hideSelected.value : hideSelected)
+
+  const getItemLabel = (item: T): string => {
+    if (labelKey && typeof item === 'object' && item !== null) {
+      return String((item as Record<string, unknown>)[labelKey as string] ?? item)
+    }
+    return String(item)
+  }
+
+  const getItemValue = (item: T): unknown => {
+    if (valueKey && typeof item === 'object' && item !== null) {
+      return (item as Record<string, unknown>)[valueKey as string]
+    }
+    return item
+  }
 
   if (__DEV__ && multiple && defaultValue !== null && defaultValue !== undefined && !Array.isArray(defaultValue)) {
     console.warn('[useSelectState] When multiple is true, defaultValue should be an array')
@@ -105,7 +127,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
 
     const selectedValues = Array.isArray(value.value) ? value.value : []
     return filterState.filteredItems.value.filter((item) =>
-      !selectedValues.some((selected) => Object.is(selected, item.value)),
+      !selectedValues.some((selected) => Object.is(selected, getItemValue(item.value))),
     )
   })
 
@@ -166,6 +188,25 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     multiple,
   })
 
+  const dismiss = () => {
+    if (!isOpen.value) return
+
+    isOpen.value = false
+
+    if (multiple) {
+      query.value = ''
+    } else {
+      if (value.value !== null && value.value !== undefined) {
+        const selectedItem = collection.orderedItems.value.find(
+          (item) => Object.is(item.value, value.value),
+        )
+        query.value = selectedItem?.label ?? ''
+      } else {
+        query.value = ''
+      }
+    }
+  }
+
   const open = () => {
     isOpen.value = true
   }
@@ -192,6 +233,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     isSelected,
     selectItem,
     removeLast,
+    dismiss,
     open,
     close,
     toggle,

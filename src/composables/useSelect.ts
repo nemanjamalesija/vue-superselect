@@ -36,6 +36,7 @@ export interface UseSelectReturn<T> {
   multiple: boolean
   isAtMax: Ref<boolean>
   isSelected: (item: CollectionItem<T>) => boolean
+  dismiss: () => void
   open: () => void
   close: () => void
   toggle: () => void
@@ -68,6 +69,7 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     isAtMax,
     isSelected,
     selectItem,
+    dismiss,
     open,
     close,
     toggle,
@@ -94,10 +96,28 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
       if (!isOpen.value) open()
     }
 
+    const onFocusout = (event: FocusEvent) => {
+      requestAnimationFrame(() => {
+        const relatedTarget = event.relatedTarget as HTMLElement | null
+
+        const rootEl = document.getElementById(baseId)
+        if (rootEl && relatedTarget && rootEl.contains(relatedTarget)) return
+
+        const listboxId = a11y.listboxId
+        if (listboxId) {
+          const listboxEl = document.getElementById(listboxId)
+          if (listboxEl && relatedTarget && listboxEl.contains(relatedTarget)) return
+        }
+
+        if (isOpen.value) dismiss()
+      })
+    }
+
     const internal = mergeProps(a11y.comboboxAttrs.value, {
       value: query.value,
       onInput,
       onMousedown,
+      onFocusout,
       onKeydown: keyboard.onKeyDown,
       onCompositionstart: filterState.onCompositionStart,
       onCompositionend: filterState.onCompositionEnd,
@@ -165,6 +185,7 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     multiple,
     isAtMax,
     isSelected,
+    dismiss,
     open,
     close,
     toggle,
