@@ -12,6 +12,18 @@ interface LabelCacheEntry {
   label: string
 }
 
+interface PrimitiveRefTarget {
+  $el?: unknown
+}
+
+const resolveElementRef = (target: unknown): HTMLElement | null => {
+  if (target instanceof HTMLElement) return target
+  if (!target || typeof target !== 'object') return null
+
+  const maybeElement = (target as PrimitiveRefTarget).$el
+  return maybeElement instanceof HTMLElement ? maybeElement : null
+}
+
 export const SelectControl = defineComponent({
   name: 'SelectControl',
   inheritAttrs: false,
@@ -97,6 +109,9 @@ export const SelectControl = defineComponent({
         Primitive,
         {
           as: props.as,
+          ref: (target: unknown) => {
+            ctx.controlRef.value = resolveElementRef(target)
+          },
           ...controlProps,
         },
         children,

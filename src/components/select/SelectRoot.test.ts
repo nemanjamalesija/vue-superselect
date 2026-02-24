@@ -5,6 +5,7 @@ import { SelectRoot } from './SelectRoot'
 import { SelectContent } from './SelectContent'
 import { SelectOption } from './SelectOption'
 import { SelectInput } from './SelectInput'
+import { SelectControl } from './SelectControl'
 import { useSelectContext } from './selectContext'
 
 const ContextProbe = defineComponent({
@@ -115,6 +116,34 @@ describe('SelectRoot', () => {
 
     const listbox = wrapper.find('[role="listbox"]')
     expect(listbox.attributes('aria-multiselectable')).toBe('true')
+  })
+
+  it('renders dropdown with positioning styles when open', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption },
+      setup() {
+        const value = ref<string | null>(null)
+        return { value }
+      },
+      template: `
+        <SelectRoot v-model="value" id="positioning-select">
+          <SelectControl>
+            <SelectInput />
+          </SelectControl>
+          <SelectContent>
+            <SelectOption id="a" value="Apple" label="Apple" />
+          </SelectContent>
+        </SelectRoot>
+      `,
+    }))
+
+    const input = wrapper.find('input')
+    await input.setValue('')
+
+    const listbox = wrapper.find('[role="listbox"]').element as HTMLElement
+    expect(listbox.style.position).toBe('absolute')
+    expect(listbox.getAttribute('data-side')).toBe('bottom')
+    expect(listbox.getAttribute('data-align')).toBe('start')
   })
 
   it('warns in dev when multiple is true and modelValue is not an array', () => {
