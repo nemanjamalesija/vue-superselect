@@ -5,6 +5,7 @@ export interface UseA11yOptions {
   isOpen: Ref<boolean>
   activeId: Ref<string | null>
   multiple?: boolean
+  disabled?: Ref<boolean>
 }
 
 export interface OptionA11yInput {
@@ -22,7 +23,7 @@ export interface UseA11yReturn {
 }
 
 export function useA11y(options: UseA11yOptions): UseA11yReturn {
-  const { baseId, isOpen, activeId, multiple = false } = options
+  const { baseId, isOpen, activeId, multiple = false, disabled } = options
   const listboxId = `${baseId}-listbox`
 
   const getOptionId = (itemId: string) => `${baseId}-option-${itemId}`
@@ -36,6 +37,7 @@ export function useA11y(options: UseA11yOptions): UseA11yReturn {
       'aria-controls': listboxId,
       'aria-activedescendant': activeDescendant,
       'aria-autocomplete': 'list',
+      'aria-disabled': disabled?.value || undefined,
     }
   })
 
