@@ -178,6 +178,101 @@ describe('useSelect', () => {
     expect(api.resolveLabel('b')).toBeUndefined()
   })
 
+  describe('dismiss behavior', () => {
+    it('dismiss() closes dropdown', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.open()
+      expect(api.isOpen.value).toBe(true)
+
+      api.dismiss()
+      expect(api.isOpen.value).toBe(false)
+    })
+
+    it('dismiss() clears query in multi-select', () => {
+      const wrapper = createWrapper<string>({ multiple: true })
+      const api = wrapper.vm.api
+
+      api.open()
+      api.query.value = 'test'
+      api.value.value = ['Apple']
+
+      api.dismiss()
+
+      expect(api.isOpen.value).toBe(false)
+      expect(api.query.value).toBe('')
+      expect(api.value.value).toEqual(['Apple'])
+    })
+
+    it('dismiss() restores selected label in single-select', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.registerItem(itemApple)
+      api.registerItem(itemBanana)
+
+      invoke(api.getOptionProps(itemApple).onClick, {})
+      expect(api.value.value).toBe('Apple')
+      expect(api.query.value).toBe('Apple')
+
+      api.open()
+      api.query.value = 'ban'
+
+      api.dismiss()
+
+      expect(api.isOpen.value).toBe(false)
+      expect(api.query.value).toBe('Apple')
+      expect(api.value.value).toBe('Apple')
+    })
+
+    it('dismiss() clears query when nothing selected in single-select', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.open()
+      api.query.value = 'some search'
+
+      api.dismiss()
+
+      expect(api.query.value).toBe('')
+      expect(api.value.value).toBeNull()
+    })
+
+    it('dismiss() does not auto-select highlighted option', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.registerItem(itemApple)
+      api.registerItem(itemBanana)
+
+      api.open()
+
+      const inputProps = api.getInputProps()
+      invoke(inputProps.onKeydown, { key: 'ArrowDown', preventDefault: vi.fn() })
+
+      expect(api.activeId.value).not.toBeNull()
+
+      api.dismiss()
+
+      expect(api.value.value).toBeNull()
+      expect(api.isOpen.value).toBe(false)
+    })
+
+    it('dismiss() is a no-op when already closed', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.query.value = 'test'
+      expect(api.isOpen.value).toBe(false)
+
+      api.dismiss()
+
+      expect(api.isOpen.value).toBe(false)
+      expect(api.query.value).toBe('test')
+    })
+  })
+
   describe('multi-select mode', () => {
     it('initializes with an empty array when multiple is true', () => {
       const wrapper = createWrapper<string>({ multiple: true })

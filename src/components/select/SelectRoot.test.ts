@@ -1,6 +1,6 @@
 import { defineComponent, h, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { SelectRoot } from './SelectRoot'
 import { SelectContent } from './SelectContent'
 import { SelectOption } from './SelectOption'
@@ -231,6 +231,194 @@ describe('SelectRoot', () => {
       await input.trigger('keydown', { key: 'Backspace' })
 
       expect(wrapper.vm.value).toEqual(['Apple', 'Banana'])
+    })
+  })
+
+  describe('dismiss behavior', () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('closes dropdown on focusout to outside element', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string | null>(null)
+          return { value }
+        },
+        template: `
+          <div>
+            <SelectRoot v-model="value" :defaultOpen="true" id="dismiss-test">
+              <SelectInput />
+              <SelectContent>
+                <SelectOption id="a" value="Apple" label="Apple" />
+              </SelectContent>
+            </SelectRoot>
+            <button id="outside">Outside</button>
+          </div>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(true)
+
+      const input = wrapper.find('input')
+      const outsideBtn = wrapper.find('#outside').element
+
+      await input.trigger('focusout', { relatedTarget: outsideBtn })
+      vi.advanceTimersByTime(16)
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
+    })
+
+    it('clicking an option does not dismiss (selects and closes normally)', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string | null>(null)
+          return { value }
+        },
+        template: `
+          <SelectRoot v-model="value" :defaultOpen="true" id="click-opt-test">
+            <SelectInput />
+            <SelectContent>
+              <SelectOption id="a" value="Apple" label="Apple" />
+              <SelectOption id="b" value="Banana" label="Banana" />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      await wrapper.vm.$nextTick()
+
+      const options = wrapper.findAll('[role="option"]')
+      expect(options).toHaveLength(2)
+
+      await options[0].trigger('click')
+
+      expect(wrapper.vm.value).toBe('Apple')
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
+    })
+
+    it('focus loss preserves selected values in multi-select', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string[]>(['Apple', 'Banana'])
+          return { value }
+        },
+        template: `
+          <div>
+            <SelectRoot v-model="value" multiple :defaultOpen="true" id="multi-dismiss">
+              <SelectInput />
+              <SelectContent>
+                <SelectOption id="a" value="Apple" label="Apple" />
+                <SelectOption id="b" value="Banana" label="Banana" />
+                <SelectOption id="c" value="Cherry" label="Cherry" />
+              </SelectContent>
+            </SelectRoot>
+            <button id="outside">Outside</button>
+          </div>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      const input = wrapper.find('input')
+      const outsideBtn = wrapper.find('#outside').element
+
+      await input.trigger('focusout', { relatedTarget: outsideBtn })
+      vi.advanceTimersByTime(16)
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
+      expect(wrapper.vm.value).toEqual(['Apple', 'Banana'])
+    })
+
+    it('focus loss restores label in single-select', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string | null>(null)
+          return { value }
+        },
+        template: `
+          <div>
+            <SelectRoot v-model="value" id="single-restore">
+              <SelectInput />
+              <SelectContent>
+                <SelectOption id="a" value="Apple" label="Apple" />
+                <SelectOption id="b" value="Banana" label="Banana" />
+              </SelectContent>
+            </SelectRoot>
+            <button id="outside">Outside</button>
+          </div>
+        `,
+      }))
+
+      const input = wrapper.find('input')
+
+      await input.setValue('')
+      await wrapper.vm.$nextTick()
+
+      const options = wrapper.findAll('[role="option"]')
+      await options[0].trigger('click')
+      expect(wrapper.vm.value).toBe('Apple')
+
+      await input.setValue('')
+      await wrapper.vm.$nextTick()
+
+      await input.setValue('ban')
+      await wrapper.vm.$nextTick()
+
+      const outsideBtn = wrapper.find('#outside').element
+      await input.trigger('focusout', { relatedTarget: outsideBtn })
+      vi.advanceTimersByTime(16)
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.vm.value).toBe('Apple')
+      expect(input.element.value).toBe('Apple')
+    })
+
+    it('dismiss does not select highlighted option', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string | null>(null)
+          return { value }
+        },
+        template: `
+          <div>
+            <SelectRoot v-model="value" :defaultOpen="true" id="no-auto-select">
+              <SelectInput />
+              <SelectContent>
+                <SelectOption id="a" value="Apple" label="Apple" />
+                <SelectOption id="b" value="Banana" label="Banana" />
+              </SelectContent>
+            </SelectRoot>
+            <button id="outside">Outside</button>
+          </div>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      await wrapper.vm.$nextTick()
+
+      const input = wrapper.find('input')
+      await input.trigger('keydown', { key: 'ArrowDown' })
+
+      const outsideBtn = wrapper.find('#outside').element
+      await input.trigger('focusout', { relatedTarget: outsideBtn })
+      vi.advanceTimersByTime(16)
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.vm.value).toBeNull()
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
     })
   })
 

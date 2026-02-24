@@ -78,6 +78,9 @@ export const SelectContent = defineComponent({
         ref: (target: unknown) => {
           floatingRef.value = resolveElementRef(target)
         },
+        onMousedown: (e: Event) => {
+          e.preventDefault()
+        },
         style: [listboxProps.style as unknown, floatingStyles.value],
         'data-side': side.value,
         'data-align': align.value,
