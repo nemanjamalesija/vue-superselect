@@ -62,7 +62,7 @@ const selectedLabel = computed(() => {
         <SelectTrigger class="trigger">{{ selectedLabel }}</SelectTrigger>
       </SelectControl>
 
-      <SelectContent class="content">
+      <SelectContent force-absolute class="content">
         <SelectOption
           v-for="option in options"
           :id="`status-${option.id}`"
