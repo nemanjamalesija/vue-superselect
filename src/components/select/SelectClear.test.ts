@@ -58,4 +58,30 @@ describe('SelectClear', () => {
 
     expect(wrapper.find('[data-value]').text()).toBe('[]')
   })
+
+  it('clears value when valueKey is set', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectClear },
+      setup() {
+        const value = ref<string | null>('a')
+        const items = [
+          { id: 'a', name: 'Apple' },
+          { id: 'b', name: 'Banana' },
+        ]
+        return { value, items }
+      },
+      template: `
+        <SelectRoot v-model="value" :items="items" label-key="name" value-key="id" id="select">
+          <SelectInput />
+          <SelectClear>Clear</SelectClear>
+          <div data-value>{{ value }}</div>
+        </SelectRoot>
+      `,
+    }))
+
+    const clear = wrapper.find('button')
+    await clear.trigger('click')
+
+    expect(wrapper.find('[data-value]').text()).toBe('')
+  })
 })
