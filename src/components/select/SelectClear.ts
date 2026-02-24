@@ -22,12 +22,7 @@ export const SelectClear = defineComponent({
           type: 'button',
           disabled: isDisabled || undefined,
           onClick: isDisabled ? undefined : () => {
-            if (ctx.multiple) {
-              ctx.value.value = []
-            } else {
-              ctx.value.value = null
-            }
-            ctx.query.value = ''
+            ctx.clear()
           },
         },
         attrs,

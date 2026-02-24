@@ -229,7 +229,7 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     } else {
       if (value.value !== null && value.value !== undefined) {
         const selectedItem = collection.orderedItems.value.find(
-          (item) => Object.is(item.value, value.value),
+          (item) => Object.is(getItemValue(item.value), value.value),
         )
         query.value = selectedItem?.label ?? ''
       } else {
