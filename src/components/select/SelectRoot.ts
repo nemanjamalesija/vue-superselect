@@ -76,6 +76,21 @@ export const SelectRoot = defineComponent({
       type: String,
       default: undefined,
     },
+    /** Disables all interaction: input, trigger, clear, and option clicks */
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    /** Placeholder text displayed on the input when empty */
+    placeholder: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+    /** When true, Tab key selects the highlighted option before closing */
+    selectOnTab: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: {
     'update:modelValue': (value: unknown | unknown[] | null) => {
@@ -117,6 +132,10 @@ export const SelectRoot = defineComponent({
       }
     }
 
+    if (__DEV__ && props.disabled && props.open === true) {
+      console.warn('[SelectRoot] Cannot force open a disabled component')
+    }
+
     if (__DEV__ && props.labelKey && props.items && props.items.length > 0) {
       const firstItem = props.items[0]
       if (typeof firstItem === 'object' && firstItem !== null && !(props.labelKey in firstItem)) {
@@ -136,6 +155,9 @@ export const SelectRoot = defineComponent({
       multiple: props.multiple,
       max: toRef(props, 'max'),
       hideSelected: toRef(props, 'hideSelected'),
+      disabled: toRef(props, 'disabled'),
+      selectOnTab: props.selectOnTab,
+      placeholder: toRef(props, 'placeholder'),
       open: toRef(props, 'open'),
       defaultOpen: props.defaultOpen,
       onOpenChange: (open) => emit('update:open', open),
@@ -149,7 +171,7 @@ export const SelectRoot = defineComponent({
     })
 
     provideSelectContext(api)
-    expose({ open: api.open, close: api.close, toggle: api.toggle })
+    expose({ open: api.open, close: api.close, toggle: api.toggle, clear: api.clear, focus: api.focus })
 
     return () => slots.default?.()
   },

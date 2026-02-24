@@ -644,4 +644,140 @@ describe('useSelect', () => {
       expect(visibleValues).toEqual([fruits[1], fruits[2]])
     })
   })
+
+  describe('Tab key behavior', () => {
+    it('Tab with selectOnTab=true selects highlighted option and closes', () => {
+      const wrapper = createWrapper<string>({ selectOnTab: true })
+      const api = wrapper.vm.api
+
+      api.registerItem(itemApple)
+      api.registerItem(itemBanana)
+
+      api.open()
+      const inputProps = api.getInputProps()
+      invoke(inputProps.onKeydown, { key: 'ArrowDown', preventDefault: vi.fn() })
+      invoke(inputProps.onKeydown, { key: 'Tab', preventDefault: vi.fn() })
+
+      expect(api.value.value).toBe('Apple')
+      expect(api.isOpen.value).toBe(false)
+    })
+
+    it('Tab with selectOnTab=false closes without selecting', () => {
+      const wrapper = createWrapper<string>({ selectOnTab: false })
+      const api = wrapper.vm.api
+
+      api.registerItem(itemApple)
+      api.registerItem(itemBanana)
+
+      api.open()
+      const inputProps = api.getInputProps()
+      invoke(inputProps.onKeydown, { key: 'ArrowDown', preventDefault: vi.fn() })
+      invoke(inputProps.onKeydown, { key: 'Tab', preventDefault: vi.fn() })
+
+      expect(api.value.value).toBeNull()
+      expect(api.isOpen.value).toBe(false)
+    })
+
+    it('Tab key does not call preventDefault', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.open()
+      const inputProps = api.getInputProps()
+      const preventDefault = vi.fn()
+      invoke(inputProps.onKeydown, { key: 'Tab', preventDefault })
+
+      expect(preventDefault).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('disabled state', () => {
+    it('disabled prevents open()', () => {
+      const wrapper = createWrapper<string>({ disabled: ref(true) })
+      const api = wrapper.vm.api
+
+      api.open()
+      expect(api.isOpen.value).toBe(false)
+    })
+
+    it('disabled prevents selectItem', () => {
+      const wrapper = createWrapper<string>({ disabled: ref(true) })
+      const api = wrapper.vm.api
+
+      api.registerItem(itemApple)
+      invoke(api.getOptionProps(itemApple).onClick, {})
+
+      expect(api.value.value).toBeNull()
+    })
+  })
+
+  describe('second Escape clears query', () => {
+    it('second Escape clears query when dropdown is already closed', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.open()
+      api.query.value = 'app'
+
+      const inputProps = api.getInputProps()
+      invoke(inputProps.onKeydown, { key: 'Escape', preventDefault: vi.fn() })
+      expect(api.isOpen.value).toBe(false)
+      expect(api.query.value).toBe('app')
+
+      invoke(inputProps.onKeydown, { key: 'Escape', preventDefault: vi.fn() })
+      expect(api.query.value).toBe('')
+    })
+  })
+
+  describe('clear and focus methods', () => {
+    it('clear() resets value and query in single mode', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.registerItem(itemApple)
+      invoke(api.getOptionProps(itemApple).onClick, {})
+      expect(api.value.value).toBe('Apple')
+      expect(api.query.value).toBe('Apple')
+
+      api.clear()
+
+      expect(api.value.value).toBeNull()
+      expect(api.query.value).toBe('')
+    })
+
+    it('clear() resets value and query in multi mode', () => {
+      const wrapper = createWrapper<string>({ multiple: true })
+      const api = wrapper.vm.api
+
+      api.registerItem(itemApple)
+      api.registerItem(itemBanana)
+      invoke(api.getOptionProps(itemApple).onClick, {})
+      invoke(api.getOptionProps(itemBanana).onClick, {})
+      expect(api.value.value).toEqual(['Apple', 'Banana'])
+
+      api.clear()
+
+      expect(api.value.value).toEqual([])
+      expect(api.query.value).toBe('')
+    })
+
+    it('focus() focuses the input element', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      const mockEl = { focus: vi.fn() } as unknown as HTMLElement
+      api.inputRef.value = mockEl
+
+      api.focus()
+
+      expect(mockEl.focus).toHaveBeenCalledOnce()
+    })
+
+    it('removeLast is exposed on UseSelectReturn', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      expect(typeof api.removeLast).toBe('function')
+    })
+  })
 })
