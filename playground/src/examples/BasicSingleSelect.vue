@@ -74,7 +74,7 @@ const selectedLabel = computed(() => {
         <SelectClear v-if="value !== null" class="clear">Clear</SelectClear>
       </SelectControl>
 
-      <SelectContent class="content">
+      <SelectContent force-absolute class="content">
         <SelectOption
           v-for="option in options"
           :id="`basic-${option.id}`"

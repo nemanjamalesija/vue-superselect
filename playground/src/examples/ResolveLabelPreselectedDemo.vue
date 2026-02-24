@@ -51,7 +51,7 @@ const resolveLabel = (value: unknown) => labelById.get(String(value))
       id="playground-resolve-label"
       v-model="values"
       multiple
-      :resolveLabel="resolveLabel"
+      :resolve-label="resolveLabel"
     >
       <SelectControl v-slot="{ selectedItems, removeItem }" class="control control-with-tags">
         <SelectTag
@@ -66,7 +66,7 @@ const resolveLabel = (value: unknown) => labelById.get(String(value))
         <SelectClear v-if="values.length > 0" class="clear">Clear</SelectClear>
       </SelectControl>
 
-      <SelectContent class="content">
+      <SelectContent force-absolute class="content">
         <SelectOption
           v-for="option in options"
           :id="`resolve-${option.id}`"

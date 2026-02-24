@@ -75,7 +75,7 @@ const selectedLabel = computed(() => {
         <SelectTrigger class="trigger">{{ selectedLabel }}</SelectTrigger>
       </SelectControl>
 
-      <SelectContent class="content scrollable-content">
+      <SelectContent force-absolute class="content scrollable-content">
         <SelectOption
           v-for="option in options"
           :id="`scroll-${option.id}`"

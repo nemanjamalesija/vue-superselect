@@ -51,10 +51,10 @@ const selectedCount = computed(() => values.value.length)
     </header>
 
     <SelectRoot
+      id="playground-caret-only"
       v-model="values"
       multiple
-      id="playground-caret-only"
-      :resolveLabel="resolveLabel"
+      :resolve-label="resolveLabel"
     >
       <SelectControl v-slot="{ selectedItems, removeItem }" class="control control-with-tags">
         <SelectTag
@@ -72,7 +72,7 @@ const selectedCount = computed(() => values.value.length)
         />
       </SelectControl>
 
-      <SelectContent class="content">
+      <SelectContent force-absolute class="content">
         <SelectOption
           v-for="option in options"
           :id="`caret-${option.id}`"

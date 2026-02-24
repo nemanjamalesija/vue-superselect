@@ -85,7 +85,7 @@ const toggleList = () => selectRef.value?.toggle()
         <SelectTrigger class="trigger">{{ selectedLabel }}</SelectTrigger>
       </SelectControl>
 
-      <SelectContent class="content">
+      <SelectContent force-absolute class="content">
         <SelectOption
           v-for="option in options"
           :id="`city-${option.id}`"

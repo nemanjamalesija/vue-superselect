@@ -65,9 +65,9 @@ const selectedLabel = computed(() => {
 
     <SelectRoot
       id="playground-uncontrolled-defaults"
-      :defaultValue="defaultValue"
-      :defaultOpen="defaultOpen"
-      @update:modelValue="onValueChange"
+      :default-value="defaultValue"
+      :default-open="defaultOpen"
+      @update:model-value="onValueChange"
       @update:open="onOpenChange"
     >
       <SelectControl class="control">
@@ -76,7 +76,7 @@ const selectedLabel = computed(() => {
         <SelectClear v-if="observedValue !== null" class="clear">Clear</SelectClear>
       </SelectControl>
 
-      <SelectContent class="content">
+      <SelectContent force-absolute class="content">
         <SelectOption
           v-for="option in options"
           :id="`defaults-${option.id}`"

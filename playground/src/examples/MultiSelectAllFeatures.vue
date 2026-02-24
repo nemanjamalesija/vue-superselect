@@ -110,8 +110,8 @@ const resetDemo = () => {
         v-model:open="open"
         multiple
         :max="resolvedMax"
-        :hideSelected="hideSelected"
-        :resolveLabel="resolveLabel"
+        :hide-selected="hideSelected"
+        :resolve-label="resolveLabel"
       >
         <SelectDebug />
         <SelectControl v-slot="{ selectedItems, removeItem }" class="control control-with-tags">
@@ -128,15 +128,15 @@ const resetDemo = () => {
           <SelectClear v-if="values.length > 0" class="clear">Clear all</SelectClear>
         </SelectControl>
 
-        <SelectContent class="content">
+        <SelectContent force-absolute class="content">
           <SelectOption
             v-for="option in options"
             :id="`all-${option.id}`"
             :key="option.id"
+            v-slot="{ selected, active, disabled }"
             :value="option.id"
             :label="option.label"
             class="option"
-            v-slot="{ selected, active, disabled }"
           >
             <span>{{ option.label }}</span>
             <span class="option-state">
