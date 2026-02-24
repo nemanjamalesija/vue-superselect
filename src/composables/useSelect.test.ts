@@ -477,4 +477,171 @@ describe('useSelect', () => {
       })
     })
   })
+
+  describe('items/key pipeline', () => {
+    interface Fruit {
+      id: number
+      name: string
+    }
+
+    const fruits: Fruit[] = [
+      { id: 1, name: 'Apple' },
+      { id: 2, name: 'Banana' },
+      { id: 3, name: 'Cherry' },
+    ]
+
+    const fruitItem = (fruit: Fruit): CollectionItem<Fruit> => ({
+      id: `fruit-${fruit.id}`,
+      value: fruit,
+      label: fruit.name,
+      disabled: false,
+    })
+
+    it('object options with labelKey extract display labels', () => {
+      const wrapper = createWrapper<Fruit>({
+        items: ref([...fruits]),
+        labelKey: 'name',
+        valueKey: 'id',
+      })
+      const api = wrapper.vm.api
+
+      expect(api.getItemLabel(fruits[0]!)).toBe('Apple')
+      expect(api.getItemLabel(fruits[1]!)).toBe('Banana')
+    })
+
+    it('object options with valueKey set v-model to extracted field', () => {
+      const wrapper = createWrapper<Fruit>({
+        items: ref([...fruits]),
+        labelKey: 'name',
+        valueKey: 'id',
+      })
+      const api = wrapper.vm.api
+
+      const item = fruitItem(fruits[0]!)
+      api.registerItem(item)
+
+      invoke(api.getOptionProps(item).onClick, {})
+
+      expect(api.value.value).toBe(1)
+    })
+
+    it('without valueKey, v-model binds to whole object', () => {
+      const wrapper = createWrapper<Fruit>({
+        items: ref([...fruits]),
+        labelKey: 'name',
+      })
+      const api = wrapper.vm.api
+
+      const item = fruitItem(fruits[0]!)
+      api.registerItem(item)
+
+      invoke(api.getOptionProps(item).onClick, {})
+
+      expect(api.value.value).toEqual({ id: 1, name: 'Apple' })
+    })
+
+    it('primitive arrays work with zero config', () => {
+      const wrapper = createWrapper<string>({
+        items: ref(['Red', 'Green', 'Blue']),
+      })
+      const api = wrapper.vm.api
+
+      const item: CollectionItem<string> = {
+        id: 'red',
+        value: 'Red',
+        label: 'Red',
+        disabled: false,
+      }
+      api.registerItem(item)
+
+      invoke(api.getOptionProps(item).onClick, {})
+
+      expect(api.value.value).toBe('Red')
+    })
+
+    it('resolveLabel auto-resolves from root items', () => {
+      const wrapper = createWrapper<Fruit>({
+        items: ref([...fruits]),
+        labelKey: 'name',
+        valueKey: 'id',
+      })
+      const api = wrapper.vm.api
+
+      expect(api.resolveLabel(1)).toBe('Apple')
+      expect(api.resolveLabel(2)).toBe('Banana')
+      expect(api.resolveLabel(999)).toBeUndefined()
+    })
+
+    it('resolveLabel falls back to user-provided resolver', () => {
+      const wrapper = createWrapper<Fruit>({
+        items: ref([...fruits]),
+        labelKey: 'name',
+        valueKey: 'id',
+        resolveLabel: () => 'Custom',
+      })
+      const api = wrapper.vm.api
+
+      expect(api.resolveLabel(1)).toBe('Custom')
+    })
+
+    it('multi-select with valueKey stores array of extracted values', () => {
+      const wrapper = createWrapper<Fruit>({
+        multiple: true,
+        items: ref([...fruits]),
+        labelKey: 'name',
+        valueKey: 'id',
+      })
+      const api = wrapper.vm.api
+
+      const itemA = fruitItem(fruits[0]!)
+      const itemB = fruitItem(fruits[1]!)
+      api.registerItem(itemA)
+      api.registerItem(itemB)
+
+      invoke(api.getOptionProps(itemA).onClick, {})
+      invoke(api.getOptionProps(itemB).onClick, {})
+
+      expect(api.value.value).toEqual([1, 2])
+    })
+
+    it('isSelected matches extracted values in multi-select with valueKey', () => {
+      const wrapper = createWrapper<Fruit>({
+        multiple: true,
+        items: ref([...fruits]),
+        labelKey: 'name',
+        valueKey: 'id',
+      })
+      const api = wrapper.vm.api
+
+      const item = fruitItem(fruits[0]!)
+      api.registerItem(item)
+
+      invoke(api.getOptionProps(item).onClick, {})
+
+      expect(api.isSelected(item)).toBe(true)
+    })
+
+    it('hideSelected filters correctly with valueKey', () => {
+      const wrapper = createWrapper<Fruit>({
+        multiple: true,
+        hideSelected: true,
+        items: ref([...fruits]),
+        labelKey: 'name',
+        valueKey: 'id',
+      })
+      const api = wrapper.vm.api
+
+      const itemA = fruitItem(fruits[0]!)
+      const itemB = fruitItem(fruits[1]!)
+      const itemC = fruitItem(fruits[2]!)
+      api.registerItem(itemA)
+      api.registerItem(itemB)
+      api.registerItem(itemC)
+
+      invoke(api.getOptionProps(itemA).onClick, {})
+
+      const visibleValues = api.visibleItems.value.map((item) => item.value)
+      expect(visibleValues).toEqual([fruits[1], fruits[2]])
+    })
+  })
 })
