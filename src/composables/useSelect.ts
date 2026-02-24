@@ -1,4 +1,4 @@
-import { ref, type Ref } from 'vue'
+import { isRef, ref, type Ref } from 'vue'
 import { useSelectState, type SelectValue, type UseSelectStateOptions } from './useSelectState'
 import { mergeProps } from '../utils/mergeProps'
 import { useId } from '../utils/useId'
@@ -44,6 +44,8 @@ export interface UseSelectReturn<T> {
   unregisterItem: (id: string) => void
   updateItem: (id: string, patch: Partial<CollectionItem<T>>) => void
   resolveLabel: (value: unknown) => string | undefined
+  getItemLabel: (item: T) => string
+  getItemValue: (item: T) => unknown
   controlRef: Ref<HTMLElement | null>
 }
 
@@ -129,7 +131,19 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
   const getListboxProps = (userProps: Record<string, unknown> = {}) =>
     mergeProps(a11y.listboxAttrs.value, userProps)
 
-  const resolveLabel = (value: unknown) => resolveLabelProp?.(value as T)
+  const resolveLabel = (val: unknown): string | undefined => {
+    if (resolveLabelProp) return resolveLabelProp(val as T)
+
+    const itemsArray = isRef(options.items) ? options.items.value : options.items
+    if (!itemsArray) return undefined
+
+    const match = itemsArray.find((item) => {
+      const extracted = state.getItemValue(item as T)
+      return Object.is(extracted, val)
+    })
+    if (!match) return undefined
+    return state.getItemLabel(match as T)
+  }
 
   const getOptionProps = (item: CollectionItem<T>, userProps: Record<string, unknown> = {}) => {
     const isSelectedValue = isSelected(item)
@@ -193,6 +207,8 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
     unregisterItem: collection.unregisterItem,
     updateItem: collection.updateItem,
     resolveLabel,
+    getItemLabel: state.getItemLabel,
+    getItemValue: state.getItemValue,
     controlRef,
   }
 }
