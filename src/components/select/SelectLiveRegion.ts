@@ -1,13 +1,25 @@
-import { defineComponent, h, ref, watch } from 'vue'
+import { computed, defineComponent, h, ref, watch, type PropType } from 'vue'
 import { useSelectContext } from './selectContext'
+import { defaultSelectMessages, type SelectMessages } from './selectTypes'
 
 export const SelectLiveRegion = defineComponent({
   name: 'SelectLiveRegion',
-  setup() {
+  props: {
+    messages: {
+      type: Object as PropType<Partial<SelectMessages>>,
+      default: undefined,
+    },
+  },
+  setup(props) {
     const ctx = useSelectContext<unknown>()
     const message = ref('')
     let previousValues: unknown[] = []
     let hasTrackedInitialValues = false
+
+    const mergedMessages = computed<SelectMessages>(() => ({
+      ...defaultSelectMessages,
+      ...props.messages,
+    }))
 
     const getItemLabel = (value: unknown) => {
       const item = ctx.orderedItems.value.find((candidate) =>
@@ -22,14 +34,16 @@ export const SelectLiveRegion = defineComponent({
     watch(
       () => ctx.isOpen.value,
       (open) => {
-        message.value = open ? 'List expanded' : 'List collapsed'
+        message.value = open
+          ? mergedMessages.value.listExpanded()
+          : mergedMessages.value.listCollapsed()
       },
     )
 
     watch(
       () => ctx.filteredItems.value.length,
       (count) => {
-        message.value = `${count} result${count === 1 ? '' : 's'}`
+        message.value = mergedMessages.value.resultsCount(count)
       },
       { immediate: true },
     )
@@ -57,9 +71,9 @@ export const SelectLiveRegion = defineComponent({
         )
 
         if (added.length === 1) {
-          message.value = `Added ${getItemLabel(added[0])}`
+          message.value = mergedMessages.value.itemAdded(getItemLabel(added[0]))
         } else if (removed.length === 1) {
-          message.value = `Removed ${getItemLabel(removed[0])}`
+          message.value = mergedMessages.value.itemRemoved(getItemLabel(removed[0]))
         }
 
         previousValues = [...newValue]
