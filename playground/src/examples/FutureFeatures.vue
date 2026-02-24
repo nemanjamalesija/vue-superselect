@@ -37,12 +37,13 @@ const futureExamples = [
 </SelectContent>`,
   },
   {
-    title: 'Floating middleware customization (future)',
+    title: 'Advanced positioning tuning (future)',
     description:
-      'Expose offset/flip/shift tuning once default Phase 5 behavior settles.',
+      'Expose offset and viewport-padding tuning once the baseline Phase 5 API stabilizes. Note: placement and collisionStrategy are already available now.',
     code: `<SelectContent
   placement="bottom-start"
-  :floating="{ offset: 8, shiftPadding: 12 }"
+  collisionStrategy="none"
+  :positioning="{ offset: 8, viewportPadding: 12 }"
 >
   <SelectOption value="small" label="Small" />
 </SelectContent>`,
