@@ -42,4 +42,67 @@ describe('SelectEmpty', () => {
 
     expect(wrapper.text()).toContain('No results')
   })
+
+  it('renders default "No results" text when no slot content is provided', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectContent, SelectOption, SelectEmpty },
+      setup() {
+        const value = ref<string | null>(null)
+        return { value, options }
+      },
+      template: `
+        <SelectRoot v-model="value" id="select">
+          <SelectInput />
+          <SelectContent>
+            <SelectOption
+              v-for="opt in options"
+              :key="opt.id"
+              :id="opt.id"
+              :value="opt.value"
+              :label="opt.label"
+            />
+            <SelectEmpty />
+          </SelectContent>
+        </SelectRoot>
+      `,
+    }))
+
+    const input = wrapper.find('input')
+    await input.setValue('zz')
+
+    expect(wrapper.text()).toContain('No results')
+  })
+
+  it('renders nothing when there are matching options', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectContent, SelectOption, SelectEmpty },
+      setup() {
+        const value = ref<string | null>(null)
+        return { value, options }
+      },
+      template: `
+        <SelectRoot v-model="value" id="select">
+          <SelectInput />
+          <SelectContent>
+            <SelectOption
+              v-for="opt in options"
+              :key="opt.id"
+              :id="opt.id"
+              :value="opt.value"
+              :label="opt.label"
+            />
+            <SelectEmpty>No results</SelectEmpty>
+          </SelectContent>
+        </SelectRoot>
+      `,
+    }))
+
+    const input = wrapper.find('input')
+    await input.setValue('ap')
+
+    const options_list = wrapper.findAll('[role="option"]')
+    expect(options_list.length).toBeGreaterThan(0)
+    // The "No results" text should NOT be visible when there are matching options
+    expect(wrapper.text()).not.toContain('No results')
+  })
 })

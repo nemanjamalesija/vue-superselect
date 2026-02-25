@@ -59,6 +59,50 @@ describe('SelectClear', () => {
     expect(wrapper.find('[data-value]').text()).toBe('[]')
   })
 
+  it('disabled state prevents clear on click', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectClear },
+      setup() {
+        const value = ref<string | null>('Apple')
+        return { value }
+      },
+      template: `
+        <SelectRoot v-model="value" disabled id="select">
+          <SelectInput />
+          <SelectClear>Clear</SelectClear>
+          <div data-value>{{ value }}</div>
+        </SelectRoot>
+      `,
+    }))
+
+    const clear = wrapper.find('button')
+    expect(clear.attributes('disabled')).toBeDefined()
+    await clear.trigger('click')
+
+    // Value should not change because root is disabled
+    expect(wrapper.find('[data-value]').text()).toBe('Apple')
+  })
+
+  it('renders with custom as prop', () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectClear },
+      setup() {
+        const value = ref<string | null>(null)
+        return { value }
+      },
+      template: `
+        <SelectRoot v-model="value" id="select">
+          <SelectInput />
+          <SelectClear as="span">Clear</SelectClear>
+        </SelectRoot>
+      `,
+    }))
+
+    const clearEl = wrapper.find('span')
+    expect(clearEl.exists()).toBe(true)
+    expect(clearEl.text()).toContain('Clear')
+  })
+
   it('clears value when valueKey is set', async () => {
     const wrapper = mount(defineComponent({
       components: { SelectRoot, SelectInput, SelectClear },

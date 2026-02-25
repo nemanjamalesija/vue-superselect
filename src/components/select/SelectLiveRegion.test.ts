@@ -162,6 +162,66 @@ describe('SelectLiveRegion', () => {
     expect(liveRegion.text()).toContain('Removed Apple')
   })
 
+  it('handles bulk add of more than 1 item at once', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput, SelectContent, SelectOption, SelectLiveRegion },
+      setup() {
+        const value = ref<string[]>([])
+        return { value, options }
+      },
+      template: `
+        <SelectRoot v-model="value" multiple id="select">
+          <SelectInput />
+          <SelectContent>
+            <SelectOption
+              v-for="opt in options"
+              :key="opt.id"
+              :id="opt.id"
+              :value="opt.value"
+              :label="opt.label"
+            />
+          </SelectContent>
+          <SelectLiveRegion />
+        </SelectRoot>
+      `,
+    }))
+
+    const liveRegion = wrapper.find('[aria-live]')
+
+    // Bulk add -- set 2 items at once
+    wrapper.vm.value = ['Apple', 'Banana']
+    await wrapper.vm.$nextTick()
+
+    // With >1 item added at once, the live region should NOT say "Added X"
+    // because the code only announces when exactly 1 item is added
+    expect(liveRegion.text()).not.toContain('Added')
+  })
+
+  it('resets change tracking when switching from multi to non-multi value', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectLiveRegion },
+      setup() {
+        const value = ref<string[]>(['Apple'])
+        return { value }
+      },
+      template: `
+        <SelectRoot v-model="value" multiple id="select">
+          <SelectLiveRegion />
+        </SelectRoot>
+      `,
+    }))
+
+    const liveRegion = wrapper.find('[aria-live]')
+
+    // Change value to non-array (simulating switching to single-select behavior)
+    ;(wrapper.vm as Record<string, unknown>).value = 'Apple'
+    await wrapper.vm.$nextTick()
+
+    // Should not announce add/remove for non-multiple values
+    expect(liveRegion.text()).not.toContain('Added')
+    expect(liveRegion.text()).not.toContain('Removed')
+  })
+
   describe('i18n messages prop', () => {
     it('uses default English messages when no messages prop', async () => {
       const wrapper = mount(defineComponent({

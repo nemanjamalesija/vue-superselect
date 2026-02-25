@@ -871,6 +871,102 @@ describe('SelectRoot', () => {
     })
   })
 
+  describe('disabled + open dev warning', () => {
+    it('warns in dev when disabled is true and open is true', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      mount(SelectRoot, {
+        props: {
+          disabled: true,
+          open: true,
+        },
+      })
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Cannot force open a disabled component'),
+      )
+
+      warnSpy.mockRestore()
+    })
+
+    it('does not warn when disabled is false and open is true', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      mount(SelectRoot, {
+        props: {
+          disabled: false,
+          open: true,
+        },
+      })
+
+      const disabledOpenWarnings = warnSpy.mock.calls.filter(
+        (call) => typeof call[0] === 'string' && call[0].includes('Cannot force open'),
+      )
+      expect(disabledOpenWarnings).toHaveLength(0)
+
+      warnSpy.mockRestore()
+    })
+  })
+
+  describe('controlled open state via v-model:open', () => {
+    it('reflects parent open changes in component', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string | null>(null)
+          const open = ref(false)
+          return { value, open }
+        },
+        template: `
+          <SelectRoot v-model="value" v-model:open="open" id="controlled-open">
+            <SelectInput />
+            <SelectContent>
+              <SelectOption id="a" value="Apple" label="Apple" />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
+
+      wrapper.vm.open = true
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(true)
+
+      wrapper.vm.open = false
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
+    })
+
+    it('emits update:open when component toggles', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string | null>(null)
+          const open = ref(false)
+          return { value, open }
+        },
+        template: `
+          <SelectRoot v-model="value" v-model:open="open" id="controlled-open-emit">
+            <SelectInput />
+            <SelectContent>
+              <SelectOption id="a" value="Apple" label="Apple" />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      const input = wrapper.find('input')
+      await input.setValue('')
+      expect(wrapper.vm.open).toBe(true)
+
+      await input.trigger('keydown', { key: 'Escape' })
+      expect(wrapper.vm.open).toBe(false)
+    })
+  })
+
   describe('second Escape clears query', () => {
     it('second Escape clears query after dropdown closes', async () => {
       const wrapper = mount(defineComponent({

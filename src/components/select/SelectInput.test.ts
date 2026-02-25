@@ -60,6 +60,50 @@ describe('SelectInput', () => {
     expect(wrapper.find('ul').exists()).toBe(true)
   })
 
+  it('renders correct attributes (placeholder, aria-label)', async () => {
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput },
+      template: `
+        <SelectRoot id="attr-test" placeholder="Type here...">
+          <SelectInput aria-label="Fruit selector" />
+        </SelectRoot>
+      `,
+    }))
+
+    const input = wrapper.find('input')
+    expect(input.attributes('placeholder')).toBe('Type here...')
+    expect(input.attributes('aria-label')).toBe('Fruit selector')
+    expect(input.attributes('role')).toBe('combobox')
+    expect(input.attributes('aria-expanded')).toBe('false')
+    expect(input.attributes('aria-autocomplete')).toBe('list')
+  })
+
+  it('renders with as prop using a custom component', async () => {
+    const CustomInput = defineComponent({
+      name: 'CustomInput',
+      inheritAttrs: true,
+      setup(_, { attrs }) {
+        return () => h('input', { ...attrs, class: 'custom-input' })
+      },
+    })
+
+    const wrapper = mount(defineComponent({
+      components: { SelectRoot, SelectInput: SelectInput },
+      setup() {
+        return { CustomInput }
+      },
+      template: `
+        <SelectRoot id="custom-input-test">
+          <SelectInput :as="CustomInput" aria-label="Custom" />
+        </SelectRoot>
+      `,
+    }))
+
+    const input = wrapper.find('input')
+    expect(input.exists()).toBe(true)
+    expect(input.attributes('role')).toBe('combobox')
+  })
+
   describe('missing aria-label warning', () => {
     afterEach(() => {
       vi.restoreAllMocks()

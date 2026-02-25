@@ -58,6 +58,40 @@ describe('SelectTag', () => {
     expect(wrapper.attributes('data-disabled')).toBe('true')
   })
 
+  it('stopPropagation is called on remove button click event', async () => {
+    const parentClick = vi.fn()
+    const wrapper = mount(defineComponent({
+      components: { SelectTag },
+      setup() {
+        return { parentClick }
+      },
+      template: `
+        <div @click="parentClick">
+          <SelectTag value="apple" label="Apple" />
+        </div>
+      `,
+    }))
+
+    await wrapper.find('button').trigger('click')
+
+    // The parent click handler should NOT be called because stopPropagation is called
+    expect(parentClick).not.toHaveBeenCalled()
+  })
+
+  it('renders with custom as prop', () => {
+    const wrapper = mount(SelectTag, {
+      props: {
+        value: 'apple',
+        label: 'Apple',
+        as: 'div',
+      },
+    })
+
+    expect(wrapper.element.tagName).toBe('DIV')
+    expect(wrapper.attributes('data-part')).toBe('tag')
+    expect(wrapper.text()).toContain('Apple')
+  })
+
   it('supports custom scoped slot content with remove handler', async () => {
     const onRemove = vi.fn()
     const wrapper = mount(defineComponent({
