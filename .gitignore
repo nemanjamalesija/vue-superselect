@@ -6,6 +6,8 @@ playground/.vite/
 *.local
 .DS_Store
 *.tsbuildinfo
+docs/.vitepress/cache/
+docs/.vitepress/dist/
 
 # Personal project context
 CLAUDE.md
