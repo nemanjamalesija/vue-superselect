@@ -45,7 +45,10 @@
     "size": "npm run build && size-limit",
     "pack:dry-run": "npm_config_cache=.npm-cache npm pack --dry-run",
     "release:check": "npm run lint:all && npm run type-check && npm run test:run && npm run build && npm run validate && size-limit && npm run pack:dry-run",
-    "prepublishOnly": "npm run release:check"
+    "prepublishOnly": "npm run release:check",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
@@ -70,6 +73,8 @@
     "unplugin-dts": "^1.0.0-beta.6",
     "unplugin-pure": "^0.3.2",
     "vite": "^7.3.1",
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-tabs": "^0.7.3",
     "vitest": "^4.0.18",
     "vue": "^3.5.27",
     "vue-tsc": "^3.2.4"
