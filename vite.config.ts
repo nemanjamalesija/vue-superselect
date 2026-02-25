@@ -44,6 +44,7 @@ export default defineConfig({
     }),
     dts({
       tsconfigPath: './tsconfig.app.json',
+      bundleTypes: true,
     }),
     devWarningPlugin(),
   ],

@@ -41,12 +41,15 @@
     "lint:all": "eslint .",
     "format": "prettier --write src/",
     "type-check": "vue-tsc --build",
+    "validate": "publint --strict && attw --pack .",
     "pack:dry-run": "npm_config_cache=.npm-cache npm pack --dry-run",
     "release:check": "npm run lint:all && npm run type-check && npm run test:run && npm run build && npm run pack:dry-run",
     "prepublishOnly": "npm run release:check"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@floating-ui/vue": "^1.1.10",
+    "@microsoft/api-extractor": "^7.57.5",
     "@vitejs/plugin-vue": "^6.0.4",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/language-core": "^3.0.10",
@@ -57,6 +60,7 @@
     "eslint-plugin-vue": "^10.7.0",
     "happy-dom": "^20.5.0",
     "prettier": "^3.8.1",
+    "publint": "^0.3.17",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.54.0",
     "unplugin-dts": "^1.0.0-beta.6",
