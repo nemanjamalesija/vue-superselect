@@ -88,16 +88,46 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
   const controlRef = ref<HTMLElement | null>(null)
   const inputRef = ref<HTMLElement | null>(null)
 
+  const isWithinSelect = (target: EventTarget | null) => {
+    if (!(target instanceof Node)) return false
+
+    const rootEl = document.getElementById(baseId)
+    if (rootEl?.contains(target)) return true
+
+    const listboxEl = document.getElementById(a11y.listboxId)
+    if (listboxEl?.contains(target)) return true
+
+    return false
+  }
+
+  const handleFocusoutDismiss = (event: FocusEvent) => {
+    requestAnimationFrame(() => {
+      if (isWithinSelect(event.relatedTarget)) return
+      if (isOpen.value) dismiss()
+    })
+  }
+
   const getRootProps = (userProps: Record<string, unknown> = {}) => {
     const dataAttrs: SelectDataAttributes = {
       'data-state': isOpen.value ? 'open' : 'closed',
       'data-disabled': disabled.value ? 'true' : undefined,
     }
 
-    return mergeProps({ id: baseId, ...dataAttrs }, userProps)
+    return mergeProps({ id: baseId, ...dataAttrs, onFocusout: handleFocusoutDismiss }, userProps)
   }
 
   const getInputProps = (userProps: Record<string, unknown> = {}) => {
+    const focusWithoutScroll = (target: EventTarget | null) => {
+      if (!(target instanceof HTMLElement)) return
+      if (document.activeElement === target) return
+
+      try {
+        target.focus({ preventScroll: true })
+      } catch {
+        target.focus()
+      }
+    }
+
     const onInput = (event: Event) => {
       const target = event.target as HTMLInputElement | null
       if (!target) return
@@ -105,26 +135,10 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
       if (!isOpen.value) open()
     }
 
-    const onMousedown = () => {
+    const onMousedown = (event: Event) => {
       if (disabled.value) return
+      focusWithoutScroll(event.currentTarget)
       if (!isOpen.value) open()
-    }
-
-    const onFocusout = (event: FocusEvent) => {
-      requestAnimationFrame(() => {
-        const relatedTarget = event.relatedTarget as HTMLElement | null
-
-        const rootEl = document.getElementById(baseId)
-        if (rootEl && relatedTarget && rootEl.contains(relatedTarget)) return
-
-        const listboxId = a11y.listboxId
-        if (listboxId) {
-          const listboxEl = document.getElementById(listboxId)
-          if (listboxEl && relatedTarget && listboxEl.contains(relatedTarget)) return
-        }
-
-        if (isOpen.value) dismiss()
-      })
     }
 
     const internal = mergeProps(a11y.comboboxAttrs.value, {
@@ -133,7 +147,7 @@ export function useSelect<T>(options: UseSelectOptions<T> = {}): UseSelectReturn
       placeholder: placeholder.value,
       onInput,
       onMousedown,
-      onFocusout,
+      onFocusout: handleFocusoutDismiss,
       onKeydown: keyboard.onKeyDown,
       onCompositionstart: filterState.onCompositionStart,
       onCompositionend: filterState.onCompositionEnd,

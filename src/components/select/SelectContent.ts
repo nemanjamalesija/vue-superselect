@@ -3,6 +3,7 @@ import {
   defineComponent,
   h,
   ref,
+  watch,
   toRef,
   Teleport,
   type Component,
@@ -52,6 +53,36 @@ export const SelectContent = defineComponent({
   setup(props, { attrs, slots }) {
     const ctx = useSelectContext<unknown>()
     const floatingRef = ref<HTMLElement | null>(null)
+
+    const keepActiveOptionVisible = () => {
+      const listbox = floatingRef.value
+      if (!listbox) return
+
+      const activeOption = listbox.querySelector<HTMLElement>('[role="option"][data-highlighted="true"]')
+      if (!activeOption) return
+
+      const listboxRect = listbox.getBoundingClientRect()
+      const optionRect = activeOption.getBoundingClientRect()
+
+      if (optionRect.top < listboxRect.top) {
+        listbox.scrollTop -= listboxRect.top - optionRect.top
+        return
+      }
+
+      if (optionRect.bottom > listboxRect.bottom) {
+        listbox.scrollTop += optionRect.bottom - listboxRect.bottom
+      }
+    }
+
+    watch(
+      () => [ctx.isOpen.value, ctx.activeId.value, ctx.visibleItems.value.length] as const,
+      ([isOpen]) => {
+        if (!isOpen) return
+        keepActiveOptionVisible()
+      },
+      { flush: 'post' },
+    )
+
     const { floatingStyles, side, align } = useFloating({
       reference: ctx.controlRef,
       floating: floatingRef,

@@ -197,10 +197,92 @@ describe('SelectContent', () => {
       await openListbox(wrapper)
 
       const listbox = wrapper.find('ul')
-      const prevented = await listbox.trigger('mousedown')
+      await listbox.trigger('mousedown')
       // mousedown on the listbox should have preventDefault called
       // We verify the listbox exists and the event was triggered
       expect(listbox.exists()).toBe(true)
+
+      wrapper.unmount()
+    })
+  })
+
+  describe('active option visibility', () => {
+    it('keeps highlighted option in view while navigating with keyboard', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<SelectValue>(null)
+          const list = [
+            { id: 'a', value: 'Apple', label: 'Apple' },
+            { id: 'b', value: 'Banana', label: 'Banana' },
+            { id: 'c', value: 'Cherry', label: 'Cherry' },
+            { id: 'd', value: 'Date', label: 'Date' },
+          ]
+          return { value, list }
+        },
+        template: `
+          <SelectRoot v-model="value" id="select">
+            <SelectControl>
+              <SelectInput />
+            </SelectControl>
+            <SelectContent>
+              <SelectOption
+                v-for="opt in list"
+                :key="opt.id"
+                :id="opt.id"
+                :value="opt.value"
+                :label="opt.label"
+              />
+            </SelectContent>
+          </SelectRoot>
+        `,
+      }))
+
+      await openListbox(wrapper)
+
+      const listbox = wrapper.find('ul').element as HTMLElement
+      listbox.scrollTop = 0
+
+      const createRect = (top: number, height: number): DOMRect => ({
+        x: 0,
+        y: top,
+        top,
+        left: 0,
+        right: 240,
+        bottom: top + height,
+        width: 240,
+        height,
+        toJSON: () => ({}),
+      } as DOMRect)
+
+      vi.spyOn(listbox, 'getBoundingClientRect').mockReturnValue(createRect(0, 100))
+
+      const optionRects: Record<string, DOMRect> = {
+        'select-option-a': createRect(0, 30),
+        'select-option-b': createRect(30, 30),
+        'select-option-c': createRect(60, 30),
+        'select-option-d': createRect(130, 30),
+      }
+
+      wrapper.findAll('[role="option"]').forEach((optionWrapper) => {
+        const optionEl = optionWrapper.element as HTMLElement
+        const optionRect = optionRects[optionEl.id]
+        if (!optionRect) return
+        vi.spyOn(optionEl, 'getBoundingClientRect').mockReturnValue(optionRect)
+      })
+
+      const input = wrapper.find('input')
+
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      await wrapper.vm.$nextTick()
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      await wrapper.vm.$nextTick()
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      await wrapper.vm.$nextTick()
+      await input.trigger('keydown', { key: 'ArrowDown' })
+      await wrapper.vm.$nextTick()
+
+      expect(listbox.scrollTop).toBeGreaterThan(0)
 
       wrapper.unmount()
     })

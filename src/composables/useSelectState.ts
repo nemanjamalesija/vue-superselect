@@ -1,4 +1,4 @@
-import { computed, isRef, ref, shallowRef, watch, type Ref } from 'vue'
+import { computed, isRef, onBeforeUnmount, ref, shallowRef, watch, type Ref } from 'vue'
 import { useCollection, type CollectionItem, type UseCollectionReturn } from './useCollection'
 import { useFilter, type FilterFn, type UseFilterReturn } from './useFilter'
 import { useKeyboard, type UseKeyboardReturn } from './useKeyboard'
@@ -51,6 +51,27 @@ export interface UseSelectStateReturn<T> {
   toggle: () => void
   getItemLabel: (item: T) => string
   getItemValue: (item: T) => unknown
+}
+
+interface OpenSelectOwner {
+  id: string
+  close: () => void
+}
+
+let openSelectOwner: OpenSelectOwner | null = null
+
+const claimOpenSelectOwner = (nextOwner: OpenSelectOwner) => {
+  if (openSelectOwner && openSelectOwner.id !== nextOwner.id) {
+    openSelectOwner.close()
+  }
+
+  openSelectOwner = nextOwner
+}
+
+const releaseOpenSelectOwner = (id: string) => {
+  if (openSelectOwner?.id === id) {
+    openSelectOwner = null
+  }
 }
 
 export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectStateReturn<T> {
@@ -140,6 +161,42 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     return filterState.filteredItems.value.filter((item) =>
       !selectedValues.some((selected) => Object.is(selected, getItemValue(item.value))),
     )
+  })
+
+  const resolveSelectedLabel = (selectedValue: unknown): string | undefined => {
+    const mountedItem = collection.orderedItems.value.find((item) =>
+      Object.is(getItemValue(item.value), selectedValue),
+    )
+    if (mountedItem) return mountedItem.label
+
+    const sourceItems = isRef(options.items) ? options.items.value : options.items
+    if (!sourceItems) return undefined
+
+    const sourceMatch = sourceItems.find((item) =>
+      Object.is(getItemValue(item), selectedValue),
+    )
+    if (!sourceMatch) return undefined
+
+    return getItemLabel(sourceMatch)
+  }
+
+  const syncQueryFromValue = () => {
+    if (multiple || isOpen.value) return
+
+    const nextValue = value.value
+    if (nextValue === null || nextValue === undefined) {
+      query.value = ''
+      return
+    }
+
+    if (Array.isArray(nextValue)) return
+
+    const resolvedLabel = resolveSelectedLabel(nextValue)
+    query.value = resolvedLabel ?? String(nextValue)
+  }
+
+  watch(value, () => {
+    syncQueryFromValue()
   })
 
   const selectItem = (item: CollectionItem<T>) => {
@@ -238,18 +295,41 @@ export function useSelectState<T>(options: UseSelectStateOptions<T>): UseSelectS
     }
   }
 
-  const open = () => {
-    if (disabled.value) return
-    isOpen.value = true
-  }
-
   const close = () => {
+    releaseOpenSelectOwner(baseId)
     isOpen.value = false
   }
 
-  const toggle = () => {
-    isOpen.value = !isOpen.value
+  const open = () => {
+    if (disabled.value) return
+    claimOpenSelectOwner({ id: baseId, close })
+    isOpen.value = true
   }
+
+  const toggle = () => {
+    if (isOpen.value) {
+      close()
+      return
+    }
+
+    open()
+  }
+
+  watch(
+    isOpen,
+    (openState) => {
+      if (openState) {
+        claimOpenSelectOwner({ id: baseId, close })
+      } else {
+        releaseOpenSelectOwner(baseId)
+      }
+    },
+    { immediate: true },
+  )
+
+  onBeforeUnmount(() => {
+    releaseOpenSelectOwner(baseId)
+  })
 
   return {
     value,

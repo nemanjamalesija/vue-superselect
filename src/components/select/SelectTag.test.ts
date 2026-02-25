@@ -78,6 +78,28 @@ describe('SelectTag', () => {
     expect(parentClick).not.toHaveBeenCalled()
   })
 
+  it('prevents focus steal on remove button mousedown', async () => {
+    const parentMousedown = vi.fn()
+    const wrapper = mount(defineComponent({
+      components: { SelectTag },
+      setup() {
+        return { parentMousedown }
+      },
+      template: `
+        <div @mousedown="parentMousedown">
+          <SelectTag value="apple" label="Apple" />
+        </div>
+      `,
+    }))
+
+    const button = wrapper.find('button')
+    const event = new MouseEvent('mousedown', { bubbles: true, cancelable: true })
+    button.element.dispatchEvent(event)
+
+    expect(event.defaultPrevented).toBe(true)
+    expect(parentMousedown).not.toHaveBeenCalled()
+  })
+
   it('renders with custom as prop', () => {
     const wrapper = mount(SelectTag, {
       props: {

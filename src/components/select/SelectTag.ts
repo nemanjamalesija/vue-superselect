@@ -52,6 +52,11 @@ export const SelectTag = defineComponent({
           'button',
           {
             type: 'button',
+            onMousedown: (event: Event) => {
+              // Keep focus on combobox input so outside-click dismissal continues to work.
+              event.preventDefault()
+              event.stopPropagation()
+            },
             onClick: onRemove,
             disabled: props.disabled,
             'aria-label': `Remove ${props.label}`,

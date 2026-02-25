@@ -421,6 +421,57 @@ describe('SelectRoot', () => {
       expect(wrapper.vm.value).toBeNull()
       expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
     })
+
+    it('outside click closes after removing a tag with remove button', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectControl, SelectTag, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const value = ref<string[]>(['Apple', 'Banana'])
+          return { value }
+        },
+        template: `
+          <div>
+            <SelectRoot v-model="value" multiple :defaultOpen="true" id="tag-dismiss">
+              <SelectControl v-slot="{ selectedItems, removeItem }">
+                <SelectTag
+                  v-for="item in selectedItems"
+                  :key="String(item.value)"
+                  :value="item.value"
+                  :label="item.label"
+                  @remove="removeItem(item.value)"
+                />
+                <SelectInput />
+              </SelectControl>
+              <SelectContent>
+                <SelectOption id="a" value="Apple" label="Apple" />
+                <SelectOption id="b" value="Banana" label="Banana" />
+                <SelectOption id="c" value="Cherry" label="Cherry" />
+              </SelectContent>
+            </SelectRoot>
+            <button id="outside">Outside</button>
+          </div>
+        `,
+      }))
+
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(true)
+      expect(wrapper.findAll('[data-part="tag"]')).toHaveLength(2)
+
+      const firstRemoveButton = wrapper.find('[data-part="remove"]')
+      await firstRemoveButton.trigger('click')
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.vm.value).toEqual(['Banana'])
+      expect(wrapper.findAll('[data-part="tag"]')).toHaveLength(1)
+
+      const control = wrapper.find('#tag-dismiss')
+      const outsideButton = wrapper.find('#outside').element
+      await control.trigger('focusout', { relatedTarget: outsideButton })
+      vi.advanceTimersByTime(16)
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
+    })
   })
 
   describe('max and hideSelected', () => {

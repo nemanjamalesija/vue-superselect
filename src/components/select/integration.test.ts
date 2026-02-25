@@ -1,6 +1,6 @@
 import { defineComponent, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { SelectRoot } from './SelectRoot'
 import { SelectInput } from './SelectInput'
 import { SelectContent } from './SelectContent'
@@ -313,9 +313,10 @@ describe('Integration: Cross-feature scenarios', () => {
 
       // Value ref should reflect the change
       expect(wrapper.vm.value).toBe('Banana')
+      const input = wrapper.find('input')
+      expect((input.element as HTMLInputElement).value).toBe('Banana')
 
       // Open again via input to verify selected state
-      const input = wrapper.find('input')
       await input.setValue('')
       await wrapper.vm.$nextTick()
       await wrapper.vm.$nextTick()
@@ -620,6 +621,64 @@ describe('Integration: Cross-feature scenarios', () => {
       await clearBtn!.trigger('click')
 
       expect(wrapper.vm.value).toEqual([])
+    })
+  })
+
+  describe('10. Multiple instances coordination', () => {
+    it('closes the first list when opening a second select', async () => {
+      const wrapper = mount(defineComponent({
+        components: { SelectRoot, SelectInput, SelectContent, SelectOption },
+        setup() {
+          const first = ref<string | null>(null)
+          const second = ref<string | null>(null)
+          return { first, second, fruitOptions }
+        },
+        template: `
+          <div>
+            <SelectRoot v-model="first" id="first-select">
+              <SelectInput aria-label="First select" />
+              <SelectContent>
+                <SelectOption
+                  v-for="opt in fruitOptions"
+                  :key="'first-' + opt.id"
+                  :id="'first-' + opt.id"
+                  :value="opt.value"
+                  :label="opt.label"
+                />
+              </SelectContent>
+            </SelectRoot>
+
+            <SelectRoot v-model="second" id="second-select">
+              <SelectInput aria-label="Second select" />
+              <SelectContent>
+                <SelectOption
+                  v-for="opt in fruitOptions"
+                  :key="'second-' + opt.id"
+                  :id="'second-' + opt.id"
+                  :value="opt.value"
+                  :label="opt.label"
+                />
+              </SelectContent>
+            </SelectRoot>
+          </div>
+        `,
+      }))
+
+      const firstInput = wrapper.find('input[aria-label="First select"]')
+      const secondInput = wrapper.find('input[aria-label="Second select"]')
+
+      await firstInput.trigger('mousedown')
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('#first-select-listbox').exists()).toBe(true)
+      expect(wrapper.find('#second-select-listbox').exists()).toBe(false)
+
+      // One click on second input should switch open listbox ownership.
+      await secondInput.trigger('mousedown')
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.find('#first-select-listbox').exists()).toBe(false)
+      expect(wrapper.find('#second-select-listbox').exists()).toBe(true)
     })
   })
 })

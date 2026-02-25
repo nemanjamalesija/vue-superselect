@@ -849,6 +849,24 @@ describe('useSelect', () => {
       expect(api.isOpen.value).toBe(false)
     })
 
+    it('onMousedown focuses the clicked input without scrolling', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+      const props = api.getInputProps()
+
+      const input = document.createElement('input')
+      const focusSpy = vi.spyOn(input, 'focus')
+      document.body.appendChild(input)
+
+      try {
+        invoke(props.onMousedown, { currentTarget: input })
+        expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true })
+        expect(api.isOpen.value).toBe(true)
+      } finally {
+        input.remove()
+      }
+    })
+
     it('onMousedown when already open does not toggle', () => {
       const wrapper = createWrapper<string>()
       const api = wrapper.vm.api
