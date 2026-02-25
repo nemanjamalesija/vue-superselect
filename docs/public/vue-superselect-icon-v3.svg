@@ -1,0 +1,39 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 128 128"
+  role="img"
+  aria-labelledby="vssIconV3Title vssIconV3Desc"
+>
+  <title id="vssIconV3Title">vue-superselect icon</title>
+  <desc id="vssIconV3Desc">Thin minimal select icon with outline and chevron.</desc>
+
+  <rect
+    x="16"
+    y="16"
+    width="96"
+    height="96"
+    rx="24"
+    fill="none"
+    stroke="#0f172a"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <path
+    d="M40 48H88"
+    fill="none"
+    stroke="#0f172a"
+    stroke-width="6"
+    stroke-linecap="round"
+  />
+
+  <path
+    d="M48 64L64 80L80 64"
+    fill="none"
+    stroke="#2563eb"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

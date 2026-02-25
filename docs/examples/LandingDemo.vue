@@ -94,7 +94,7 @@ const inputId = `landing-demo-input-${useId()}`
 
 .landing-demo--hero .landing-demo__title {
   font-size: 0.9375rem;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 0.625rem;
   text-align: left;
   line-height: 1.4;

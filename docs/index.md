@@ -1,7 +1,7 @@
 ---
 layout: home
 hero:
-  name: "<span class='hero-brand'><img class='hero-brand__icon' src='/vue-superselect/vue-superselect-icon.svg' alt='' />vue-superselect</span>"
+  name: vue-superselect
   text: Headless Vue 3 Select
   tagline: Accessible, typed, zero-styles.
   actions:

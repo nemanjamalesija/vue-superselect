@@ -8,13 +8,14 @@ export default defineConfig({
   description: 'Headless Vue 3 select/combobox component library',
   base: '/vue-superselect/',
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/vue-superselect-icon.svg' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/vue-superselect/vue-superselect-icon-v3.svg' }],
+    ['link', { rel: 'shortcut icon', type: 'image/svg+xml', href: '/vue-superselect/vue-superselect-icon-v3.svg' }],
   ],
   ignoreDeadLinks: true,
   buildEnd: verifySourcesPlugin,
 
   themeConfig: {
-    logo: '/vue-superselect-icon.svg',
+    logo: '/vue-superselect-icon-v3.svg',
     search: {
       provider: 'local',
     },
@@ -66,12 +67,6 @@ export default defineConfig({
           items: [
             { text: 'Components', link: '/api/components' },
             { text: 'Composable', link: '/api/composable' },
-          ],
-        },
-        {
-          text: 'Migration',
-          items: [
-            { text: 'From vue-select', link: '/migration/from-vue-select' },
           ],
         },
       ],
