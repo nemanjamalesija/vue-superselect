@@ -115,5 +115,23 @@ export default defineConfig({
     globals: true,
     environment: 'happy-dom',
     include: ['src/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.ts'],
+      exclude: [
+        'src/**/*.test.ts',
+        'src/**/*.d.ts',
+        'src/env.d.ts',
+        'src/floating-ui-vue.d.ts',
+      ],
+      thresholds: {
+        lines: 90,
+        branches: 90,
+        functions: 90,
+        statements: 90,
+      },
+      reporter: ['text', 'json-summary', 'html'],
+      reportsDirectory: './coverage',
+    },
   },
 })
