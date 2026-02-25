@@ -48,6 +48,7 @@ const languages = ['English', 'French', 'German', 'Italian', 'Japanese', 'Korean
 <style scoped>
 .a11y-demo {
   max-width: 360px;
+  position: relative;
 }
 
 .a11y-hint {

@@ -65,6 +65,7 @@ const drinks: Drink[] = [
 <style scoped>
 .do-demo {
   max-width: 320px;
+  position: relative;
 }
 
 .do-control {

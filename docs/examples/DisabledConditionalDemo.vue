@@ -66,6 +66,7 @@ const products: Product[] = [
 <style scoped>
 .dc-demo {
   max-width: 360px;
+  position: relative;
 }
 
 .dc-control {

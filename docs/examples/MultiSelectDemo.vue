@@ -50,6 +50,7 @@ const display = computed(() =>
 <style scoped>
 .ms-demo {
   max-width: 360px;
+  position: relative;
 }
 
 .ms-control {

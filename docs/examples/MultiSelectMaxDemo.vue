@@ -69,6 +69,7 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
 <style scoped>
 .mm-demo {
   max-width: 400px;
+  position: relative;
 }
 
 .mm-control {

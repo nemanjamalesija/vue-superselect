@@ -43,6 +43,7 @@ const colors = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Indigo', 'Violet']
 <style scoped>
 .hiw-compound {
   max-width: 320px;
+  position: relative;
 }
 
 .hiw-control {

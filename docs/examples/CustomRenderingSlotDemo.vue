@@ -81,6 +81,7 @@ const members: TeamMember[] = [
 <style scoped>
 .cs-demo {
   max-width: 400px;
+  position: relative;
 }
 
 .cs-control {

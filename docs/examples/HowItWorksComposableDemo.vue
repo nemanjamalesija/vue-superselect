@@ -90,6 +90,7 @@ const selectedLabel = computed(() => {
 <style scoped>
 .hiw-composable {
   max-width: 320px;
+  position: relative;
 }
 
 .hiw-control {

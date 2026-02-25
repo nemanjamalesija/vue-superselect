@@ -43,6 +43,7 @@ const frameworks = ['Vue', 'React', 'Svelte', 'Solid', 'Angular', 'Lit', 'Ember'
 <style scoped>
 .pos-demo {
   max-width: 320px;
+  position: relative;
 }
 
 .pos-control {

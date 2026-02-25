@@ -69,6 +69,7 @@ const languages: Language[] = [
 <style scoped>
 .cr-demo {
   max-width: 360px;
+  position: relative;
 }
 
 .cr-control {

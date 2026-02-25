@@ -26,6 +26,7 @@
 <style scoped>
 .migration-before {
   max-width: 400px;
+  position: relative;
 }
 
 .migration-before h4 {
