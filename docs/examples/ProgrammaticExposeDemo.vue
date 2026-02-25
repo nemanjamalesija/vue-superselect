@@ -123,7 +123,6 @@ function selectRandom() {
 <style scoped>
 .pe-demo {
   max-width: 360px;
-  position: relative;
 }
 
 .pe-buttons {

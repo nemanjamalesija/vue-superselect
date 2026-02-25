@@ -41,7 +41,6 @@ const cities = ['Amsterdam', 'Berlin', 'Copenhagen', 'Dublin', 'Edinburgh']
 <style scoped>
 .uc-demo {
   max-width: 320px;
-  position: relative;
 }
 
 .uc-control {

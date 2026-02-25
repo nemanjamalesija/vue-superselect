@@ -82,7 +82,6 @@ const customFilter: FilterFn<unknown> = (item, query) => {
 <style scoped>
 .df-demo {
   max-width: 400px;
-  position: relative;
 }
 
 .df-hint {

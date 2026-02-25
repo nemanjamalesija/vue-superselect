@@ -13,39 +13,33 @@ const options = ['Apple', 'Banana', 'Cherry', 'Grape', 'Orange']
 </script>
 
 <template>
-  <div class="qs-wrapper">
-    <SelectRoot v-model="selected">
-      <SelectControl class="qs-control">
-        <SelectInput placeholder="Choose a fruit..." class="qs-input" />
-      </SelectControl>
-      <SelectContent class="qs-content">
-        <SelectOption
-          v-for="option in options"
-          :key="option"
-          :value="option"
-          :label="option"
-          v-slot="{ isSelected, isHighlighted }"
-          class="qs-option"
-          :class="{
-            'qs-option--selected': isSelected,
-            'qs-option--highlighted': isHighlighted,
-          }"
-        >
-          {{ option }}
-        </SelectOption>
-      </SelectContent>
-    </SelectRoot>
-    <p v-if="selected" class="qs-result">
-      You picked: <strong>{{ selected }}</strong>
-    </p>
-  </div>
+  <SelectRoot v-model="selected">
+    <SelectControl class="qs-control">
+      <SelectInput placeholder="Choose a fruit..." class="qs-input" />
+    </SelectControl>
+    <SelectContent class="qs-content">
+      <SelectOption
+        v-for="option in options"
+        :key="option"
+        :value="option"
+        :label="option"
+        v-slot="{ isSelected, isHighlighted }"
+        class="qs-option"
+        :class="{
+          'qs-option--selected': isSelected,
+          'qs-option--highlighted': isHighlighted,
+        }"
+      >
+        {{ option }}
+      </SelectOption>
+    </SelectContent>
+  </SelectRoot>
+  <p v-if="selected" class="qs-result">
+    You picked: <strong>{{ selected }}</strong>
+  </p>
 </template>
 
 <style scoped>
-.qs-wrapper {
-  position: relative;
-}
-
 .qs-control {
   display: flex;
   align-items: center;

@@ -60,7 +60,6 @@ const setToCherry = () => {
 <style scoped>
 .cs-demo {
   max-width: 360px;
-  position: relative;
 }
 
 .cs-control {

@@ -70,7 +70,6 @@ const members: TeamMember[] = [
 <style scoped>
 .mt-demo {
   max-width: 400px;
-  position: relative;
 }
 
 .mt-control {

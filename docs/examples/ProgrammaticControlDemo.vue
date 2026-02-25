@@ -52,7 +52,6 @@ const cities = ['New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Berlin', 'Tor
 <style scoped>
 .pc-demo {
   max-width: 360px;
-  position: relative;
 }
 
 .pc-buttons {

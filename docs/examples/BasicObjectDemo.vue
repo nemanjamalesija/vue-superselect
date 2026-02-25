@@ -63,7 +63,6 @@ const countries: Country[] = [
 <style scoped>
 .bo-demo {
   max-width: 320px;
-  position: relative;
 }
 
 .bo-control {

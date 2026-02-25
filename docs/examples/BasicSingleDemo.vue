@@ -43,7 +43,6 @@ const fruits = ['Apple', 'Banana', 'Cherry', 'Grape', 'Mango', 'Orange', 'Strawb
 <style scoped>
 .bs-demo {
   max-width: 320px;
-  position: relative;
 }
 
 .bs-control {

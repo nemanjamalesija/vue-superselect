@@ -49,7 +49,6 @@ const cities = [
 <style scoped>
 .cf-demo {
   max-width: 320px;
-  position: relative;
 }
 
 .cf-hint {
