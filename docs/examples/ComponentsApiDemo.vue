@@ -34,66 +34,83 @@ const selected = ref<string[]>([])
 
 <template>
   <div class="components-demo">
-    <SelectRoot
-      v-model="selected"
-      :items="fruits"
-      label-key="name"
-      value-key="name"
-      multiple
-      :max="3"
-    >
-      <SelectControl class="demo-control" v-slot="{ selectedItems, removeItem }">
-        <SelectTag
-          v-for="item in selectedItems"
-          :key="String(item.value)"
-          :value="item.value"
-          :label="item.label"
-          @remove="removeItem(item.value)"
-          class="demo-tag"
-        />
-        <SelectInput placeholder="Pick up to 3 fruits..." class="demo-input" aria-label="Fruit picker" />
-        <SelectClear class="demo-clear" aria-label="Clear selection">
-          <span aria-hidden="true">&times;</span>
-        </SelectClear>
-        <SelectTrigger class="demo-trigger" aria-label="Toggle dropdown">
-          <span aria-hidden="true">&#9662;</span>
-        </SelectTrigger>
-      </SelectControl>
-
-      <SelectContent class="demo-content">
-        <SelectOption
-          v-for="fruit in fruits"
-          :key="fruit.name"
-          :value="fruit"
-          :label="fruit.name"
-          class="demo-option"
-          v-slot="{ selected: isSelected }"
+    <div class="components-layout">
+      <div class="components-select">
+        <SelectRoot
+          v-model="selected"
+          :items="fruits"
+          label-key="name"
+          value-key="name"
+          multiple
+          :max="3"
         >
-          <span class="demo-option__emoji">{{ fruit.emoji }}</span>
-          <span class="demo-option__label">{{ fruit.name }}</span>
-          <span v-if="isSelected" class="demo-option__check" aria-hidden="true">&#10003;</span>
-        </SelectOption>
-        <SelectEmpty class="demo-empty">No fruits found</SelectEmpty>
-      </SelectContent>
+          <SelectControl class="demo-control" v-slot="{ selectedItems, removeItem }">
+            <SelectTag
+              v-for="item in selectedItems"
+              :key="String(item.value)"
+              :value="item.value"
+              :label="item.label"
+              @remove="removeItem(item.value)"
+              class="demo-tag"
+            />
+            <SelectInput placeholder="Pick up to 3 fruits..." class="demo-input" aria-label="Fruit picker" />
+            <SelectClear class="demo-clear" aria-label="Clear selection">
+              <span aria-hidden="true">&times;</span>
+            </SelectClear>
+            <SelectTrigger class="demo-trigger" aria-label="Toggle dropdown">
+              <span aria-hidden="true">&#9662;</span>
+            </SelectTrigger>
+          </SelectControl>
 
-      <SelectLiveRegion />
-    </SelectRoot>
+          <SelectContent class="demo-content">
+            <SelectOption
+              v-for="fruit in fruits"
+              :key="fruit.name"
+              :value="fruit"
+              :label="fruit.name"
+              class="demo-option"
+              v-slot="{ selected: isSelected }"
+            >
+              <span class="demo-option__emoji">{{ fruit.emoji }}</span>
+              <span class="demo-option__label">{{ fruit.name }}</span>
+              <span v-if="isSelected" class="demo-option__check" aria-hidden="true">&#10003;</span>
+            </SelectOption>
+            <SelectEmpty class="demo-empty">No fruits found</SelectEmpty>
+          </SelectContent>
 
-    <p v-if="selected.length" class="demo-result">
-      Selected: {{ selected.join(', ') }}
-    </p>
+          <SelectLiveRegion />
+        </SelectRoot>
+      </div>
+
+      <p class="demo-result">
+        Selected: <strong>{{ selected.length ? selected.join(', ') : 'none' }}</strong>
+      </p>
+    </div>
+
     <p class="demo-note">This styling is for demos only -- the library ships zero CSS</p>
   </div>
 </template>
 
 <style scoped>
 .components-demo {
-  max-width: 400px;
+  max-width: 100%;
+}
+
+.components-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.components-select {
+  min-width: 0;
+  position: relative;
 }
 
 .demo-control {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 4px;
   border: 1px solid var(--vp-c-divider);
@@ -102,6 +119,7 @@ const selected = ref<string[]>([])
   background: var(--vp-c-bg);
   min-height: 42px;
   position: relative;
+  overflow-x: auto;
 }
 
 .demo-control:focus-within {
@@ -118,6 +136,8 @@ const selected = ref<string[]>([])
   border-radius: 4px;
   padding: 2px 6px;
   font-size: 0.8125rem;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .demo-tag button {
@@ -131,8 +151,8 @@ const selected = ref<string[]>([])
 }
 
 .demo-input {
-  flex: 1;
-  min-width: 80px;
+  flex: 1 0 140px;
+  min-width: 140px;
   border: none;
   outline: none;
   font-size: 0.9375rem;
@@ -146,6 +166,7 @@ const selected = ref<string[]>([])
 
 .demo-clear,
 .demo-trigger {
+  flex: 0 0 auto;
   background: none;
   border: none;
   cursor: pointer;
@@ -218,8 +239,20 @@ const selected = ref<string[]>([])
 }
 
 .demo-result {
-  margin-top: 8px;
+  margin-top: 0.5rem;
+  flex: 1;
+  min-width: 0;
   font-size: 0.875rem;
   color: var(--vp-c-text-2);
+}
+
+@media (max-width: 720px) {
+  .components-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .demo-result {
+    margin-top: 0.75rem;
+  }
 }
 </style>
