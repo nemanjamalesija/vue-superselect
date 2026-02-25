@@ -1,6 +1,10 @@
 # vue-superselect
 
-Headless Vue 3 select/combobox component library.
+Headless, accessible, TypeScript-first select/combobox for Vue 3.
+
+Zero runtime CSS. Full keyboard navigation. WAI-ARIA combobox pattern. Dual API: compound components or `useSelect()` composable.
+
+**[Documentation](https://nemanjamalesija.github.io/vue-superselect/)** | **[GitHub](https://github.com/nemanjamalesija/vue-superselect)**
 
 ## Install
 
@@ -8,178 +12,122 @@ Headless Vue 3 select/combobox component library.
 npm install vue-superselect
 ```
 
-## What Works Today
+Vue 3.5+ required. `@floating-ui/vue` is an optional peer dependency for smart dropdown positioning.
 
-- Single-select with filtering, keyboard navigation, clear, and live region updates.
-- Multi-select via `multiple` with array `v-model`.
-- Tag rendering via `SelectTag` + `SelectControl` scoped slot (`selectedItems`, `removeItem`).
-- Tag removal via remove button or Backspace (when input query is empty).
-- Multi-select clear-all behavior via `SelectClear`.
-- `max` selection limits (at max, unselected options are disabled).
-- `hideSelected` to hide selected options from the dropdown.
-
-## Quick Start (Single Select)
+## Quick Start
 
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
   SelectRoot,
+  SelectControl,
   SelectInput,
   SelectContent,
   SelectOption,
-  SelectControl,
-  SelectTrigger,
-  SelectClear,
-  SelectEmpty,
-  SelectLiveRegion,
 } from 'vue-superselect'
 
-const value = ref<string | null>(null)
-const options = [
-  { id: 'a', label: 'Apple' },
-  { id: 'b', label: 'Banana' },
-  { id: 'c', label: 'Cherry' },
-]
+const selected = ref<string | null>(null)
+const fruits = ['Apple', 'Banana', 'Cherry', 'Grape', 'Orange']
 </script>
 
 <template>
-  <SelectRoot v-model="value" id="fruits">
+  <SelectRoot v-model="selected">
     <SelectControl>
-      <SelectInput placeholder="Search..." />
-      <SelectTrigger>Toggle</SelectTrigger>
-      <SelectClear>Clear</SelectClear>
+      <SelectInput placeholder="Pick a fruit..." />
     </SelectControl>
-
     <SelectContent>
       <SelectOption
-        v-for="opt in options"
-        :key="opt.id"
-        :id="opt.id"
-        :value="opt.label"
-        :label="opt.label"
+        v-for="fruit in fruits"
+        :key="fruit"
+        :value="fruit"
+        :label="fruit"
       >
-        {{ opt.label }}
+        {{ fruit }}
       </SelectOption>
-      <SelectEmpty>No results</SelectEmpty>
-    </SelectContent>
-
-    <SelectLiveRegion />
-  </SelectRoot>
-</template>
-```
-
-## Quick Start (Multi Select With max + hideSelected)
-
-```vue
-<script setup lang="ts">
-import { ref } from 'vue'
-import {
-  SelectRoot,
-  SelectControl,
-  SelectInput,
-  SelectTag,
-  SelectClear,
-  SelectContent,
-  SelectOption,
-  SelectEmpty,
-} from 'vue-superselect'
-
-const values = ref<string[]>([])
-const options = [
-  { id: 'nm', label: 'Nina Maric' },
-  { id: 'tk', label: 'Theo King' },
-  { id: 'as', label: 'Ava Stone' },
-]
-</script>
-
-<template>
-  <SelectRoot
-    v-model="values"
-    multiple
-    :max="2"
-    :hideSelected="true"
-    id="team"
-  >
-    <SelectControl v-slot="{ selectedItems, removeItem }">
-      <SelectTag
-        v-for="item in selectedItems"
-        :key="String(item.value)"
-        :value="item.value"
-        :label="item.label"
-        @remove="removeItem"
-      />
-      <SelectInput placeholder="Pick teammates" />
-      <SelectClear v-if="values.length > 0">Clear all</SelectClear>
-    </SelectControl>
-
-    <SelectContent>
-      <SelectOption
-        v-for="opt in options"
-        :key="opt.id"
-        :id="`team-${opt.id}`"
-        :value="opt.id"
-        :label="opt.label"
-      >
-        {{ opt.label }}
-      </SelectOption>
-      <SelectEmpty>No results</SelectEmpty>
     </SelectContent>
   </SelectRoot>
 </template>
 ```
 
-## Core Components
+The library ships zero CSS. Add your own classes and styles.
 
-- `SelectRoot`
-- `SelectControl`
-- `SelectInput`
-- `SelectTrigger`
-- `SelectClear`
-- `SelectContent`
-- `SelectOption`
-- `SelectTag`
-- `SelectEmpty`
-- `SelectLiveRegion`
+## Features
 
-## Composable API (Advanced)
+- **Headless**: no shipped CSS, full control over rendering via scoped slots
+- **Accessible**: WAI-ARIA combobox pattern, keyboard navigation, screen reader announcements
+- **TypeScript**: strict mode, full generic inference, typed props and slots
+- **Single and multi-select**: `v-model` with `multiple`, tags, max limits, `hideSelected`
+- **Filtering**: built-in case-insensitive filter, custom filter functions, debounce, IME-safe
+- **Positioning**: optional `@floating-ui/vue` integration with auto-flip, teleport support
+- **Composable API**: `useSelect<T>()` with prop getters for full DOM control
+- **Tree-shakeable**: `sideEffects: false`, ESM + CJS builds, `/*#__PURE__*/` annotations
+
+## Components
+
+| Component | Purpose |
+|-----------|---------|
+| `SelectRoot` | State container. Manages selection, filtering, keyboard, and ARIA. |
+| `SelectControl` | Wrapper around the input/tags area. |
+| `SelectInput` | Search/filter input field. |
+| `SelectContent` | Dropdown container with positioning. |
+| `SelectOption` | Individual selectable option with scoped slot props. |
+| `SelectTag` | Removable tag for multi-select. |
+| `SelectTrigger` | Toggle button for the dropdown. |
+| `SelectClear` | Button to clear the current selection. |
+| `SelectEmpty` | Shown when no options match the filter. |
+| `SelectLiveRegion` | Screen reader announcements. |
+
+## Composable API
+
+For full control over the rendered DOM:
 
 ```ts
 import { useSelect } from 'vue-superselect'
 
-const select = useSelect({
-  id: 'fruits',
-  defaultValue: null,
-  multiple: false,
+const {
+  getRootProps,
+  getInputProps,
+  getListboxProps,
+  getOptionProps,
+  isOpen,
+  selectedValue,
+  visibleItems,
+} = useSelect({
+  items: options,
+  labelKey: 'label',
+  valueKey: 'id',
 })
-
-const rootProps = select.getRootProps()
-const inputProps = select.getInputProps()
-const listboxProps = select.getListboxProps()
 ```
 
-## Playground (Local)
+Spread prop getters on your own elements:
 
-```bash
-npm run playground
+```vue-html
+<div v-bind="getRootProps()">
+  <input v-bind="getInputProps()" />
+  <ul v-bind="getListboxProps()">
+    <li v-for="item in visibleItems" :key="item.id" v-bind="getOptionProps(item)">
+      {{ item.label }}
+    </li>
+  </ul>
+</div>
 ```
 
-Then open:
+## Keyboard Navigation
 
-- `#/multi-all-features` for a full multi-select capability demo
+| Key | Action |
+|-----|--------|
+| Arrow Down/Up | Navigate options |
+| Enter | Select highlighted option |
+| Escape | Close dropdown, clear input |
+| Tab | Close dropdown, move focus |
+| Backspace | Remove last tag (multi-select, empty input) |
+| Home/End | Jump to first/last option |
 
-The playground lives in `playground/` and is not part of the published package.
+## Browser Support
 
-## Accessibility
+Modern browsers (Chrome, Firefox, Safari, Edge). No IE11.
 
-- WAI-ARIA combobox/listbox roles and attributes.
-- Virtual focus via `aria-activedescendant`.
-- Keyboard navigation: Arrow keys, Home/End, Enter, Escape.
-- Live region announcements for open/close, result count, and multi-select add/remove.
+## License
 
-## Current Status
-
-This project is in **alpha** (`0.1.0-alpha.0`).
-
-The package is not published yet. Use the local playground to test current
-behavior while development continues.
+MIT
