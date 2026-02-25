@@ -18,44 +18,55 @@ const display = computed(() =>
 
 <template>
   <div class="ms-demo">
-    <SelectRoot v-model="selected" multiple id="docs-multi-basic">
-      <div class="ms-select">
-        <SelectControl class="ms-control">
-          <SelectInput placeholder="Select skills..." class="ms-input" />
-        </SelectControl>
-        <SelectContent class="ms-content">
-          <SelectOption
-            v-for="skill in skills"
-            :key="skill"
-            :value="skill"
-            :label="skill"
-            v-slot="{ selected: isSelected, active }"
-            class="ms-option"
-            :class="{
-              'ms-option--selected': isSelected,
-              'ms-option--active': active,
-            }"
-          >
-            <span class="ms-check">{{ isSelected ? '&#10003;' : '' }}</span>
-            {{ skill }}
-          </SelectOption>
-        </SelectContent>
-      </div>
-    </SelectRoot>
-    <p class="ms-result">
-      Selected ({{ selected.length }}): <strong>{{ display || 'none' }}</strong>
-    </p>
+    <div class="ms-layout">
+      <SelectRoot v-model="selected" multiple id="docs-multi-basic">
+        <div class="ms-select">
+          <SelectControl class="ms-control">
+            <SelectInput placeholder="Select skills..." class="ms-input" />
+          </SelectControl>
+          <SelectContent class="ms-content">
+            <SelectOption
+              v-for="skill in skills"
+              :key="skill"
+              :value="skill"
+              :label="skill"
+              v-slot="{ selected: isSelected, active }"
+              class="ms-option"
+              :class="{
+                'ms-option--selected': isSelected,
+                'ms-option--active': active,
+              }"
+            >
+              <span class="ms-check">{{ isSelected ? '&#10003;' : '' }}</span>
+              {{ skill }}
+            </SelectOption>
+          </SelectContent>
+        </div>
+      </SelectRoot>
+      <p class="ms-result">
+        Selected ({{ selected.length }}): <strong>{{ display || 'none' }}</strong>
+      </p>
+    </div>
     <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 
 <style scoped>
 .ms-demo {
-  max-width: 360px;
+  max-width: 100%;
+}
+
+.ms-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .ms-select {
   position: relative;
+  width: 360px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .ms-control {
@@ -133,8 +144,20 @@ const display = computed(() =>
 }
 
 .ms-result {
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
+  flex: 1;
+  min-width: 0;
   font-size: 0.875rem;
   color: var(--vp-c-text-2);
+}
+
+@media (max-width: 900px) {
+  .ms-layout {
+    display: block;
+  }
+
+  .ms-result {
+    margin-top: 0.75rem;
+  }
 }
 </style>

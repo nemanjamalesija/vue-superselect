@@ -9,7 +9,7 @@ import {
 } from 'vue-superselect'
 
 const selected = ref<string | null>(null)
-const fruits = ['Apple', 'Banana', 'Cherry', 'Grape', 'Mango', 'Orange', 'Strawberry']
+const fruits = ['Apple', 'Banana', 'Cherry', 'Orange', 'Mango']
 </script>
 
 <template>

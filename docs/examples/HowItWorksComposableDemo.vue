@@ -56,10 +56,11 @@ const selectedLabel = computed(() => {
 
 <template>
   <div class="hiw-composable">
-    <div v-bind="getRootProps()">
+    <div v-bind="getRootProps({ class: 'hiw-root' })">
       <div class="hiw-control">
         <input
           v-bind="getInputProps()"
+          aria-label="Pick a color"
           placeholder="Pick a color..."
           class="hiw-input"
         />
@@ -90,6 +91,10 @@ const selectedLabel = computed(() => {
 <style scoped>
 .hiw-composable {
   max-width: 320px;
+}
+
+.hiw-root {
+  position: relative;
 }
 
 .hiw-control {

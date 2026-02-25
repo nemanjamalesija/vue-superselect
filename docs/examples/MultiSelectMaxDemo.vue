@@ -12,7 +12,7 @@ import {
 
 const selected = ref<string[]>([])
 const maxSelections = 3
-const toppings = ['Pepperoni', 'Mushrooms', 'Onions', 'Sausage', 'Peppers', 'Olives', 'Pineapple', 'Bacon']
+const toppings = ['Pepper', 'Mushroom', 'Onion', 'Olive', 'Tomato']
 
 const isAtMax = computed(() => selected.value.length >= maxSelections)
 </script>
@@ -40,8 +40,8 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
           class="mm-input"
         />
         <SelectClear
-          v-if="selected.length > 0"
           class="mm-clear"
+          :class="{ 'mm-clear--hidden': selected.length === 0 }"
           @mousedown.prevent
         >
           Clear
@@ -81,7 +81,7 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
 .mm-control {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
@@ -89,6 +89,7 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
   background: var(--vp-c-bg);
   transition: border-color 0.2s;
   min-height: 40px;
+  overflow-x: auto;
 }
 
 .mm-control:focus-within {
@@ -105,6 +106,8 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
   border-radius: 4px;
   font-size: 0.8125rem;
   color: var(--vp-c-brand-1);
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .mm-tag [data-part="remove"] {
@@ -128,8 +131,8 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
 }
 
 .mm-input {
-  flex: 1;
-  min-width: 80px;
+  flex: 1 0 110px;
+  min-width: 110px;
   border: none;
   outline: none;
   font-size: 0.9375rem;
@@ -143,6 +146,7 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
 }
 
 .mm-clear {
+  flex: 0 0 auto;
   padding: 0.25rem 0.5rem;
   border: 1px solid var(--vp-c-divider);
   border-radius: 4px;
@@ -151,6 +155,11 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
   font-size: 0.75rem;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
+}
+
+.mm-clear--hidden {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .mm-clear:hover {
