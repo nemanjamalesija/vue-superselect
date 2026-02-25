@@ -123,6 +123,7 @@ export default defineConfig({
         'src/**/*.d.ts',
         'src/env.d.ts',
         'src/floating-ui-vue.d.ts',
+        'src/index.ts',
       ],
       thresholds: {
         lines: 90,

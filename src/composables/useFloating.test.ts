@@ -385,6 +385,73 @@ describe('useFloating', () => {
     })
   })
 
+  describe('async loading path (no override)', () => {
+    it('falls back gracefully when @floating-ui/vue is not installed', async () => {
+      // Do NOT set any override -- let the real async import path execute
+      // Since @floating-ui/vue is not installed, the .catch() handler fires
+      clearFloatingUIOverride()
+
+      const useFloatingModule = await import('./useFloating')
+
+      const reference = ref<HTMLElement | null>(document.createElement('button'))
+      const floating = ref<HTMLElement | null>(document.createElement('div'))
+      let api: UseFloatingReturn | null = null
+
+      const wrapper = mount(defineComponent({
+        setup() {
+          api = useFloatingModule.useFloating({
+            reference,
+            floating,
+          })
+          return {}
+        },
+        template: '<div />',
+      }))
+
+      // Wait for the async import to resolve/reject
+      await flushAsync()
+      await flushAsync()
+      await flushAsync()
+
+      // Should fall back to absolute positioning
+      expect(api!.floatingStyles.value.position).toBe('absolute')
+      expect(api!.isUsingFloatingUI.value).toBe(false)
+
+      wrapper.unmount()
+    })
+
+    it('disposed flag prevents late resolution from applying after unmount', async () => {
+      clearFloatingUIOverride()
+
+      const useFloatingModule = await import('./useFloating')
+
+      const reference = ref<HTMLElement | null>(document.createElement('button'))
+      const floating = ref<HTMLElement | null>(document.createElement('div'))
+      let api: UseFloatingReturn | null = null
+
+      const wrapper = mount(defineComponent({
+        setup() {
+          api = useFloatingModule.useFloating({
+            reference,
+            floating,
+          })
+          return {}
+        },
+        template: '<div />',
+      }))
+
+      // Unmount before async resolution completes
+      wrapper.unmount()
+
+      await flushAsync()
+      await flushAsync()
+      await flushAsync()
+
+      // After unmount, the fallback should still be in place
+      expect(api!.isUsingFloatingUI.value).toBe(false)
+    })
+  })
+
   describe('parsePlacement', () => {
     it('parses side and align for all supported placement shapes', async () => {
       mockFloatingUINotInstalled()

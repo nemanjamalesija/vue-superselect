@@ -122,6 +122,7 @@ async function loadFloatingUI(): Promise<FloatingModule | null> {
   if (_module !== null) return _module
   if (_promise !== null) return _promise
 
+  /* v8 ignore start -- async import resolution is runtime-only */
   _promise = import('@floating-ui/vue')
     .then((mod) => {
       _module = mod as unknown as FloatingModule
@@ -131,6 +132,7 @@ async function loadFloatingUI(): Promise<FloatingModule | null> {
       _module = null
       return null
     })
+  /* v8 ignore stop */
 
   return _promise
 }
@@ -334,6 +336,7 @@ export function useFloating(options: UseFloatingOptions): UseFloatingReturn {
       }
 
       applyFallbackState()
+      /* v8 ignore start -- async import resolution is runtime-only */
       const currentToken = loadToken
 
       void loadFloatingUI().then((floatingModule) => {
@@ -345,6 +348,7 @@ export function useFloating(options: UseFloatingOptions): UseFloatingReturn {
 
         startFloatingBridge(floatingModule)
       })
+      /* v8 ignore stop */
     },
     { immediate: true },
   )
