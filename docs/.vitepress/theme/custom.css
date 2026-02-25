@@ -194,15 +194,23 @@
   width: 100%;
   max-width: none;
   box-sizing: border-box;
-  padding-left: clamp(0.75rem, 2vw, 1.5rem);
+  padding: 0 clamp(0.75rem, 2vw, 1.5rem);
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
 }
 
-.VPHero.has-image .container {
-  align-items: flex-start;
-  gap: clamp(2.5rem, 6vw, 5rem);
+.VPHomeHero.VPHero.has-image .main {
+  order: 1;
+}
+
+.VPHomeHero.VPHero.has-image .image {
+  order: 2;
+  margin: 1.5rem 0 0;
+}
+
+.VPHomeHero.VPHero.has-image .container {
+  gap: clamp(1.5rem, 4vw, 2.5rem);
 }
 
 .VPHomeFeatures {
@@ -211,10 +219,23 @@
 
 @media (min-width: 960px) {
   .landing-hero-demo {
+    padding-left: clamp(0.75rem, 2vw, 1.5rem);
+    padding-right: 0;
     padding-top: 0.75rem;
+    justify-content: flex-end;
+    align-items: flex-start;
   }
 
-  .VPHero.has-image .image-container {
+  .VPHomeHero.VPHero.has-image .image {
+    margin: 0;
+  }
+
+  .VPHomeHero.VPHero.has-image .container {
+    align-items: flex-start;
+    gap: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .VPHomeHero.VPHero.has-image .image-container {
     transform: none;
     justify-content: flex-end;
     align-items: flex-start;

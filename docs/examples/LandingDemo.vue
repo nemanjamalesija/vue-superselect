@@ -186,4 +186,16 @@ const inputId = `landing-demo-input-${useId()}`
   margin-top: 0.625rem;
   font-size: 0.8125rem;
 }
+
+@media (max-width: 959px) {
+  .landing-demo--hero {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .landing-demo--hero .landing-demo__title,
+  .landing-demo--hero .landing-demo__result {
+    text-align: center;
+  }
+}
 </style>
