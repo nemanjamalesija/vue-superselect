@@ -178,4 +178,84 @@ describe('useKeyboard', () => {
     onKeyDown(event('ArrowDown'))
     expect(activeId.value).toBe('c')
   })
+
+  it('stays at index 0 with loop=false and ArrowUp from first item', () => {
+    const items = ref<CollectionItem<string>[]>([
+      { id: 'a', value: 'Apple', label: 'Apple', disabled: false },
+      { id: 'b', value: 'Banana', label: 'Banana', disabled: false },
+    ])
+    const { activeId, onKeyDown } = useKeyboard({ items, loop: false })
+
+    const event = (key: string) => ({ key, preventDefault: vi.fn() })
+
+    onKeyDown(event('ArrowDown'))
+    expect(activeId.value).toBe('a')
+
+    onKeyDown(event('ArrowUp'))
+    expect(activeId.value).toBe('a')
+  })
+
+  it('setActiveById with non-existent id sets activeId to null', () => {
+    const items = createItems()
+    const { activeId, setActiveById, onKeyDown } = useKeyboard({ items })
+
+    const event = (key: string) => ({ key, preventDefault: vi.fn() })
+    onKeyDown(event('ArrowDown'))
+    expect(activeId.value).toBe('a')
+
+    setActiveById('nonexistent')
+    expect(activeId.value).toBeNull()
+  })
+
+  it('setActiveById with null sets activeId to null', () => {
+    const items = createItems()
+    const { activeId, setActiveById, onKeyDown } = useKeyboard({ items })
+
+    const event = (key: string) => ({ key, preventDefault: vi.fn() })
+    onKeyDown(event('ArrowDown'))
+    expect(activeId.value).toBe('a')
+
+    setActiveById(null)
+    expect(activeId.value).toBeNull()
+  })
+
+  it('calls onEscapeSecond when Escape is pressed while isOpen is false', () => {
+    const items = createItems()
+    const isOpen = ref(false)
+    const onEscape = vi.fn()
+    const onEscapeSecond = vi.fn()
+
+    const { onKeyDown } = useKeyboard({ items, isOpen, onEscape, onEscapeSecond })
+
+    onKeyDown({ key: 'Escape', preventDefault: vi.fn() })
+
+    expect(onEscape).not.toHaveBeenCalled()
+    expect(onEscapeSecond).toHaveBeenCalledOnce()
+  })
+
+  it('calls onEscape when isOpen is not provided (backward compat)', () => {
+    const items = createItems()
+    const onEscape = vi.fn()
+
+    const { onKeyDown } = useKeyboard({ items, onEscape })
+
+    const event = { key: 'Escape', preventDefault: vi.fn() }
+    onKeyDown(event)
+
+    expect(onEscape).toHaveBeenCalledOnce()
+    expect(event.preventDefault).toHaveBeenCalledOnce()
+  })
+
+  it('handles empty items list without crashing', () => {
+    const items = ref<CollectionItem<string>[]>([])
+    const { activeId, onKeyDown } = useKeyboard({ items })
+
+    const event = (key: string) => ({ key, preventDefault: vi.fn() })
+
+    onKeyDown(event('ArrowDown'))
+    expect(activeId.value).toBeNull()
+
+    onKeyDown(event('ArrowUp'))
+    expect(activeId.value).toBeNull()
+  })
 })

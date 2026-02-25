@@ -69,4 +69,36 @@ describe('useA11y', () => {
 
     expect(listboxAttrs.value['aria-multiselectable']).toBe(true)
   })
+
+  it('reflects disabled ref in comboboxAttrs aria-disabled', async () => {
+    const isOpen = ref(false)
+    const activeId = ref<string | null>(null)
+    const disabled = ref(false)
+
+    const { comboboxAttrs } = useA11y({
+      baseId: 'select',
+      isOpen,
+      activeId,
+      disabled,
+    })
+
+    expect(comboboxAttrs.value['aria-disabled']).toBeUndefined()
+
+    disabled.value = true
+
+    expect(comboboxAttrs.value['aria-disabled']).toBe(true)
+  })
+
+  it('omits aria-disabled when disabled option is not provided', () => {
+    const isOpen = ref(false)
+    const activeId = ref<string | null>(null)
+
+    const { comboboxAttrs } = useA11y({
+      baseId: 'select',
+      isOpen,
+      activeId,
+    })
+
+    expect(comboboxAttrs.value['aria-disabled']).toBeUndefined()
+  })
 })

@@ -99,4 +99,42 @@ describe('useCollection', () => {
       warnSpy.mockRestore()
     })
   })
+
+  it('getItemById returns undefined for non-existent id', () => {
+    const { getItemById, registerItem } = useCollection<string>()
+
+    registerItem({ id: 'a', value: 'Apple', label: 'Apple', disabled: false })
+
+    expect(getItemById('nonexistent')).toBeUndefined()
+  })
+
+  it('getItemById returns the correct item', () => {
+    const { getItemById, registerItem } = useCollection<string>()
+
+    registerItem({ id: 'a', value: 'Apple', label: 'Apple', disabled: false })
+    registerItem({ id: 'b', value: 'Banana', label: 'Banana', disabled: false })
+
+    const item = getItemById('b')
+    expect(item?.value).toBe('Banana')
+  })
+
+  it('updateItem with non-existent id does not crash or modify collection', () => {
+    const { items, registerItem, updateItem } = useCollection<string>()
+
+    registerItem({ id: 'a', value: 'Apple', label: 'Apple', disabled: false })
+
+    expect(() => updateItem('nonexistent', { label: 'Nope' })).not.toThrow()
+    expect(items.value).toHaveLength(1)
+    expect(items.value[0]?.label).toBe('Apple')
+  })
+
+  it('handles empty collection operations gracefully', () => {
+    const { items, orderedItems, getItemById, updateItem, unregisterItem } = useCollection<string>()
+
+    expect(items.value).toEqual([])
+    expect(orderedItems.value).toEqual([])
+    expect(getItemById('any')).toBeUndefined()
+    expect(() => updateItem('any', { label: 'test' })).not.toThrow()
+    expect(() => unregisterItem('any')).not.toThrow()
+  })
 })

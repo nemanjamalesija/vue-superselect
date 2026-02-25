@@ -826,4 +826,111 @@ describe('useSelect', () => {
       expect(typeof api.removeLast).toBe('function')
     })
   })
+
+  describe('getInputProps edge cases', () => {
+    it('handles null event target in onInput gracefully', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      const props = api.getInputProps()
+      const inputEvent = { target: null }
+
+      expect(() => invoke(props.onInput, inputEvent)).not.toThrow()
+      expect(api.query.value).toBe('')
+    })
+
+    it('onMousedown when disabled does not open', () => {
+      const wrapper = createWrapper<string>({ disabled: ref(true) })
+      const api = wrapper.vm.api
+
+      const props = api.getInputProps()
+      invoke(props.onMousedown, {})
+
+      expect(api.isOpen.value).toBe(false)
+    })
+
+    it('onMousedown when already open does not toggle', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.open()
+      expect(api.isOpen.value).toBe(true)
+
+      const props = api.getInputProps()
+      invoke(props.onMousedown, {})
+
+      expect(api.isOpen.value).toBe(true)
+    })
+
+    it('onInput opens dropdown when closed', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      expect(api.isOpen.value).toBe(false)
+
+      const props = api.getInputProps()
+      invoke(props.onInput, { target: { value: 'a' } })
+
+      expect(api.isOpen.value).toBe(true)
+      expect(api.query.value).toBe('a')
+    })
+
+    it('onInput when already open just updates query', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.open()
+      const props = api.getInputProps()
+      invoke(props.onInput, { target: { value: 'hello' } })
+
+      expect(api.query.value).toBe('hello')
+      expect(api.isOpen.value).toBe(true)
+    })
+  })
+
+  describe('getOptionProps edge cases', () => {
+    it('onMousemove for disabled items does not change highlight', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      api.registerItem(itemApple)
+      api.registerItem(itemBanana)
+
+      const disabledItem: CollectionItem<string> = {
+        id: 'd',
+        value: 'Disabled',
+        label: 'Disabled',
+        disabled: true,
+      }
+      api.registerItem(disabledItem)
+
+      api.open()
+      const inputProps = api.getInputProps()
+      invoke(inputProps.onKeydown, { key: 'ArrowDown', preventDefault: vi.fn() })
+      const currentActiveId = api.activeId.value
+
+      const disabledProps = api.getOptionProps(disabledItem)
+      invoke(disabledProps.onMousemove, {})
+
+      expect(api.activeId.value).toBe(currentActiveId)
+    })
+
+    it('onClick for disabled items does not select', () => {
+      const wrapper = createWrapper<string>()
+      const api = wrapper.vm.api
+
+      const disabledItem: CollectionItem<string> = {
+        id: 'd',
+        value: 'Disabled',
+        label: 'Disabled',
+        disabled: true,
+      }
+      api.registerItem(disabledItem)
+
+      const props = api.getOptionProps(disabledItem)
+      invoke(props.onClick, {})
+
+      expect(api.value.value).toBeNull()
+    })
+  })
 })

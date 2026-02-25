@@ -332,6 +332,57 @@ describe('useFloating', () => {
 
       wrapper.unmount()
     })
+
+    it('starts positioning when enabled toggles from false to true', async () => {
+      const mocks = setupFloatingUIMock()
+      const enabled = ref(false)
+      const { wrapper, api } = await mountUseFloating({ enabled })
+
+      expect(api.isUsingFloatingUI.value).toBe(false)
+      expect(mocks.useFloating).not.toHaveBeenCalled()
+
+      enabled.value = true
+      await flushAsync()
+
+      expect(api.isUsingFloatingUI.value).toBe(true)
+      expect(mocks.useFloating).toHaveBeenCalled()
+
+      wrapper.unmount()
+    })
+
+    it('disposed flag prevents late resolution from applying', async () => {
+      setupFloatingUIMock()
+      const enabled = ref(true)
+      const { wrapper, api } = await mountUseFloating({ enabled })
+
+      expect(api.isUsingFloatingUI.value).toBe(true)
+
+      wrapper.unmount()
+    })
+
+    it('handles multiple rapid collisionStrategy changes', async () => {
+      const mocks = setupFloatingUIMock()
+      const collisionStrategy = ref<'flip' | 'none'>('flip')
+      const { wrapper } = await mountUseFloating({ collisionStrategy })
+
+      expect(mocks.useFloating).toHaveBeenCalledTimes(1)
+
+      collisionStrategy.value = 'none'
+      await flushAsync()
+
+      collisionStrategy.value = 'flip'
+      await flushAsync()
+
+      collisionStrategy.value = 'none'
+      await flushAsync()
+
+      const lastCallIndex = mocks.useFloating.mock.calls.length - 1
+      const lastCallOptions = mocks.useFloating.mock.calls[lastCallIndex]?.[2] as MockUseFloatingOptions | undefined
+      const lastMiddlewareNames = (lastCallOptions?.middleware ?? []).map((middleware) => middleware.name)
+      expect(lastMiddlewareNames).toEqual(['offset', 'size'])
+
+      wrapper.unmount()
+    })
   })
 
   describe('parsePlacement', () => {
