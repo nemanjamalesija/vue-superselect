@@ -1,12 +1,14 @@
 import { defineConfig } from 'vitepress'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import { resolve } from 'node:path'
+import { verifySourcesPlugin } from './plugins/verify-sources'
 
 export default defineConfig({
   title: 'vue-superselect',
   description: 'Headless Vue 3 select/combobox component library',
   base: '/vue-superselect/',
   ignoreDeadLinks: true,
+  buildEnd: verifySourcesPlugin,
 
   themeConfig: {
     search: {
