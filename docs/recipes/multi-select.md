@@ -12,6 +12,55 @@ import MultiSelectMaxDemo from '../examples/MultiSelectMaxDemo.vue'
 
 Add `multiple` to `SelectRoot` and bind v-model to an array.
 
+### API Setup (Multi-Select)
+
+:::tabs key:api-style
+== Composition API
+```vue
+<script setup>
+import { ref } from 'vue'
+import {
+  SelectRoot,
+  SelectControl,
+  SelectInput,
+  SelectContent,
+  SelectOption,
+} from 'vue-superselect'
+
+const selected = ref([])
+const skills = ['Vue', 'React', 'Svelte', 'Solid', 'Angular']
+</script>
+```
+== Options API
+```vue
+<script>
+import {
+  SelectRoot,
+  SelectControl,
+  SelectInput,
+  SelectContent,
+  SelectOption,
+} from 'vue-superselect'
+
+export default {
+  components: {
+    SelectRoot,
+    SelectControl,
+    SelectInput,
+    SelectContent,
+    SelectOption,
+  },
+  data() {
+    return {
+      selected: [],
+      skills: ['Vue', 'React', 'Svelte', 'Solid', 'Angular'],
+    }
+  },
+}
+</script>
+```
+:::
+
 <DemoBox title="Basic Multi-Select">
   <ClientOnly>
     <MultiSelectDemo />
@@ -32,46 +81,13 @@ Add `multiple` to `SelectRoot` and bind v-model to an array.
 | **Clicking selected option** | No effect | Deselects (toggle) |
 | **Query** | Preserved | Clears after each selection |
 
-:::tabs key:api-style
-== Composition API
-```vue
-<script setup>
-import { ref } from 'vue'
-import { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption } from 'vue-superselect'
-
-const selected = ref([])  // array, not null
-const skills = ['JavaScript', 'TypeScript', 'Vue', 'React']
-</script>
-
-<template>
-  <SelectRoot v-model="selected" multiple>
-    <!-- same template structure as single select -->
-  </SelectRoot>
-</template>
+```vue-html
+<SelectRoot v-model="selected" multiple>
+  <!-- same template structure as single select -->
+</SelectRoot>
 ```
-== Options API
-```vue
-<script>
-import { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption } from 'vue-superselect'
 
-export default {
-  components: { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption },
-  data() {
-    return {
-      selected: [],  // array, not null
-      skills: ['JavaScript', 'TypeScript', 'Vue', 'React'],
-    }
-  },
-}
-</script>
-
-<template>
-  <SelectRoot v-model="selected" multiple>
-    <!-- same template structure as single select -->
-  </SelectRoot>
-</template>
-```
-:::
+The only state-level difference is `selected` must be an array (`ref([])` / `selected: []`).
 
 ## Tags with Remove Buttons
 
@@ -153,42 +169,11 @@ When the `max` limit is reached:
 
 Combine `max` with `hide-selected` for a cleaner experience. As users select options, those options disappear from the list, and the limit prevents selecting too many.
 
-:::tabs key:api-style
-== Composition API
-```vue
-<script setup>
-import { ref } from 'vue'
-import { SelectRoot } from 'vue-superselect'
-
-const selected = ref([])
-</script>
-
-<template>
-  <SelectRoot v-model="selected" multiple :max="3" hide-selected>
-    <!-- ... -->
-  </SelectRoot>
-</template>
+```vue-html
+<SelectRoot v-model="selected" multiple :max="3" hide-selected>
+  <!-- ... -->
+</SelectRoot>
 ```
-== Options API
-```vue
-<script>
-import { SelectRoot } from 'vue-superselect'
-
-export default {
-  components: { SelectRoot },
-  data() {
-    return { selected: [] }
-  },
-}
-</script>
-
-<template>
-  <SelectRoot v-model="selected" multiple :max="3" hide-selected>
-    <!-- ... -->
-  </SelectRoot>
-</template>
-```
-:::
 
 ## Next Steps
 

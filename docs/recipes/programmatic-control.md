@@ -11,6 +11,47 @@ import ProgrammaticExposeDemo from '../examples/ProgrammaticExposeDemo.vue'
 
 Use a template ref on `SelectRoot` to access exposed methods. This is the simplest approach when using the compound component API.
 
+### API Setup (Template Ref Control)
+
+:::tabs key:api-style
+== Composition API
+```vue
+<script setup>
+import { ref } from 'vue'
+import { SelectRoot } from 'vue-superselect'
+
+const selectRef = ref(null)
+const selected = ref(null)
+
+function clearAndFocus() {
+  selectRef.value?.clear()
+  selectRef.value?.focus()
+}
+</script>
+```
+== Options API
+```vue
+<script>
+import { SelectRoot } from 'vue-superselect'
+
+export default {
+  components: { SelectRoot },
+  data() {
+    return {
+      selected: null,
+    }
+  },
+  methods: {
+    clearAndFocus() {
+      this.$refs.selectRef?.clear()
+      this.$refs.selectRef?.focus()
+    },
+  },
+}
+</script>
+```
+:::
+
 <DemoBox title="Programmatic Control via Template Ref">
   <ClientOnly>
     <ProgrammaticControlDemo />
@@ -34,8 +75,6 @@ Use a template ref on `SelectRoot` to access exposed methods. This is the simple
 | `clear()` | `() => void` | Resets the value to `null` (single) or `[]` (multi) |
 | `focus()` | `() => void` | Focuses the input element |
 
-:::tabs key:api-style
-== Composition API
 ```vue
 <script setup>
 import { ref } from 'vue'
@@ -44,7 +83,6 @@ import { SelectRoot } from 'vue-superselect'
 const selectRef = ref(null)
 const selected = ref(null)
 
-// Call methods on the template ref
 function openAndFocus() {
   selectRef.value?.open()
   selectRef.value?.focus()
@@ -60,35 +98,8 @@ function openAndFocus() {
   </SelectRoot>
 </template>
 ```
-== Options API
-```vue
-<script>
-import { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption } from 'vue-superselect'
 
-export default {
-  components: { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption },
-  data() {
-    return { selected: null }
-  },
-  methods: {
-    openAndFocus() {
-      this.$refs.selectRef?.open()
-      this.$refs.selectRef?.focus()
-    },
-  },
-}
-</script>
-
-<template>
-  <button @click="openAndFocus">Open Select</button>
-  <button @click="$refs.selectRef?.clear()">Clear</button>
-
-  <SelectRoot ref="selectRef" v-model="selected">
-    <!-- ... -->
-  </SelectRoot>
-</template>
-```
-:::
+Options API uses the same pattern via `this.$refs.selectRef?.open()` / `focus()` / `clear()`.
 
 ## Composable API: Full Control
 
@@ -190,15 +201,8 @@ function onSubmit() {
 
 ### Controlled Open State
 
-Use `v-model:open` on `SelectRoot` to control the dropdown state externally:
-
-```vue-html
-<SelectRoot v-model="selected" v-model:open="isOpen">
-  <!-- ... -->
-</SelectRoot>
-```
-
-This gives you a reactive `isOpen` ref that you can read and write to, independently of the exposed methods.
+If you need external control over open/closed state, use `v-model:open`.  
+Full controlled/uncontrolled patterns are covered in [Controlled State](/core-concepts/controlled-state#controlling-open-state).
 
 ## Next Steps
 

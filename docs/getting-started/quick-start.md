@@ -21,7 +21,7 @@ import QuickStartDemo from '../examples/QuickStartDemo.vue'
 
 ### 1. Import Components
 
-vue-superselect uses a compound component pattern. Each component handles one responsibility:
+vue-superselect uses a compound component pattern:
 
 | Component | Role |
 |-----------|------|
@@ -82,7 +82,7 @@ export default {
 
 ### 3. Build the Template
 
-The template is the same regardless of which API style you use:
+The template shape is the same in both APIs:
 
 ```vue-html
 <template>
@@ -114,21 +114,12 @@ vue-superselect ships zero CSS. Add classes and styles using whatever approach y
 </SelectControl>
 ```
 
-## Understanding the Components
-
-**SelectRoot** is the brain. It manages the open/closed state, selected value, search filtering, keyboard navigation, and ARIA attributes. Bind your model with `v-model`.
-
-**SelectControl** wraps the visible trigger area. It handles click-to-open and contains the input.
-
-**SelectInput** is the text field where users type to filter options. It also handles keyboard events like arrow keys and Enter.
-
-**SelectContent** is the dropdown panel. It appears when the select is open and disappears when it closes.
-
-**SelectOption** represents a single choice. The `value` prop determines what gets selected, and `label` is used for filtering and display.
+If you want the deeper mental model (provide/inject, prop getters, and architecture), go to [How It Works](/core-concepts/how-it-works).
 
 ## Next Steps
 
 - [How It Works](/core-concepts/how-it-works)
+- [Controlled State](/core-concepts/controlled-state)
 - [Basic Select](/recipes/basic-select)
 - [Multi-Select](/recipes/multi-select)
 - [API Reference](/api/components)

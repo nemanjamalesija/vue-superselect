@@ -12,20 +12,7 @@ import BasicClearableDemo from '../examples/BasicClearableDemo.vue'
 
 The simplest possible select: an array of strings bound with `v-model`.
 
-<DemoBox title="Basic String Select">
-  <ClientOnly>
-    <BasicSingleDemo />
-  </ClientOnly>
-  <template #source>
-
-<<< ../examples/BasicSingleDemo.vue
-
-  </template>
-</DemoBox>
-
-### Step by Step
-
-**1. Import and set up state**
+### API Setup (String Options)
 
 :::tabs key:api-style
 == Composition API
@@ -41,7 +28,7 @@ import {
 } from 'vue-superselect'
 
 const selected = ref(null)
-const fruits = ['Apple', 'Banana', 'Cherry', 'Grape', 'Mango', 'Orange', 'Strawberry']
+const fruits = ['Apple', 'Banana', 'Cherry', 'Orange']
 </script>
 ```
 == Options API
@@ -56,11 +43,17 @@ import {
 } from 'vue-superselect'
 
 export default {
-  components: { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption },
+  components: {
+    SelectRoot,
+    SelectControl,
+    SelectInput,
+    SelectContent,
+    SelectOption,
+  },
   data() {
     return {
       selected: null,
-      fruits: ['Apple', 'Banana', 'Cherry', 'Grape', 'Mango', 'Orange', 'Strawberry'],
+      fruits: ['Apple', 'Banana', 'Cherry', 'Orange'],
     }
   },
 }
@@ -68,7 +61,18 @@ export default {
 ```
 :::
 
-**2. Build the template**
+<DemoBox title="Basic String Select">
+  <ClientOnly>
+    <BasicSingleDemo />
+  </ClientOnly>
+  <template #source>
+
+<<< ../examples/BasicSingleDemo.vue
+
+  </template>
+</DemoBox>
+
+### Minimal Pattern
 
 ```vue-html
 <SelectRoot v-model="selected">
@@ -89,6 +93,8 @@ export default {
 ```
 
 For string options, `:value` and `:label` are the same string. The `label` prop is used for filtering. When a user types in the input, options are matched against their label.
+
+Need the full setup/import boilerplate? See [Quick Start](/getting-started/quick-start).
 
 ## Object Options
 

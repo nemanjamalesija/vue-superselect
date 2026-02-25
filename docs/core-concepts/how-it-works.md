@@ -7,6 +7,40 @@ import HowItWorksCompoundDemo from '../examples/HowItWorksCompoundDemo.vue'
 import HowItWorksComposableDemo from '../examples/HowItWorksComposableDemo.vue'
 </script>
 
+## API Style at a Glance
+
+Both APIs work with either Vue style. Use this as the quick mental map, then inspect each demo's source tab for full markup.
+
+:::tabs key:api-style
+== Composition API
+```vue
+<script setup>
+import { ref } from 'vue'
+import { SelectRoot, SelectControl, SelectInput } from 'vue-superselect'
+import { useSelect } from 'vue-superselect'
+
+const selected = ref(null)
+const { getRootProps, getInputProps } = useSelect({
+  items: ['Apple', 'Banana', 'Cherry'],
+})
+</script>
+```
+== Options API
+```vue
+<script>
+import { SelectRoot, SelectControl, SelectInput, useSelect } from 'vue-superselect'
+
+export default {
+  components: { SelectRoot, SelectControl, SelectInput },
+  setup() {
+    const api = useSelect({ items: ['Apple', 'Banana', 'Cherry'] })
+    return { ...api }
+  },
+}
+</script>
+```
+:::
+
 ## Compound Components
 
 The primary API. Each component handles one responsibility, composed together declaratively in your template. `SelectRoot` manages all state internally and shares it with child components via Vue's provide/inject.
@@ -65,34 +99,11 @@ For cases where compound components are too prescriptive, `useSelect()` gives yo
 
 ### Prop Getters
 
-The composable returns getter functions (`getRootProps()`, `getInputProps()`, `getListboxProps()`, and `getOptionProps()`) that generate the correct HTML attributes, ARIA properties, and event handlers for each element.
+`useSelect()` gives you prop getter functions (`getRootProps`, `getInputProps`, `getListboxProps`, `getOptionProps`) so you can keep all accessibility and keyboard behavior while rendering your own markup.
 
-```ts
-const { getRootProps, getInputProps, getListboxProps, getOptionProps } = useSelect({
-  items: options,
-  labelKey: 'label',
-  valueKey: 'id',
-})
-```
-
-Spread these on your own elements:
-
-```vue-html
-<div v-bind="getRootProps()">
-  <input v-bind="getInputProps()" />
-  <ul v-bind="getListboxProps()">
-    <li v-for="item in visibleItems" :key="item.id" v-bind="getOptionProps(item)">
-      {{ item.label }}
-    </li>
-  </ul>
-</div>
-```
-
-You can pass your own props to any getter and they will be merged:
-
-```ts
-getInputProps({ class: 'my-input', placeholder: 'Search...' })
-```
+For full signatures, merge behavior, and return types, see:
+- [API: Composable / Prop Getters](/api/composable#prop-getters)
+- [API: Composable / Return Value](/api/composable#return-value)
 
 ### When to Use the Composable
 

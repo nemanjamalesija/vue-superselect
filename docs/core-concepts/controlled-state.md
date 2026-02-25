@@ -11,6 +11,55 @@ import UncontrolledDemo from '../examples/UncontrolledDemo.vue'
 
 Bind `v-model` on `SelectRoot` to control the selected value from your parent component. The value is reactive: change it programmatically and the select updates. Select an option and your variable updates.
 
+### API Setup (Controlled Single Select)
+
+:::tabs key:api-style
+== Composition API
+```vue
+<script setup>
+import { ref } from 'vue'
+import {
+  SelectRoot,
+  SelectControl,
+  SelectInput,
+  SelectContent,
+  SelectOption,
+} from 'vue-superselect'
+
+const selected = ref(null)
+const fruits = ['Apple', 'Banana', 'Cherry']
+</script>
+```
+== Options API
+```vue
+<script>
+import {
+  SelectRoot,
+  SelectControl,
+  SelectInput,
+  SelectContent,
+  SelectOption,
+} from 'vue-superselect'
+
+export default {
+  components: {
+    SelectRoot,
+    SelectControl,
+    SelectInput,
+    SelectContent,
+    SelectOption,
+  },
+  data() {
+    return {
+      selected: null,
+      fruits: ['Apple', 'Banana', 'Cherry'],
+    }
+  },
+}
+</script>
+```
+:::
+
 <DemoBox title="Controlled State with v-model">
   <ClientOnly>
     <ControlledStateDemo />
@@ -24,48 +73,15 @@ Bind `v-model` on `SelectRoot` to control the selected value from your parent co
 
 ### Setting Up v-model
 
-:::tabs key:api-style
-== Composition API
-```vue
-<script setup>
-import { ref } from 'vue'
-import { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption } from 'vue-superselect'
-
-const selected = ref(null)
-const fruits = ['Apple', 'Banana', 'Cherry']
-</script>
-
-<template>
-  <SelectRoot v-model="selected">
-    <!-- ... -->
-  </SelectRoot>
-  <p>Current: {{ selected }}</p>
-</template>
+```vue-html
+<SelectRoot v-model="selected">
+  <!-- ... -->
+</SelectRoot>
+<p>Current: {{ selected }}</p>
 ```
-== Options API
-```vue
-<script>
-import { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption } from 'vue-superselect'
 
-export default {
-  components: { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption },
-  data() {
-    return {
-      selected: null,
-      fruits: ['Apple', 'Banana', 'Cherry'],
-    }
-  },
-}
-</script>
-
-<template>
-  <SelectRoot v-model="selected">
-    <!-- ... -->
-  </SelectRoot>
-  <p>Current: {{ selected }}</p>
-</template>
-```
-:::
+`selected` can be `null` (no selection) or the selected option value.  
+For the full component setup, see [Quick Start](/getting-started/quick-start).
 
 ### Programmatic Control
 
@@ -113,94 +129,19 @@ Uncontrolled mode is useful when you don't need to read or react to the selected
 
 When your options are objects rather than strings, use `items`, `label-key`, and `value-key` on `SelectRoot`:
 
-:::tabs key:api-style
-== Composition API
-```vue
-<script setup>
-import { ref } from 'vue'
-import { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption } from 'vue-superselect'
-
-const selected = ref(null)
-const users = [
-  { id: 1, name: 'Alice' },
-  { id: 2, name: 'Bob' },
-  { id: 3, name: 'Charlie' },
-]
-</script>
-
-<template>
-  <SelectRoot
-    v-model="selected"
-    :items="users"
-    label-key="name"
-    value-key="id"
-  >
-    <SelectControl>
-      <SelectInput placeholder="Select user..." />
-    </SelectControl>
-    <SelectContent>
-      <SelectOption
-        v-for="user in users"
-        :key="user.id"
-        :value="user.id"
-        :label="user.name"
-      >
-        {{ user.name }}
-      </SelectOption>
-    </SelectContent>
-  </SelectRoot>
-
-  <!-- selected.value will be 1, 2, or 3 (the id) -->
-  <p>Selected ID: {{ selected }}</p>
-</template>
+```vue-html
+<SelectRoot
+  v-model="selected"
+  :items="users"
+  label-key="name"
+  value-key="id"
+>
+  <!-- ... -->
+</SelectRoot>
 ```
-== Options API
-```vue
-<script>
-import { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption } from 'vue-superselect'
 
-export default {
-  components: { SelectRoot, SelectControl, SelectInput, SelectContent, SelectOption },
-  data() {
-    return {
-      selected: null,
-      users: [
-        { id: 1, name: 'Alice' },
-        { id: 2, name: 'Bob' },
-        { id: 3, name: 'Charlie' },
-      ],
-    }
-  },
-}
-</script>
-
-<template>
-  <SelectRoot
-    v-model="selected"
-    :items="users"
-    label-key="name"
-    value-key="id"
-  >
-    <SelectControl>
-      <SelectInput placeholder="Select user..." />
-    </SelectControl>
-    <SelectContent>
-      <SelectOption
-        v-for="user in users"
-        :key="user.id"
-        :value="user.id"
-        :label="user.name"
-      >
-        {{ user.name }}
-      </SelectOption>
-    </SelectContent>
-  </SelectRoot>
-
-  <!-- selected will be 1, 2, or 3 (the id) -->
-  <p>Selected ID: {{ selected }}</p>
-</template>
-```
-:::
+This keeps labels user-friendly (`name`) while storing compact model values (`id`).  
+For a complete object-options walkthrough, see [Basic Select: Object Options](/recipes/basic-select#object-options).
 
 | Prop | Purpose |
 |------|---------|
