@@ -6,6 +6,7 @@ export default defineConfig({
   title: 'vue-superselect',
   description: 'Headless Vue 3 select/combobox component library',
   base: '/vue-superselect/',
+  ignoreDeadLinks: true,
 
   themeConfig: {
     search: {
