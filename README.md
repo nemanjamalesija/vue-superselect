@@ -4,7 +4,7 @@ Headless, accessible, TypeScript-first select/combobox for Vue 3.
 
 Zero runtime CSS. Full keyboard navigation. WAI-ARIA combobox pattern. Dual API: compound components or `useSelect()` composable.
 
-**[Documentation](https://nemanjamalesija.github.io/vue-superselect/)** | **[GitHub](https://github.com/nemanjamalesija/vue-superselect)**
+**[Documentation](https://nemanjamalesija.github.io/vue-superselect/)**
 
 ## Install
 
@@ -34,7 +34,7 @@ const fruits = ['Apple', 'Banana', 'Cherry', 'Grape', 'Orange']
 <template>
   <SelectRoot v-model="selected">
     <SelectControl>
-      <SelectInput placeholder="Pick a fruit..." />
+      <SelectInput placeholder="Pick a fruit..." aria-label="Fruit" />
     </SelectControl>
     <SelectContent>
       <SelectOption
@@ -91,7 +91,7 @@ const {
   getListboxProps,
   getOptionProps,
   isOpen,
-  selectedValue,
+  value,
   visibleItems,
 } = useSelect({
   items: options,
@@ -119,8 +119,8 @@ Spread prop getters on your own elements:
 |-----|--------|
 | Arrow Down/Up | Navigate options |
 | Enter | Select highlighted option |
-| Escape | Close dropdown, clear input |
-| Tab | Close dropdown, move focus |
+| Escape | Close dropdown; pressing again clears input query |
+| Tab | Move focus (or select highlighted option when `selectOnTab` is enabled) |
 | Backspace | Remove last tag (multi-select, empty input) |
 | Home/End | Jump to first/last option |
 
