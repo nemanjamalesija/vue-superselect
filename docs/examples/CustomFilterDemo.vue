@@ -18,7 +18,7 @@ const cities = [
 
 <template>
   <div class="cf-demo">
-    <p class="cf-hint">Type to filter — the built-in filter matches case-insensitively.</p>
+    <p class="cf-hint">Type to filter. The built-in filter matches case-insensitively.</p>
     <SelectRoot v-model="selected">
       <SelectControl class="cf-control">
         <SelectInput placeholder="Search cities..." class="cf-input" />
@@ -42,7 +42,7 @@ const cities = [
       </SelectContent>
     </SelectRoot>
     <p v-if="selected" class="cf-result">Selected: <strong>{{ selected }}</strong></p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 

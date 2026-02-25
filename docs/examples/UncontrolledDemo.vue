@@ -33,8 +33,8 @@ const cities = ['Amsterdam', 'Berlin', 'Copenhagen', 'Dublin', 'Edinburgh']
         </SelectOption>
       </SelectContent>
     </SelectRoot>
-    <p class="uc-note">No v-model — state is managed internally. Initial value set via <code>default-value</code>.</p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="uc-note">No v-model. State is managed internally. Initial value set via <code>default-value</code>.</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 

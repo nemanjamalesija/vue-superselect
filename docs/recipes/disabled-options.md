@@ -123,7 +123,7 @@ Compute the disabled state from your option data. In this example, products with
 
 ### Computed Disabled State
 
-The key line is `:disabled="product.stock === 0"` — any expression that evaluates to a boolean works:
+The key line is `:disabled="product.stock === 0"`. Any expression that evaluates to a boolean works:
 
 ```vue-html
 <SelectOption
@@ -185,6 +185,6 @@ No additional ARIA configuration is needed.
 
 ## Next Steps
 
-- [Custom Rendering](/recipes/custom-rendering) — render rich content inside options
-- [Multi-Select](/recipes/multi-select) — combine disabled options with multi-select
-- [Accessibility](/core-concepts/accessibility) — full keyboard navigation and ARIA documentation
+- [Custom Rendering](/recipes/custom-rendering)
+- [Multi-Select](/recipes/multi-select)
+- [Accessibility](/core-concepts/accessibility)

@@ -122,11 +122,11 @@ Use `SelectTag` inside `SelectControl`'s scoped slot to render removable tags fo
 
 **Backspace removal:** When the input is empty and the user presses Backspace, the last selected tag is automatically removed.
 
-## Max Selections and Hide Selected
+## Max Selections with Hide Selected
 
-Limit the number of selections with `max` and hide already-selected options from the dropdown with `hide-selected`.
+Limit the number of selections with `max` and hide already-selected options from the dropdown with `hide-selected` (always enabled in this example).
 
-<DemoBox title="Multi-Select with Max Limit">
+<DemoBox title="Multi-Select with Max Limit and Hide Selected">
   <ClientOnly>
     <MultiSelectMaxDemo />
   </ClientOnly>
@@ -151,7 +151,7 @@ When the `max` limit is reached:
 - The `disabled` scoped slot prop on `SelectOption` becomes `true` for unselected items
 - Already-selected options can still be toggled off
 
-Combine `max` with `hide-selected` for a cleaner experience — as users select options, those options disappear from the list, and the limit prevents selecting too many.
+Combine `max` with `hide-selected` for a cleaner experience. As users select options, those options disappear from the list, and the limit prevents selecting too many.
 
 :::tabs key:api-style
 == Composition API
@@ -192,6 +192,6 @@ export default {
 
 ## Next Steps
 
-- [Custom Filtering](/recipes/custom-filtering) — write custom filter functions with debounce
-- [Basic Select](/recipes/basic-select) — single-select patterns
-- [Accessibility](/core-concepts/accessibility) — keyboard shortcuts for multi-select (Backspace removal)
+- [Custom Filtering](/recipes/custom-filtering)
+- [Basic Select](/recipes/basic-select)
+- [Accessibility](/core-concepts/accessibility)

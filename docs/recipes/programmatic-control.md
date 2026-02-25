@@ -107,28 +107,28 @@ The `useSelect` composable returns the same control methods directly, plus react
 
 ### Composable Methods and State
 
-`useSelect()` returns control methods as plain functions — no template ref needed:
+`useSelect()` returns control methods as plain functions, no template ref needed:
 
 ```ts
 const {
   // Control methods
-  open,       // () => void — open the dropdown
-  close,      // () => void — close the dropdown
-  toggle,     // () => void — toggle open/closed
-  clear,      // () => void — reset value
-  focus,      // () => void — focus input
-  dismiss,    // () => void — close + restore query
+  open,       // () => void
+  close,      // () => void
+  toggle,     // () => void
+  clear,      // () => void
+  focus,      // () => void
+  dismiss,    // () => void
 
   // Reactive state (readable and writable)
-  value,      // Ref<T | T[] | null> — current selection
-  isOpen,     // Ref<boolean> — dropdown state
-  query,      // Ref<string> — current filter text
+  value,      // Ref<T | T[] | null>
+  isOpen,     // Ref<boolean>
+  query,      // Ref<string>
 
   // Read-only state
-  visibleItems, // Ref<CollectionItem<T>[]> — visible options
-  activeId,     // Ref<string | null> — highlighted option id
-  isAtMax,      // Ref<boolean> — max selections reached
-  disabled,     // Ref<boolean> — component disabled state
+  visibleItems, // Ref<CollectionItem<T>[]>
+  activeId,     // Ref<string | null>
+  isAtMax,      // Ref<boolean>
+  disabled,     // Ref<boolean>
 } = useSelect({ items, labelKey: 'label', valueKey: 'id' })
 ```
 
@@ -202,6 +202,6 @@ This gives you a reactive `isOpen` ref that you can read and write to, independe
 
 ## Next Steps
 
-- [Controlled State](/core-concepts/controlled-state) — v-model patterns and uncontrolled mode
-- [How It Works](/core-concepts/how-it-works) — compound components vs composable architecture
-- [API Reference: Composable](/api/composable) — full `useSelect` return value documentation
+- [Controlled State](/core-concepts/controlled-state)
+- [How It Works](/core-concepts/how-it-works)
+- [API Reference: Composable](/api/composable)

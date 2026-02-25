@@ -1,0 +1,31 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 128 128"
+  role="img"
+  aria-labelledby="vssIconTitle vssIconDesc"
+>
+  <title id="vssIconTitle">vue-superselect icon</title>
+  <desc id="vssIconDesc">
+    Rounded blue square with a select input, option rows, and a check mark for selected state.
+  </desc>
+
+  <defs>
+    <linearGradient id="vssBg" x1="10" y1="12" x2="118" y2="116" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3b82f6" />
+      <stop offset="1" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+
+  <rect x="6" y="6" width="116" height="116" rx="28" fill="url(#vssBg)" />
+  <rect x="6.5" y="6.5" width="115" height="115" rx="27.5" fill="none" stroke="#ffffff" stroke-opacity="0.18" />
+
+  <rect x="22" y="22" width="84" height="20" rx="8" fill="#ffffff" fill-opacity="0.14" stroke="#ffffff" stroke-opacity="0.32" />
+  <path d="M83 30.5L89 36.5L95 30.5" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+  <rect x="22" y="50" width="84" height="14" rx="6" fill="#ffffff" fill-opacity="0.16" />
+  <rect x="22" y="88" width="84" height="14" rx="6" fill="#ffffff" fill-opacity="0.16" />
+
+  <rect x="22" y="69" width="84" height="14" rx="6" fill="#ffffff" />
+  <path d="M30.5 76L34 79.5L41 72.5" fill="none" stroke="#1d4ed8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="47" y="74" width="44" height="4" rx="2" fill="#1d4ed8" fill-opacity="0.9" />
+</svg>

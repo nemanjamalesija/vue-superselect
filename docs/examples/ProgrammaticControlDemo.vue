@@ -45,7 +45,7 @@ const cities = ['New York', 'London', 'Tokyo', 'Paris', 'Sydney', 'Berlin', 'Tor
       </SelectContent>
     </SelectRoot>
     <p v-if="selected" class="pc-result">Selected: <strong>{{ selected }}</strong></p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 

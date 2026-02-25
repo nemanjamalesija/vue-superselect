@@ -43,7 +43,7 @@ const customFilter: FilterFn<unknown> = (item, query) => {
 
 <template>
   <div class="df-demo">
-    <p class="df-hint">Try typing a category like "build" or "linter" — this filter searches both name and category.</p>
+    <p class="df-hint">Try typing a category like "build" or "linter" . This filter searches both name and category.</p>
     <SelectRoot
       v-model="selected"
       :filter="customFilter"
@@ -75,7 +75,7 @@ const customFilter: FilterFn<unknown> = (item, query) => {
       </SelectContent>
     </SelectRoot>
     <p v-if="selected" class="df-result">Selected: <strong>{{ selected }}</strong></p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 

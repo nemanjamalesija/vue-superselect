@@ -1,6 +1,6 @@
 # Accessibility
 
-vue-superselect implements the [WAI-ARIA Combobox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) out of the box. Every component automatically applies the correct ARIA attributes, keyboard interactions, and screen reader announcements — no configuration needed.
+vue-superselect implements the [WAI-ARIA Combobox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) out of the box. Every component automatically applies the correct ARIA attributes, keyboard interactions, and screen reader announcements without any configuration.
 
 <script setup>
 import AccessibilityDemo from '../examples/AccessibilityDemo.vue'
@@ -32,7 +32,7 @@ All keyboard interactions follow the WAI-ARIA combobox specification:
 | **Home** | Move highlight to the first option |
 | **End** | Move highlight to the last option |
 
-By default, keyboard navigation loops — pressing Arrow Down on the last option wraps to the first. Disable with `:loop="false"` on `SelectRoot`.
+By default, keyboard navigation loops. Pressing Arrow Down on the last option wraps to the first. Disable with `:loop="false"` on `SelectRoot`.
 
 The `select-on-tab` prop changes Tab behavior: instead of just closing, it selects the highlighted option first, then closes and moves focus.
 
@@ -65,7 +65,7 @@ The component tree automatically applies the correct roles and attributes:
 | `aria-selected` | `true` / `false` | Whether this option is currently selected |
 | `aria-disabled` | `true` / `false` | Whether this option is disabled |
 
-You do not need to set any of these attributes manually — they are applied by the components automatically.
+You do not need to set any of these attributes manually. They are applied by the components automatically.
 
 ## Screen Reader Announcements
 
@@ -153,19 +153,19 @@ The `SelectContent` element also receives positioning attributes when using Floa
 - Pressing Escape returns focus to the input
 - Tab moves focus out of the component naturally
 
-Focus is trapped within the component while the dropdown is open — arrow keys navigate options, not the page.
+Focus is trapped within the component while the dropdown is open. Arrow keys navigate options, not the page.
 
 ## Testing Accessibility
 
 To verify accessibility in your application:
 
-1. **Keyboard-only test** — navigate the entire select without a mouse
-2. **Screen reader test** — listen for announcements with VoiceOver (macOS), NVDA (Windows), or Orca (Linux)
-3. **Inspect ARIA** — use browser DevTools to verify `role`, `aria-expanded`, and `aria-activedescendant` update correctly
-4. **axe/Lighthouse** — run automated accessibility audits
+1. **Keyboard-only test**: navigate the entire select without a mouse
+2. **Screen reader test**: listen for announcements with VoiceOver (macOS), NVDA (Windows), or Orca (Linux)
+3. **Inspect ARIA**: use browser DevTools to verify `role`, `aria-expanded`, and `aria-activedescendant` update correctly
+4. **axe/Lighthouse**: run automated accessibility audits
 
 ## Next Steps
 
-- [How It Works](/core-concepts/how-it-works) — understand the component architecture
-- [Controlled State](/core-concepts/controlled-state) — v-model and state management
-- [Basic Select](/recipes/basic-select) — build your first accessible select
+- [How It Works](/core-concepts/how-it-works)
+- [Controlled State](/core-concepts/controlled-state)
+- [Basic Select](/recipes/basic-select)

@@ -56,7 +56,7 @@ const countries: Country[] = [
     <p class="bo-result">
       Selected code: <strong>{{ selected ?? 'none' }}</strong>
     </p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 

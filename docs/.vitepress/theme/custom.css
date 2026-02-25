@@ -3,7 +3,7 @@
   margin: 1.5rem 0;
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .demo-box__header {
@@ -18,6 +18,37 @@
 .demo-box__preview {
   padding: 1.5rem;
   background-color: var(--vp-c-bg);
+}
+
+/* Keep demo listboxes aligned to trigger width and inside the preview container. */
+.demo-box__preview [role='listbox'] {
+  width: min(100%, var(--superselect-trigger-width, 100%));
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Consistent option states across demos (hover, selected, keyboard highlight). */
+.demo-box__preview [role='option'] {
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.demo-box__preview [role='option']:hover,
+.demo-box__preview [role='option'][data-highlighted='true'] {
+  background-color: var(--vp-c-brand-soft);
+}
+
+.demo-box__preview [role='option'][aria-selected='true'],
+.demo-box__preview [role='option'][data-selected='true'] {
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--vp-c-brand-1);
+}
+
+.demo-box__preview [role='option'][aria-disabled='true'],
+.demo-box__preview [role='option'][data-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .demo-box__actions {
@@ -108,7 +139,7 @@
 /* Landing page demo section */
 .landing-demo-section {
   max-width: 720px;
-  margin: 3rem auto;
+  margin: 1.5rem auto 2rem;
   padding: 0 1.5rem;
 }
 
@@ -118,4 +149,48 @@
   font-weight: 700;
   color: var(--vp-c-text-1);
   margin-bottom: 1.5rem;
+}
+
+.landing-hero-demo {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  padding-left: clamp(0.75rem, 2vw, 1.5rem);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.VPHero.has-image .container {
+  align-items: flex-start;
+  gap: clamp(2.5rem, 6vw, 5rem);
+}
+
+.VPHomeFeatures {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+}
+
+.VPHome .VPHero .name .hero-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.VPHome .VPHero .name .hero-brand__icon {
+  width: 0.7em;
+  height: 0.7em;
+  border-radius: 0.2em;
+  flex: 0 0 auto;
+}
+
+@media (min-width: 960px) {
+  .landing-hero-demo {
+    padding-top: 0.75rem;
+  }
+
+  .VPHero.has-image .image-container {
+    transform: none;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
 }

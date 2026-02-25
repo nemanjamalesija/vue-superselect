@@ -1,6 +1,6 @@
 # How It Works
 
-vue-superselect provides two ways to build select components: **compound components** (recommended) and a **composable API**. Both share the same underlying state engine — they differ only in how you consume it.
+vue-superselect provides two ways to build select components: **compound components** (recommended) and a **composable API**. Both share the same underlying state engine and differ only in how you consume it.
 
 <script setup>
 import HowItWorksCompoundDemo from '../examples/HowItWorksCompoundDemo.vue'
@@ -37,16 +37,16 @@ SelectRoot           ← State container (provide)
 └── SelectLiveRegion ← Screen reader announcements (inject)
 ```
 
-**SelectRoot** is the brain. It creates all the state — selected value, open/closed, search query, keyboard navigation, ARIA attributes — and provides it to every child component through Vue's `provide()`. You never have to pass props down manually.
+**SelectRoot** is the brain. It creates all the state (selected value, open/closed, search query, keyboard navigation, ARIA attributes) and provides it to every child component through Vue's `provide()`. You never have to pass props down manually.
 
 Each child component calls `inject()` to access exactly what it needs. `SelectInput` reads and writes the search query. `SelectOption` registers itself in the collection and checks if it's selected. `SelectContent` reads the open state and renders only when the dropdown should be visible.
 
 ### Why Compound Components?
 
-- **Declarative** — your template shows what the select looks like, not how it works
-- **Flexible** — reorder, omit, or wrap any component. Don't need a clear button? Don't render `SelectClear`.
-- **Type-safe** — each component has its own typed props and slots
-- **Accessible by default** — ARIA attributes are wired automatically between components
+- **Declarative**: your template shows what the select looks like, not how it works
+- **Flexible**: reorder, omit, or wrap any component. Don't need a clear button? Don't render `SelectClear`.
+- **Type-safe**: each component has its own typed props and slots
+- **Accessible by default**: ARIA attributes are wired automatically between components
 
 ## Composable API
 
@@ -65,7 +65,7 @@ For cases where compound components are too prescriptive, `useSelect()` gives yo
 
 ### Prop Getters
 
-The composable returns getter functions — `getRootProps()`, `getInputProps()`, `getListboxProps()`, and `getOptionProps()` — that generate the correct HTML attributes, ARIA properties, and event handlers for each element.
+The composable returns getter functions (`getRootProps()`, `getInputProps()`, `getListboxProps()`, and `getOptionProps()`) that generate the correct HTML attributes, ARIA properties, and event handlers for each element.
 
 ```ts
 const { getRootProps, getInputProps, getListboxProps, getOptionProps } = useSelect({
@@ -107,7 +107,7 @@ For most use cases, compound components are simpler and recommended.
 | | Compound Components | Composable |
 |---|---|---|
 | **Setup** | Drop in components | Wire up prop getters |
-| **Flexibility** | High — reorder/omit components | Full — any DOM structure |
+| **Flexibility** | High (reorder/omit components) | Full (any DOM structure) |
 | **Accessibility** | Automatic | Automatic via prop getters |
 | **Learning curve** | Lower | Higher |
 | **Best for** | Most applications | Design system integration |
@@ -116,8 +116,8 @@ Both APIs produce the same accessible, keyboard-navigable select with identical 
 
 ## Next Steps
 
-- [Controlled State](/core-concepts/controlled-state) — understand v-model binding and state patterns
-- [Accessibility](/core-concepts/accessibility) — keyboard navigation and screen reader support
-- [Basic Select](/recipes/basic-select) — build your first select step by step
-- [API Reference: Components](/api/components) — full prop, slot, and event docs
-- [API Reference: Composable](/api/composable) — `useSelect()` return values and options
+- [Controlled State](/core-concepts/controlled-state)
+- [Accessibility](/core-concepts/accessibility)
+- [Basic Select](/recipes/basic-select)
+- [API Reference: Components](/api/components)
+- [API Reference: Composable](/api/composable)

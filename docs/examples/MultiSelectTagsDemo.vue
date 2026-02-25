@@ -29,6 +29,7 @@ const members: TeamMember[] = [
   <div class="mt-demo">
     <SelectRoot
       v-model="selected"
+      id="docs-multi-tags"
       multiple
       :items="members"
       label-key="name"
@@ -63,7 +64,7 @@ const members: TeamMember[] = [
       </SelectContent>
     </SelectRoot>
     <p class="mt-hint">Press Backspace in an empty input to remove the last tag.</p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 

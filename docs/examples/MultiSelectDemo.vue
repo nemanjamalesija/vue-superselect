@@ -18,38 +18,44 @@ const display = computed(() =>
 
 <template>
   <div class="ms-demo">
-    <SelectRoot v-model="selected" multiple>
-      <SelectControl class="ms-control">
-        <SelectInput placeholder="Select skills..." class="ms-input" />
-      </SelectControl>
-      <SelectContent class="ms-content">
-        <SelectOption
-          v-for="skill in skills"
-          :key="skill"
-          :value="skill"
-          :label="skill"
-          v-slot="{ selected: isSelected, active }"
-          class="ms-option"
-          :class="{
-            'ms-option--selected': isSelected,
-            'ms-option--active': active,
-          }"
-        >
-          <span class="ms-check">{{ isSelected ? '&#10003;' : '' }}</span>
-          {{ skill }}
-        </SelectOption>
-      </SelectContent>
+    <SelectRoot v-model="selected" multiple id="docs-multi-basic">
+      <div class="ms-select">
+        <SelectControl class="ms-control">
+          <SelectInput placeholder="Select skills..." class="ms-input" />
+        </SelectControl>
+        <SelectContent class="ms-content">
+          <SelectOption
+            v-for="skill in skills"
+            :key="skill"
+            :value="skill"
+            :label="skill"
+            v-slot="{ selected: isSelected, active }"
+            class="ms-option"
+            :class="{
+              'ms-option--selected': isSelected,
+              'ms-option--active': active,
+            }"
+          >
+            <span class="ms-check">{{ isSelected ? '&#10003;' : '' }}</span>
+            {{ skill }}
+          </SelectOption>
+        </SelectContent>
+      </div>
     </SelectRoot>
     <p class="ms-result">
       Selected ({{ selected.length }}): <strong>{{ display || 'none' }}</strong>
     </p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 
 <style scoped>
 .ms-demo {
   max-width: 360px;
+}
+
+.ms-select {
+  position: relative;
 }
 
 .ms-control {
@@ -82,10 +88,9 @@ const display = computed(() =>
 
 .ms-content {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 4px);
   left: 0;
   right: 0;
-  margin-top: 4px;
   background: var(--vp-c-bg);
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;

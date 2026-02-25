@@ -1,9 +1,9 @@
 ---
 layout: home
 hero:
-  name: vue-superselect
+  name: "<span class='hero-brand'><img class='hero-brand__icon' src='/vue-superselect/vue-superselect-icon.svg' alt='' />vue-superselect</span>"
   text: Headless Vue 3 Select
-  tagline: Accessible, typed, zero-style. The select component Vue deserves.
+  tagline: Accessible, typed, zero-styles.
   actions:
     - theme: brand
       text: Get Started
@@ -21,15 +21,3 @@ features:
   - title: Dual API
     details: Compound components with provide/inject for templates, or useSelect() composable for full programmatic control.
 ---
-
-<script setup>
-import LandingDemo from './examples/LandingDemo.vue'
-</script>
-
-<div class="landing-demo-section">
-
-<ClientOnly>
-  <LandingDemo />
-</ClientOnly>
-
-</div>

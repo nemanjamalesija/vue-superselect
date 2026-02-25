@@ -116,7 +116,7 @@ function selectRandom() {
       <span class="pe-swatch-inline" :style="{ background: selectedHex }"></span>
       <strong>{{ selectedLabel }}</strong>
     </p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 

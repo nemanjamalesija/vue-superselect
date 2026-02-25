@@ -44,7 +44,7 @@ const regions = ['North America', 'South America', 'Europe', 'Asia', 'Africa', '
       </SelectRoot>
     </div>
     <p v-if="selected" class="pt-result">Selected: <strong>{{ selected }}</strong></p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 
@@ -136,9 +136,10 @@ const regions = ['North America', 'South America', 'Europe', 'Asia', 'Africa', '
   cursor: pointer;
   font-size: 0.9375rem;
   color: var(--vp-c-text-1);
-  transition: background-color 0.15s;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
 }
 
+.pt-option:hover,
 .pt-option--active {
   background-color: var(--vp-c-brand-soft);
 }
@@ -146,5 +147,6 @@ const regions = ['North America', 'South America', 'Europe', 'Asia', 'Africa', '
 .pt-option--selected {
   font-weight: 600;
   color: var(--vp-c-brand-1);
+  box-shadow: inset 2px 0 0 var(--vp-c-brand-1);
 }
 </style>

@@ -26,7 +26,7 @@ Out of the box, typing in the input filters the visible options. The built-in fi
   </template>
 </DemoBox>
 
-No configuration is needed — filtering is built in. If the input contains text, only matching options are shown. The `SelectEmpty` component displays a message when no options match.
+No configuration is needed. Filtering is built in. If the input contains text, only matching options are shown. The `SelectEmpty` component displays a message when no options match.
 
 ## Custom Filter Function
 
@@ -144,10 +144,10 @@ The debounce value is in milliseconds. The filter function is only called after 
 
 vue-superselect handles IME (Input Method Editor) composition automatically. When a user is composing characters (e.g., typing Chinese, Japanese, or Korean), filtering is paused until composition is complete. This prevents partial composition strings from triggering unexpected filter results.
 
-No configuration is needed — this behavior is built in.
+No configuration is needed. This behavior is built in.
 
 ## Next Steps
 
-- [Dropdown Positioning](/recipes/dropdown-positioning) — control where the dropdown appears
-- [Multi-Select](/recipes/multi-select) — combine filtering with multi-select
-- [API Reference: Components](/api/components) — full `filter` and `debounce` prop documentation
+- [Dropdown Positioning](/recipes/dropdown-positioning)
+- [Multi-Select](/recipes/multi-select)
+- [API Reference: Components](/api/components)

@@ -88,7 +88,7 @@ export default {
 </SelectRoot>
 ```
 
-For string options, `:value` and `:label` are the same string. The `label` prop is used for filtering — when a user types in the input, options are matched against their label.
+For string options, `:value` and `:label` are the same string. The `label` prop is used for filtering. When a user types in the input, options are matched against their label.
 
 ## Object Options
 
@@ -122,7 +122,7 @@ When your options are objects, use `label-key` and `value-key` on `SelectRoot` t
 | `label-key` | Which field to display and filter by (e.g. `"name"`) |
 | `value-key` | Which field becomes the v-model value (e.g. `"code"`) |
 
-With `value-key="code"`, the v-model value will be `"au"`, `"br"`, etc. — not the full object.
+With `value-key="code"`, the v-model value will be `"au"`, `"br"`, etc., not the full object.
 
 Each `SelectOption` still receives the individual `:value` and `:label`:
 
@@ -170,7 +170,7 @@ Add a clear button, a dropdown toggle trigger, and a "no results" message for a 
 </SelectControl>
 ```
 
-`SelectClear` is conditionally rendered with `v-if` — show it only when there's a value to clear.
+`SelectClear` is conditionally rendered with `v-if`. Show it only when there's a value to clear.
 
 `SelectEmpty` goes inside `SelectContent`:
 
@@ -200,6 +200,6 @@ Every `SelectOption` exposes scoped slot props for conditional styling:
 
 ## Next Steps
 
-- [Multi-Select](/recipes/multi-select) — select multiple values with tags
-- [Custom Filtering](/recipes/custom-filtering) — write custom filter functions
-- [Controlled State](/core-concepts/controlled-state) — programmatic control and v-model patterns
+- [Multi-Select](/recipes/multi-select)
+- [Custom Filtering](/recipes/custom-filtering)
+- [Controlled State](/core-concepts/controlled-state)

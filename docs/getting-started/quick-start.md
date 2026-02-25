@@ -106,7 +106,7 @@ The template is the same regardless of which API style you use:
 
 ### 4. Add Your Own Styles
 
-vue-superselect ships zero CSS. Add classes and styles using whatever approach you prefer — plain CSS, Tailwind, CSS modules, or any other method.
+vue-superselect ships zero CSS. Add classes and styles using whatever approach you prefer: plain CSS, Tailwind, CSS modules, or any other method.
 
 ```vue-html
 <SelectControl class="my-control">
@@ -128,7 +128,7 @@ vue-superselect ships zero CSS. Add classes and styles using whatever approach y
 
 ## Next Steps
 
-- [How It Works](/core-concepts/how-it-works) — understand the compound component architecture
-- [Basic Select](/recipes/basic-select) — explore single-select patterns in depth
-- [Multi-Select](/recipes/multi-select) — select multiple values
-- [API Reference](/api/components) — full prop, slot, and event documentation
+- [How It Works](/core-concepts/how-it-works)
+- [Basic Select](/recipes/basic-select)
+- [Multi-Select](/recipes/multi-select)
+- [API Reference](/api/components)

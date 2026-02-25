@@ -1,6 +1,6 @@
 # Custom Rendering
 
-Every component in vue-superselect exposes scoped slots for rendering custom content. The library is headless — these demos show one possible styling approach. You have full control over what each option and tag looks like.
+Every component in vue-superselect exposes scoped slots for rendering custom content. The library is headless, so these demos show one possible styling approach. You have full control over what each option and tag looks like.
 
 <script setup>
 import CustomRenderingDemo from '../examples/CustomRenderingDemo.vue'
@@ -214,6 +214,6 @@ Data attributes are useful when you want to style options without writing JavaSc
 
 ## Next Steps
 
-- [Programmatic Control](/recipes/programmatic-control) — open, close, and select items from external code
-- [Disabled Options](/recipes/disabled-options) — prevent selection of specific options
-- [API Reference: Components](/api/components) — full slot and prop documentation
+- [Programmatic Control](/recipes/programmatic-control)
+- [Disabled Options](/recipes/disabled-options)
+- [API Reference: Components](/api/components)

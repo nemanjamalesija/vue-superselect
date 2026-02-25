@@ -21,6 +21,7 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
   <div class="mm-demo">
     <SelectRoot
       v-model="selected"
+      id="docs-multi-max"
       multiple
       :max="maxSelections"
       hide-selected
@@ -38,7 +39,13 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
           :placeholder="isAtMax ? 'Max reached' : 'Pick up to 3 toppings...'"
           class="mm-input"
         />
-        <SelectClear v-if="selected.length > 0" class="mm-clear">Clear</SelectClear>
+        <SelectClear
+          v-if="selected.length > 0"
+          class="mm-clear"
+          @mousedown.prevent
+        >
+          Clear
+        </SelectClear>
       </SelectControl>
       <SelectContent class="mm-content">
         <SelectOption
@@ -62,7 +69,7 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
       {{ selected.length }}/{{ maxSelections }} selected
       <span v-if="isAtMax" class="mm-limit-note">(max reached)</span>
     </p>
-    <p class="demo-note">This styling is for demos only — the library ships zero CSS</p>
+    <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>
   </div>
 </template>
 

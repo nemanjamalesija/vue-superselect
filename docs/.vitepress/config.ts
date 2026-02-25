@@ -7,10 +7,14 @@ export default defineConfig({
   title: 'vue-superselect',
   description: 'Headless Vue 3 select/combobox component library',
   base: '/vue-superselect/',
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/vue-superselect-icon.svg' }],
+  ],
   ignoreDeadLinks: true,
   buildEnd: verifySourcesPlugin,
 
   themeConfig: {
+    logo: '/vue-superselect-icon.svg',
     search: {
       provider: 'local',
     },

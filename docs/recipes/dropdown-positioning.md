@@ -66,7 +66,7 @@ pnpm add @floating-ui/vue
 ```
 :::
 
-No code changes are needed — `SelectContent` detects the package automatically and switches to smart positioning.
+No code changes are needed. `SelectContent` detects the package automatically and switches to smart positioning.
 
 ### Collision Strategy
 
@@ -101,7 +101,7 @@ When a select is inside a container with `overflow: hidden` or `overflow: auto`,
 ### Teleport Options
 
 ```vue-html
-<!-- No teleport (default) — dropdown is inline -->
+<!-- No teleport (default), dropdown is inline -->
 <SelectContent :teleport="false">
 
 <!-- Teleport to body -->
@@ -117,7 +117,7 @@ When a select is inside a container with `overflow: hidden` or `overflow: auto`,
 | `true` | Dropdown teleports to `<body>` |
 | `"#selector"` | Dropdown teleports to the specified element |
 
-When teleported to `<body>` with `@floating-ui/vue` installed, the dropdown remains visually positioned next to the input — it just lives in a different part of the DOM to escape overflow clipping.
+When teleported to `<body>` with `@floating-ui/vue` installed, the dropdown remains visually positioned next to the input. It just lives in a different part of the DOM to escape overflow clipping.
 
 ::: tip Scoped styles and teleport
 When using `teleport`, the dropdown content is rendered outside your component's DOM tree. Scoped styles (`<style scoped>`) will not apply to teleported content. Use global styles or CSS classes without the `scoped` attribute for the dropdown.
@@ -159,7 +159,7 @@ This is useful when you want the dropdown to be positioned relative to a custom 
 
 | Scenario | Configuration |
 |----------|---------------|
-| Simple dropdown | Default — no props needed |
+| Simple dropdown | Default, no props needed |
 | Specific placement | `placement="top-start"` |
 | Inside scrollable container | `:teleport="true"` |
 | Fixed placement (no flip) | `collision-strategy="none"` |
@@ -168,6 +168,6 @@ This is useful when you want the dropdown to be positioned relative to a custom 
 
 ## Next Steps
 
-- [Basic Select](/recipes/basic-select) — start with the simplest select patterns
-- [Multi-Select](/recipes/multi-select) — multi-select with tags and limits
-- [Accessibility](/core-concepts/accessibility) — keyboard navigation and screen reader support
+- [Basic Select](/recipes/basic-select)
+- [Multi-Select](/recipes/multi-select)
+- [Accessibility](/core-concepts/accessibility)
