@@ -43,9 +43,9 @@ const languages: Language[] = [
         <SelectOption
           v-for="lang in languages"
           :key="lang.id"
+          v-slot="{ selected: isSelected, active }"
           :value="lang.id"
           :label="lang.name"
-          v-slot="{ selected: isSelected, active }"
           class="cr-option"
           :class="{
             'cr-option--selected': isSelected,

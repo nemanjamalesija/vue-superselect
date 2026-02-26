@@ -25,9 +25,9 @@ const languages = ['English', 'French', 'German', 'Italian', 'Japanese', 'Korean
         <SelectOption
           v-for="lang in languages"
           :key="lang"
+          v-slot="{ selected: isSelected, active }"
           :value="lang"
           :label="lang"
-          v-slot="{ selected: isSelected, active }"
           class="a11y-option"
           :class="{
             'a11y-option--selected': isSelected,

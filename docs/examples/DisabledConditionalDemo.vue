@@ -41,10 +41,10 @@ const products: Product[] = [
         <SelectOption
           v-for="product in products"
           :key="product.id"
+          v-slot="{ selected: isSelected, active, disabled }"
           :value="product.id"
           :label="product.name"
           :disabled="product.stock === 0"
-          v-slot="{ selected: isSelected, active, disabled }"
           class="dc-option"
           :class="{
             'dc-option--selected': isSelected,

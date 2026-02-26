@@ -29,9 +29,9 @@ const regions = ['North America', 'South America', 'Europe', 'Asia', 'Africa', '
           <SelectOption
             v-for="region in regions"
             :key="region"
+            v-slot="{ selected: isSelected, active }"
             :value="region"
             :label="region"
-            v-slot="{ selected: isSelected, active }"
             class="pt-option"
             :class="{
               'pt-option--selected': isSelected,

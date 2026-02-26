@@ -27,9 +27,9 @@ const cities = [
         <SelectOption
           v-for="city in cities"
           :key="city"
+          v-slot="{ selected: isSelected, active }"
           :value="city"
           :label="city"
-          v-slot="{ selected: isSelected, active }"
           class="cf-option"
           :class="{
             'cf-option--selected': isSelected,

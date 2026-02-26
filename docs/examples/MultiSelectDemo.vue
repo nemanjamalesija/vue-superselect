@@ -19,7 +19,7 @@ const display = computed(() =>
 <template>
   <div class="ms-demo">
     <div class="ms-layout">
-      <SelectRoot v-model="selected" multiple id="docs-multi-basic">
+      <SelectRoot id="docs-multi-basic" v-model="selected" multiple>
         <div class="ms-select">
           <SelectControl class="ms-control">
             <SelectInput placeholder="Select skills..." class="ms-input" />
@@ -28,9 +28,9 @@ const display = computed(() =>
             <SelectOption
               v-for="skill in skills"
               :key="skill"
+              v-slot="{ selected: isSelected, active }"
               :value="skill"
               :label="skill"
-              v-slot="{ selected: isSelected, active }"
               class="ms-option"
               :class="{
                 'ms-option--selected': isSelected,

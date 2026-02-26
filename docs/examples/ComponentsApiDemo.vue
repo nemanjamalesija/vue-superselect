@@ -44,14 +44,14 @@ const selected = ref<string[]>([])
           multiple
           :max="3"
         >
-          <SelectControl class="demo-control" v-slot="{ selectedItems, removeItem }">
+          <SelectControl v-slot="{ selectedItems, removeItem }" class="demo-control">
             <SelectTag
               v-for="item in selectedItems"
               :key="String(item.value)"
               :value="item.value"
               :label="item.label"
-              @remove="removeItem(item.value)"
               class="demo-tag"
+              @remove="removeItem(item.value)"
             />
             <SelectInput placeholder="Pick up to 3 fruits..." class="demo-input" aria-label="Fruit picker" />
             <SelectClear class="demo-clear" aria-label="Clear selection">
@@ -66,10 +66,10 @@ const selected = ref<string[]>([])
             <SelectOption
               v-for="fruit in fruits"
               :key="fruit.name"
+              v-slot="{ selected: isSelected }"
               :value="fruit"
               :label="fruit.name"
               class="demo-option"
-              v-slot="{ selected: isSelected }"
             >
               <span class="demo-option__emoji">{{ fruit.emoji }}</span>
               <span class="demo-option__label">{{ fruit.name }}</span>

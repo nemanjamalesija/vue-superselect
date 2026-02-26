@@ -40,14 +40,14 @@ const inputId = `landing-demo-input-${useId()}`
         <SelectContent
           class="landing-content"
           placement="bottom-start"
-          collisionStrategy="none"
+          collision-strategy="none"
         >
           <SelectOption
             v-for="fruit in fruits"
             :key="fruit"
+            v-slot="{ selected: isSelected, active }"
             :value="fruit"
             :label="fruit"
-            v-slot="{ selected: isSelected, active }"
             class="landing-option"
             :class="{
               'landing-option--selected': isSelected,

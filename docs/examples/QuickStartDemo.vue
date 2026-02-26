@@ -21,9 +21,9 @@ const options = ['Apple', 'Banana', 'Cherry', 'Grape', 'Orange']
       <SelectOption
         v-for="option in options"
         :key="option"
+        v-slot="{ isSelected, isHighlighted }"
         :value="option"
         :label="option"
-        v-slot="{ isSelected, isHighlighted }"
         class="qs-option"
         :class="{
           'qs-option--selected': isSelected,

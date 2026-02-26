@@ -40,9 +40,9 @@ const countries: Country[] = [
         <SelectOption
           v-for="country in countries"
           :key="country.code"
+          v-slot="{ selected: isSelected, active }"
           :value="country.code"
           :label="country.name"
-          v-slot="{ selected: isSelected, active }"
           class="bo-option"
           :class="{
             'bo-option--selected': isSelected,

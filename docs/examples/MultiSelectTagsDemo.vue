@@ -28,8 +28,8 @@ const members: TeamMember[] = [
 <template>
   <div class="mt-demo">
     <SelectRoot
-      v-model="selected"
       id="docs-multi-tags"
+      v-model="selected"
       multiple
       :items="members"
       label-key="name"
@@ -50,9 +50,9 @@ const members: TeamMember[] = [
         <SelectOption
           v-for="member in members"
           :key="member.id"
+          v-slot="{ selected: isSelected, active }"
           :value="member.id"
           :label="member.name"
-          v-slot="{ selected: isSelected, active }"
           class="mt-option"
           :class="{
             'mt-option--selected': isSelected,

@@ -30,9 +30,9 @@ const setToCherry = () => {
         <SelectOption
           v-for="fruit in fruits"
           :key="fruit"
+          v-slot="{ selected: isSelected, active }"
           :value="fruit"
           :label="fruit"
-          v-slot="{ selected: isSelected, active }"
           class="cs-option"
           :class="{
             'cs-option--selected': isSelected,
@@ -49,8 +49,8 @@ const setToCherry = () => {
         Selected: <strong>{{ selected ?? 'nothing' }}</strong>
       </p>
       <div class="cs-actions">
-        <button @click="reset" class="cs-btn">Reset</button>
-        <button @click="setToCherry" class="cs-btn">Set to Cherry</button>
+        <button class="cs-btn" @click="reset">Reset</button>
+        <button class="cs-btn" @click="setToCherry">Set to Cherry</button>
       </div>
     </div>
     <p class="demo-note">This styling is for demos only. The library ships zero CSS</p>

@@ -31,9 +31,9 @@ const fruits = ['Apple', 'Banana', 'Cherry', 'Grape', 'Mango', 'Orange', 'Strawb
         <SelectOption
           v-for="fruit in fruits"
           :key="fruit"
+          v-slot="{ selected: isSelected, active }"
           :value="fruit"
           :label="fruit"
-          v-slot="{ selected: isSelected, active }"
           class="bc-option"
           :class="{
             'bc-option--selected': isSelected,

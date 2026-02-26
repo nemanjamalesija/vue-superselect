@@ -41,10 +41,10 @@ const drinks: Drink[] = [
         <SelectOption
           v-for="drink in drinks"
           :key="drink.id"
+          v-slot="{ selected: isSelected, active, disabled }"
           :value="drink.id"
           :label="drink.name"
           :disabled="drink.disabled"
-          v-slot="{ selected: isSelected, active, disabled }"
           class="do-option"
           :class="{
             'do-option--selected': isSelected,

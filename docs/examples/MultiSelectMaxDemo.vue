@@ -20,8 +20,8 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
 <template>
   <div class="mm-demo">
     <SelectRoot
-      v-model="selected"
       id="docs-multi-max"
+      v-model="selected"
       multiple
       :max="maxSelections"
       hide-selected
@@ -51,9 +51,9 @@ const isAtMax = computed(() => selected.value.length >= maxSelections)
         <SelectOption
           v-for="topping in toppings"
           :key="topping"
+          v-slot="{ active, disabled }"
           :value="topping"
           :label="topping"
-          v-slot="{ active, disabled }"
           class="mm-option"
           :class="{
             'mm-option--active': active,

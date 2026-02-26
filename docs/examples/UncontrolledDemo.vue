@@ -20,9 +20,9 @@ const cities = ['Amsterdam', 'Berlin', 'Copenhagen', 'Dublin', 'Edinburgh']
         <SelectOption
           v-for="city in cities"
           :key="city"
+          v-slot="{ selected, active }"
           :value="city"
           :label="city"
-          v-slot="{ selected, active }"
           class="uc-option"
           :class="{
             'uc-option--selected': selected,

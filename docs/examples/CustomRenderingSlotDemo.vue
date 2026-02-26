@@ -40,11 +40,11 @@ const members: TeamMember[] = [
         <SelectTag
           v-for="item in selectedItems"
           :key="String(item.value)"
+          v-slot="{ label, remove }"
           :value="item.value"
           :label="item.label"
-          @remove="removeItem"
-          v-slot="{ label, remove }"
           class="cs-tag"
+          @remove="removeItem"
         >
           <span class="cs-tag-avatar">{{ members.find(m => m.id === item.value)?.initials }}</span>
           <span>{{ label }}</span>
@@ -56,9 +56,9 @@ const members: TeamMember[] = [
         <SelectOption
           v-for="member in members"
           :key="member.id"
+          v-slot="{ selected: isSelected, active }"
           :value="member.id"
           :label="member.name"
-          v-slot="{ selected: isSelected, active }"
           class="cs-option"
           :class="{
             'cs-option--selected': isSelected,

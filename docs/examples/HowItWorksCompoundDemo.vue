@@ -22,9 +22,9 @@ const colors = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Indigo', 'Violet']
         <SelectOption
           v-for="color in colors"
           :key="color"
+          v-slot="{ selected: isSelected, active }"
           :value="color"
           :label="color"
-          v-slot="{ selected: isSelected, active }"
           class="hiw-option"
           :class="{
             'hiw-option--selected': isSelected,

@@ -59,9 +59,9 @@ const customFilter: FilterFn<unknown> = (item, query) => {
         <SelectOption
           v-for="tool in tools"
           :key="tool.id"
+          v-slot="{ selected: isSelected, active }"
           :value="tool.id"
           :label="tool.name"
-          v-slot="{ selected: isSelected, active }"
           class="df-option"
           :class="{
             'df-option--selected': isSelected,

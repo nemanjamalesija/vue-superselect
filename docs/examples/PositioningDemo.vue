@@ -22,9 +22,9 @@ const frameworks = ['Vue', 'React', 'Svelte', 'Solid', 'Angular', 'Lit', 'Ember'
         <SelectOption
           v-for="fw in frameworks"
           :key="fw"
+          v-slot="{ selected: isSelected, active }"
           :value="fw"
           :label="fw"
-          v-slot="{ selected: isSelected, active }"
           class="pos-option"
           :class="{
             'pos-option--selected': isSelected,
