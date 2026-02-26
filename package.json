@@ -1,9 +1,36 @@
 {
   "name": "vue-superselect",
-  "version": "0.1.0-alpha.0",
+  "version": "1.0.0",
   "type": "module",
-  "description": "Headless Vue 3 select/combobox component library",
+  "description": "Headless, accessible, TypeScript-first select/combobox for Vue 3",
   "license": "MIT",
+  "author": "Nemanja Malesija",
+  "homepage": "https://nemanjamalesija.github.io/vue-superselect/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nemanjamalesija/vue-superselect.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nemanjamalesija/vue-superselect/issues"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "select",
+    "combobox",
+    "autocomplete",
+    "dropdown",
+    "multiselect",
+    "headless",
+    "accessible",
+    "a11y",
+    "aria",
+    "typescript",
+    "component",
+    "composable",
+    "typeahead",
+    "vue-select"
+  ],
   "main": "./dist/vue-superselect.cjs",
   "module": "./dist/vue-superselect.js",
   "types": "./dist/index.d.ts",
@@ -20,7 +47,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ],
   "sideEffects": false,
   "peerDependencies": {
