@@ -30,7 +30,7 @@ const {
 })
 
 onMounted(() => {
-  colors.forEach((color, index) => {
+  colors.forEach((color) => {
     registerItem({
       id: `composable-color-${color.id}`,
       value: color.id,

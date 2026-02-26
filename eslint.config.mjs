@@ -22,6 +22,6 @@ export default defineConfigWithVueTs(
     },
   },
   {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'playground/dist/**'],
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'playground/dist/**', 'docs/.vitepress/cache/**', 'docs/.vitepress/dist/**'],
   }
 )

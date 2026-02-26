@@ -79,7 +79,8 @@ function getDocumentedExports(docsDir: string): string[] {
  * - Fails the build if a documented export does not exist in the source
  * - Warns if an actual export is not documented
  */
-export async function verifySourcesPlugin(siteConfig: SiteConfig): Promise<void> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function verifySourcesPlugin(_siteConfig: SiteConfig): Promise<void> {
   const docsDir = resolve(__dirname_, '../../')
   const actualExports = getActualExports()
   const documentedExports = getDocumentedExports(docsDir)
