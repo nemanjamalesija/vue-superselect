@@ -12,6 +12,5 @@ docs/.vitepress/dist/
 # Personal project context
 CLAUDE.md
 .planning/
-LEARNING/
 AGENTS.md
 scripts/continue.sh
